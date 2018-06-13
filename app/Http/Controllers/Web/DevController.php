@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -16,7 +16,7 @@ class DevController extends Controller
     }
     public function generationLanguageFiles()
     {
-        $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST', array());
+        $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
         $translateType = 'validation';
         $resuiltArr = $this->getTranslateMessageArray($translateType);
         echo '<pre>';
@@ -24,7 +24,16 @@ class DevController extends Controller
         $this->generationTranslateFile($resuiltArr,'validation_test');
         $this->generationTranslateScript($resuiltArr,'validation_test_tmp');
     }
-
+    public function index()
+    {
+        $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
+        $translateType = 'validation';
+        $resuiltArr = $this->getTranslateMessageArray($translateType);
+        echo '<pre>';
+        print_r($resuiltArr);
+        $this->generationTranslateFile($resuiltArr,'validation_test');
+        $this->generationTranslateScript($resuiltArr,'validation_test_tmp');
+    }
     /**
      * @param $translateType
      * @return array

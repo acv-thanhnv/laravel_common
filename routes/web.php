@@ -11,8 +11,13 @@
 |
 */
 
+
+
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/dev', 'DevController@index')->name('testindex');
-Route::get('/dev/translation', 'DevController@translation')->name('translation');
+
+Route::group(['namespace' => 'Web'], function () {
+    Route::get('/dev', 'DevController@index')->name('testindex');
+    Route::get('/dev/translation', 'DevController@translation')->name('translation');
+});
