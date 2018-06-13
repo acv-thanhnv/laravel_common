@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Dao\SDB;
 use Symfony\Component\Console\Helper\Helper;
-
+use Illuminate\Support\Facades\Validator;
+use League\Flysystem\Filesystem;
 class DevController extends Controller
 {
     public function translation()
@@ -23,16 +24,18 @@ class DevController extends Controller
         print_r($resuiltArr);
         $this->generationTranslateFile($resuiltArr,'validation_test');
         $this->generationTranslateScript($resuiltArr,'validation_test_tmp');
+
     }
+
+    /**
+     * test
+     */
     public function index()
     {
-        $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
-        $translateType = 'validation';
-        $resuiltArr = $this->getTranslateMessageArray($translateType);
-        echo '<pre>';
-        print_r($resuiltArr);
-        $this->generationTranslateFile($resuiltArr,'validation_test');
-        $this->generationTranslateScript($resuiltArr,'validation_test_tmp');
+        $a=  $this->getConfigDataFromFile('acl');
+        echo '<prev>';
+        print_r($a);
+
     }
     /**
      * @param $translateType
@@ -42,7 +45,7 @@ class DevController extends Controller
     protected function getTranslateMessageArray($translateType)
     {
         $resuiltArr = [];
-        $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST', array());
+        $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
         if (!empty($lang)) {
 
             foreach ($lang as $item) {
@@ -142,4 +145,8 @@ class DevController extends Controller
 
     }
 
+    protected function getConfigDataFromFile($name){
+        $resultArray = Config::get($name);
+        return $resultArray;
+    }
 }
