@@ -9,6 +9,7 @@ namespace App\Services\Interfaces;
 
 interface DevServiceInterface
 {
+    public function test();
     public function getLanguageCodeList();
     public function getTranslateMessageArray( $translateType);
     public function generationTranslateFile( $translateType, $fileName);

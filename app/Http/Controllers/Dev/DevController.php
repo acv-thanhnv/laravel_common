@@ -57,7 +57,7 @@ class DevController extends Controller
     }
     public function index()
     {
-        echo 'dev module';
+        $this->devService->test();
     }
 
 }

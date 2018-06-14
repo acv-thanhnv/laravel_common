@@ -281,4 +281,7 @@ class DevService extends BaseService implements DevServiceInterface
         }
         return ($controllers);
     }
+    public function test(){
+        echo 'DevService';
+    }
 }
