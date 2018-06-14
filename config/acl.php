@@ -1,15 +1,11 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: MSI
- * Date: 6/13/2018
- * Time: 5:05 PM
- */
-return[
-    '1'=>[
-        'web/dev/index'
-    ],
-    '2'=>[
-
-    ],
+<?php 
+return [
+	'1'=>[
+		'web/dev/index'=>'1',
+		'web/dev/generationlanguagefiles'=>'1',
+	],
+	'2'=>[
+		'web/dev/index'=>'0',
+		'web/dev/generationlanguagefiles'=>'1',
+	],
 ];
