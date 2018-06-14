@@ -1,5 +1,6 @@
 <?php 
-return [
+//This is dev automatic generate 
+ return [
 	'1'=>[
 		'web/dev/index'=>'1',
 		'web/dev/generationlanguagefiles'=>'1',

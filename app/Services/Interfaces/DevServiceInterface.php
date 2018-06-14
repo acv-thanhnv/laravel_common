@@ -11,9 +11,10 @@ interface DevServiceInterface
 {
     public function getLanguageCodeList();
     public function getTranslateMessageArray( $translateType);
-    public function generationTranslateFile( $validateArray, string $fileName);
-    public function generationTranslateScript( $validateArray, string $fileName);
+    public function generationTranslateFile( $translateType, $fileName);
+    public function generationTranslateScript( $translateType, $fileName);
     public function getRoleMapArray();
-    public function generationAclFile( $roleMapScreen);
-    public function getConfigDataFromFile(string $name);
+    public function generationAclFile();
+    public function getConfigDataFromFile($name);
+    public function generationDataToDB();
 }

@@ -16,3 +16,10 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+/**
+ * Api
+ */
+Route::group(['namespace' => 'Api','middleware' => ['acl']], function () {
+    //Router config here...
+    Route::get('/some', 'SomeController@index')->name('testindex');
+});

@@ -16,7 +16,7 @@ class DevController extends Controller
     {
         $this->devService = $devService;
     }
-    public function translation()
+    public function translationManagement()
     {
         //form CRUD translate text
         return view("dev/translation");
@@ -24,20 +24,15 @@ class DevController extends Controller
 
     public function generationLanguageFiles()
     {
-        $lang = $this->devService->getLanguageCodeList();
         $translateType = 'validation';
-        $resuiltArr = $this->devService->getTranslateMessageArray($translateType);
-        echo '<pre>';
-        print_r($resuiltArr);
-        $this->devService->generationTranslateFile($resuiltArr, 'validation_test');
-        $this->devService->generationTranslateScript($resuiltArr, 'validation_test_tmp');
+        $this->devService->generationTranslateFile($translateType, 'validation_test');
+        $this->devService->generationTranslateScript($translateType, 'validation_test_tmp');
 
     }
+
     public function generationAclConfigFiles()
     {
-        $roleMap = $this->devService->getRoleMapArray();
-        $this->devService->generationAclFile($roleMap);
-
+        $this->devService->generationAclFile();
     }
 
     public function readAclConfig()
@@ -47,11 +42,14 @@ class DevController extends Controller
         print_r($a);
     }
 
+    public function importScreensList(){
+        echo '<pre>';
+        $a =  $this->devService->generationDataToDB();
+        print_r($a);
+    }
     public function index()
     {
-        $roleMap = $this->devService->getRoleMapArray();
-        $this->devService->generationAclFile($roleMap);
-        echo '<pre>';
-        print_r($roleMap);
+
     }
+
 }

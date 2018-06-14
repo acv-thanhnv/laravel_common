@@ -9,9 +9,9 @@
 namespace App\Services\Production;
 use App\Dao\SDB;
 use Illuminate\Support\Facades\Config;
-
+use Illuminate\Support\Facades\Route;
 use App\Services\Interfaces\DevServiceInterface;
-
+use Illuminate\Database\Eloquent\Model;
 class DevService extends  BaseService implements DevServiceInterface
 {
     public function getLanguageCodeList(){
@@ -58,8 +58,9 @@ class DevService extends  BaseService implements DevServiceInterface
      * @param $fileName
      * HELPER: Generation Config File contain text translated.
      */
-    public function generationTranslateFile($validateArray, $fileName)
+    public function generationTranslateFile($translateType, $fileName)
     {
+        $validateArray = $this->getTranslateMessageArray($translateType);
         $folderLangPath = base_path() . '/resources/lang/';
         foreach ($validateArray as $langCode => $langGroupContent) {
             $langFolder = strtolower($folderLangPath . $langCode);
@@ -75,6 +76,7 @@ class DevService extends  BaseService implements DevServiceInterface
                 $fh = fopen($fileTranslate, 'w');
             }
             $contentFile = "<?php \n";
+            $contentFile .= "//This is dev automatic generate \n ";
             //Generate content file
             if (!empty($langGroupContent)) {
                 $contentFile .= "return [\n";
@@ -107,8 +109,9 @@ class DevService extends  BaseService implements DevServiceInterface
      * @param $fileName
      * HELPER: Generation Javascript File contain text translated.
      */
-    public function generationTranslateScript($validateArray, $fileName)
+    public function generationTranslateScript($translateType, $fileName)
     {
+        $validateArray = $this->getTranslateMessageArray($translateType);
         $folderLangPath = base_path() . '/public/js/' . $fileName . '.js';
         //Create file validate if not existed
         if (file_exists($folderLangPath)) {
@@ -116,7 +119,8 @@ class DevService extends  BaseService implements DevServiceInterface
         } else {
             $fh = fopen($folderLangPath, 'w');
         }
-        $contentFile = "var _validateMessage = \n";
+        $contentFile = "//This is dev automatic generate \n ";
+        $contentFile .= "var _validateMessage = \n";
         $txt = json_encode($validateArray);
         $contentFile .= $txt . ';';
         //Write content file
@@ -160,11 +164,13 @@ class DevService extends  BaseService implements DevServiceInterface
     }
 
     /**
-     * @param $roleMapScreen
+     * @param $roleMapScreen : array role map
+     * Struct input as:
      * HELPER: generate acl file to config folder
      */
-    public function generationAclFile($roleMapScreen)
+    public function generationAclFile()
     {
+        $roleMapScreen = $this->getRoleMapArray();
         $fileName= 'acl';//fixed, warning: Must not dupplicate other config file, which existed.
         $fileAcl = base_path() . '/config/' . $fileName . '.php';
 
@@ -175,6 +181,7 @@ class DevService extends  BaseService implements DevServiceInterface
             $fh = fopen($fileAcl, 'w');
         }
         $contentFile = "<?php \n";
+        $contentFile .= "//This is dev automatic generate \n ";
         //Generate content file
 
         $contentFile .= "return [\n";
@@ -196,9 +203,8 @@ class DevService extends  BaseService implements DevServiceInterface
         fclose($fh);
 
     }
-
     /**
-     * @param $name
+     * @param $name : name of config file. ex: 'acl' or 'app' or 'auth'....
      * @return mixed
      * HELPER: Read file config
      */
@@ -206,5 +212,35 @@ class DevService extends  BaseService implements DevServiceInterface
     {
         $resultArray = Config::get($name);
         return $resultArray;
+    }
+    public function generationDataToDB(){
+        $data = $this->getListScreen();
+
+        SDB::table('sys_screens')->truncate();
+        SDB::table('sys_screens')->insert($data);
+        return $data;
+    }
+
+    protected function getListScreen(){
+        $controllers = [];
+        $i=0;
+        $id = 0;
+        $listRouter = Route:: getRoutes()->getRoutes();
+        foreach ($listRouter as $route)
+        {
+            $action = $route->getAction();
+            if (array_key_exists('controller', $action))
+            {
+                $id++;
+                $_action = explode('@',$action['controller']);
+                $_namespaces_chunks = explode('\\',$_action[0]);
+                $controllers[$i]['id']=$id;
+                $controllers[$i]['module'] = strtolower(trim(str_replace('App\Http\Controllers','',$action['namespace']),'\\'));
+                $controllers[$i]['controller'] = strtolower(end($_namespaces_chunks));
+                $controllers[$i]['action'] = strtolower(end($_action));
+            }
+            $i++;
+        }
+        return ($controllers);
     }
 }
