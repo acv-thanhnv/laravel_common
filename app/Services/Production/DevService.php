@@ -7,17 +7,21 @@
  */
 
 namespace App\Services\Production;
+
 use App\Dao\SDB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use App\Services\Interfaces\DevServiceInterface;
-use Illuminate\Database\Eloquent\Model;
-class DevService extends  BaseService implements DevServiceInterface
+
+
+class DevService extends BaseService implements DevServiceInterface
 {
-    public function getLanguageCodeList(){
+    public function getLanguageCodeList()
+    {
         $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
         return $lang;
     }
+
     /**
      * @param $translateType
      * @return array
@@ -171,7 +175,7 @@ class DevService extends  BaseService implements DevServiceInterface
     public function generationAclFile()
     {
         $roleMapScreen = $this->getRoleMapArray();
-        $fileName= 'acl';//fixed, warning: Must not dupplicate other config file, which existed.
+        $fileName = 'acl';//fixed, warning: Must not dupplicate other config file, which existed.
         $fileAcl = base_path() . '/config/' . $fileName . '.php';
 
         //Create file validate if not existed
@@ -203,6 +207,7 @@ class DevService extends  BaseService implements DevServiceInterface
         fclose($fh);
 
     }
+
     /**
      * @param $name : name of config file. ex: 'acl' or 'app' or 'auth'....
      * @return mixed
@@ -213,31 +218,64 @@ class DevService extends  BaseService implements DevServiceInterface
         $resultArray = Config::get($name);
         return $resultArray;
     }
-    public function generationDataToDB(){
-        $data = $this->getListScreen();
 
+    /**
+     * @return array
+     * generation screens list, insert to database and innitization system administrator role.
+     */
+    public function generationDataToDB()
+    {
+        $data = $this->getListScreen();
+        $systemAdminRole = Config::get('app.SYSTEM_ADMIN_ROLE_VALUE');
+        $roleList = SDB::execSPs('DEV_GET_ROLES_LST');
         SDB::table('sys_screens')->truncate();
         SDB::table('sys_screens')->insert($data);
+        SDB::table('sys_role_map_screen')->truncate();
+
+        $id = 0;
+        $dataRolesMapping = array();
+        foreach ($roleList as $role) {
+
+            foreach ($data as $item) {
+                $id++;
+                $isActive = 0;
+                if ($role->role_value == $systemAdminRole) {
+                    $isActive = 1;
+                }
+                $dataRolesMapping[] = array(
+                    'id' => $id,
+                    'role_value' => $role->role_value,
+                    'screen_id' => $item['id'],
+                    'is_active' => $isActive
+                );
+            }
+        }
+
+        SDB::table('sys_role_map_screen')->insert($dataRolesMapping);
         return $data;
     }
 
-    protected function getListScreen(){
+    protected function getListScreen()
+    {
         $controllers = [];
-        $i=0;
+        $i = 0;
         $id = 0;
         $listRouter = Route:: getRoutes()->getRoutes();
-        foreach ($listRouter as $route)
-        {
+        foreach ($listRouter as $route) {
             $action = $route->getAction();
-            if (array_key_exists('controller', $action))
-            {
-                $id++;
-                $_action = explode('@',$action['controller']);
-                $_namespaces_chunks = explode('\\',$_action[0]);
-                $controllers[$i]['id']=$id;
-                $controllers[$i]['module'] = strtolower(trim(str_replace('App\Http\Controllers','',$action['namespace']),'\\'));
-                $controllers[$i]['controller'] = strtolower(end($_namespaces_chunks));
-                $controllers[$i]['action'] = strtolower(end($_action));
+            if (array_key_exists('controller', $action)) {
+                $_module = strtolower(trim(str_replace('App\Http\Controllers', '', $action['namespace']), '\\'));
+                if($_module !='dev'){
+                    $id++;
+                    $_action = explode('@', $action['controller']);
+
+                    $_namespaces_chunks = explode('\\', $_action[0]);
+                    $controllers[$i]['id'] = $id;
+                    $controllers[$i]['module'] = $_module;
+                    $controllers[$i]['controller'] = strtolower(end($_namespaces_chunks));
+                    $controllers[$i]['action'] = strtolower(end($_action));
+                }
+
             }
             $i++;
         }

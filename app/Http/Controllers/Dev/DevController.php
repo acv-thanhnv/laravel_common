@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web;
+namespace App\Http\Controllers\Dev;
 
 use App\Http\Controllers\Controller;
 use App\Services\Interfaces\DevServiceInterface;
@@ -43,13 +43,21 @@ class DevController extends Controller
     }
 
     public function importScreensList(){
-        echo '<pre>';
-        $a =  $this->devService->generationDataToDB();
-        print_r($a);
+        $this->devService->generationDataToDB();
+    }
+    public function initProject()
+    {
+        $this->devService->generationDataToDB();
+        $this->devService->generationAclFile();
+
+        //generationTranslate validation
+        $translateType = 'validation';
+        $this->devService->generationTranslateFile($translateType, 'validation_test');
+        $this->devService->generationTranslateScript($translateType, 'validation_test_tmp');
     }
     public function index()
     {
-
+        echo 'dev module';
     }
 
 }
