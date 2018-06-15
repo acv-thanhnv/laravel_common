@@ -8,6 +8,6 @@ use App\Http\Controllers\Controller;
 class SomeController extends Controller
 {
     public function index(){
-
+        echo 'api/some/index';
     }
 }

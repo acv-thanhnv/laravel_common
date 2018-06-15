@@ -24,7 +24,10 @@ class Acl
         $controllers = strtolower(end($_namespaces_chunks));
         $action = strtolower(end($_action));
         $screenCode = $module.'\\'.$controllers.'\\'.$action;
-        $roleId = Auth::user()->role_value;
+        $roleId = null;
+        if(Auth::check()){
+            $roleId = Auth::user()->role_value;
+        }
         if ($this->hasAcl($roleId,$screenCode)==true ) {
             return $next($request);
         }
