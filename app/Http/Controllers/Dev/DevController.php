@@ -43,11 +43,14 @@ class DevController extends Controller
     }
 
     public function importScreensList(){
-        $this->devService->generationDataToDB();
+        $this->devService->generationRoleDataToDB();
+    }
+    public function importTranslateToDB(){
+        $this->devService->generationTransDataToDB();
     }
     public function initProject()
     {
-        $this->devService->generationDataToDB();
+        $this->devService->generationRoleDataToDB();
         $this->devService->generationAclFile();
 
         //generationTranslate validation

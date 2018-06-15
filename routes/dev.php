@@ -12,6 +12,6 @@ Route::get('/dev/generationAclConfigFiles', 'DevController@generationAclConfigFi
 
 Route::get('/dev/generationLanguageFiles', 'DevController@generationLanguageFiles')->name('generationLanguageFiles');
 Route::get('/dev/importScreensList', 'DevController@importScreensList')->name('importScreensList');
-
+Route::get('/dev/importTranslateToDB', 'DevController@importTranslateToDB')->name('importTranslateToDB');
 Route::get('/dev/initProject', 'DevController@initProject')->name('initProject');
 

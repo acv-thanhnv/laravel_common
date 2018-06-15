@@ -10,8 +10,11 @@ namespace App\Services\Production;
 
 use App\Dao\SDB;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use App\Services\Interfaces\DevServiceInterface;
+use Psr\Log\NullLogger;
+use Symfony\Component\Console\Helper\Table;
 
 class DevService extends BaseService implements DevServiceInterface
 {
@@ -41,10 +44,10 @@ class DevService extends BaseService implements DevServiceInterface
                     if (!empty($rules)) {
                         foreach ($rules as $ruleItem) {
                             if ($itemKey == $ruleItem->lang_code) {
-                                if ($ruleItem->type_name == '') {
+                                if ($ruleItem->type_code == '') {
                                     $resuiltArr[$itemKey][$ruleItem->code] = $ruleItem->text;
                                 } else {
-                                    $resuiltArr[$itemKey][$ruleItem->code][$ruleItem->type_name] = $ruleItem->text;
+                                    $resuiltArr[$itemKey][$ruleItem->code][$ruleItem->type_code] = $ruleItem->text;
                                 }
                             }
                         }
@@ -222,7 +225,7 @@ class DevService extends BaseService implements DevServiceInterface
      * @return array
      * generation screens list, insert to database and innitization system administrator role.
      */
-    public function generationDataToDB()
+    public function generationRoleDataToDB()
     {
         $data = $this->getListScreen();
         $systemAdminRole = Config::get('app.SYSTEM_ADMIN_ROLE_VALUE');
@@ -254,6 +257,78 @@ class DevService extends BaseService implements DevServiceInterface
         return $data;
     }
 
+
+    /**
+     * @return array
+     * generation screens list, insert to database and innitization system administrator role.
+     */
+    public function generationTransDataToDB()
+    {
+        $dir = base_path() . '/resources/lang';
+        $langList = array_diff(scandir($dir), array('..', '.'));
+        $id = 0;
+        SDB::table('dev_translation')->truncate();
+        foreach ($langList as $lang) {
+            $dir = base_path() . '/resources/lang/' . $lang;
+            $typeTranslateList = array_diff(scandir($dir), array('..', '.'));
+            Lang::setLocale($lang);
+            foreach ($typeTranslateList as $translateFileName) {
+                $typeTranslate = str_replace('.php', '', $translateFileName);
+                $tran = Lang::get($typeTranslate);
+//               / print_r($tran);
+                $dataTrans = array();
+                if (!empty($tran)) {
+                    foreach ($tran as $tranItemKey => $tranItemValue) {
+
+                        if (!is_array($tranItemValue)) {
+                            $id++;
+                            $dataTrans[] = array(
+                                'id' => $id,
+                                'lang_code' => strtolower($lang),
+                                'input_type' => '',
+                                'code' => $tranItemKey,
+                                'text' => $tranItemValue,
+                                'translate_type' => $typeTranslate,
+                                'created_at' => now(),
+                                'is_deleted' => 0
+                            );
+                        } else {
+                            if (!empty($tranItemValue)) {
+                                foreach ($tranItemValue as $inputTypeKey => $inputValueMss) {
+                                    if(!is_array($inputValueMss)){
+                                        $id++;
+                                        $dataTrans[] = array(
+                                            'id' => $id,
+                                            'lang_code' => strtolower($lang),
+                                            'input_type' => $inputTypeKey,
+                                            'code' => $tranItemKey,
+                                            'text' => $inputValueMss,
+                                            'translate_type_code' => $typeTranslate,
+                                            'created_at' => now(),
+                                            'is_deleted' => 0
+                                        );
+                                    }
+
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+                if(!empty($dataTrans)){
+                    echo '<hr>';
+                    print_r($dataTrans);
+                    SDB::table('dev_translation')->insert($dataTrans);
+                }
+            }
+
+        }
+
+
+    }
+
+
     protected function getListScreen()
     {
         $controllers = [];
@@ -264,7 +339,7 @@ class DevService extends BaseService implements DevServiceInterface
             $action = $route->getAction();
             if (array_key_exists('controller', $action)) {
                 $_module = strtolower(trim(str_replace('App\Http\Controllers', '', $action['namespace']), '\\'));
-                if($_module !='dev'){
+                if ($_module != 'dev') {
                     $id++;
                     $_action = explode('@', $action['controller']);
 
@@ -280,8 +355,17 @@ class DevService extends BaseService implements DevServiceInterface
         }
         return ($controllers);
     }
-    public function test(){
+
+    public function test()
+    {
         echo "test dev";
+        echo '<pre>';
+
+
+
     }
 
+
+
 }
+
