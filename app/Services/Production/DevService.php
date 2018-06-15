@@ -29,7 +29,7 @@ class DevService extends BaseService implements DevServiceInterface
      * @return array
      * HELPER: Get data translated text by type ( validation, auth, label...)
      */
-    public function getTranslateMessageArray($translateType)
+    public function getTranslateMessageArray($translateType='')
     {
         $resuiltArr = [];
         $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
@@ -39,6 +39,7 @@ class DevService extends BaseService implements DevServiceInterface
                 $resuiltArr[$item->code] = array();
             }
             $rules = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType));
+
             if (!empty($resuiltArr)) {
                 foreach ($resuiltArr as $itemKey => $itemValue) {
                     if (!empty($rules)) {
@@ -275,7 +276,6 @@ class DevService extends BaseService implements DevServiceInterface
             foreach ($typeTranslateList as $translateFileName) {
                 $typeTranslate = str_replace('.php', '', $translateFileName);
                 $tran = Lang::get($typeTranslate);
-//               / print_r($tran);
                 $dataTrans = array();
                 if (!empty($tran)) {
                     foreach ($tran as $tranItemKey => $tranItemValue) {
@@ -317,18 +317,17 @@ class DevService extends BaseService implements DevServiceInterface
                     }
                 }
                 if(!empty($dataTrans)){
-                    echo '<hr>';
-                    print_r($dataTrans);
                     SDB::table('dev_translation')->insert($dataTrans);
                 }
             }
 
         }
 
-
     }
 
-
+    /**
+     * @return array
+     */
     protected function getListScreen()
     {
         $controllers = [];
@@ -356,16 +355,21 @@ class DevService extends BaseService implements DevServiceInterface
         return ($controllers);
     }
 
+    /**
+     * @return array|mixed
+     */
+    protected function getCatagoryList()
+    {
+        $categoryData = SDB::execSPs('GET_CATEGORY_LST');
+        return $categoryData;
+    }
+
     public function test()
     {
         echo "test dev";
         echo '<pre>';
-
-
+        print_r(json_encode($this->getCatagoryList()));
 
     }
-
-
-
 }
 

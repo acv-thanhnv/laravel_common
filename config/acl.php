@@ -1,5 +1,5 @@
-<?php
-//This is dev automatic generate
+<?php 
+//This is dev automatic generate 
  return [
 	'1'=>[
 		'\logincontroller\showloginform'=>'1',
@@ -26,8 +26,8 @@
 		'\resetpasswordcontroller\showresetform'=>'0',
 		'\resetpasswordcontroller\reset'=>'0',
 		'api\somecontroller\index'=>'0',
-		'web\homecontroller\index'=>'1',
-		'web\somecontroller\index'=>'1',
+		'web\homecontroller\index'=>'0',
+		'web\somecontroller\index'=>'0',
 	],
 	'3'=>[
 		'\logincontroller\showloginform'=>'0',

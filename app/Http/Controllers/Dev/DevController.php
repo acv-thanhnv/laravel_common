@@ -19,7 +19,9 @@ class DevController extends Controller
     public function translationManagement()
     {
         //form CRUD translate text
-        return view("dev/translation");
+        $dataTrans = $this->devService->getTranslateMessageArray('');
+        print_r($dataTrans);
+//      /  return view("dev/translation",compact('dataTrans'));
     }
 
     public function generationLanguageFiles()
@@ -60,7 +62,10 @@ class DevController extends Controller
     }
     public function index()
     {
-        $this->devService->test();
+        return view("dev/index");
+    }
+    public function aclManangement(){
+        return view("dev/acl");
     }
 
 }
