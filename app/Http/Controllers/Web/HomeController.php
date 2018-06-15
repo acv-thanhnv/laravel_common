@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
     /**
@@ -23,8 +22,6 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        echo '<pre>';
-        print_r($request->user());
         return view('home');
     }
 }

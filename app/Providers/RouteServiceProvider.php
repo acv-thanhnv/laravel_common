@@ -36,9 +36,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        $this->mapAuthRoutes();
         $this->mapApiRoutes();
-
         $this->mapWebRoutes();
+        //only active in debug mode
         if(Config::get('app.debug')==true){
             $this->mapDevRoutes();
         }
@@ -83,7 +84,21 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapDevRoutes()
     {
-        Route::namespace('App\Http\Controllers\Dev')
+        Route::middleware('dev')
+            ->namespace('App\Http\Controllers\Dev')
             ->group(base_path('routes/dev.php'));
+    }
+    /**
+     * Define the "dev" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapAuthRoutes()
+    {
+        Route::middleware('web')
+        ->namespace('App\Http\Controllers')
+            ->group(base_path('routes/auth.php'));
     }
 }

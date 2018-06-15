@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware\Web;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Auth;
 use Closure;
 
 class Acl
@@ -22,15 +24,24 @@ class Acl
         $controllers = strtolower(end($_namespaces_chunks));
         $action = strtolower(end($_action));
         $screenCode = $module.'\\'.$controllers.'\\'.$action;
-
-
-        return $next($request);
-        if (isset($_SESSION['role_id']) && hasAcl($_SESSION['role_id'])==true ) {
+        $roleId = Auth::user()->role_value;
+        if ($this->hasAcl($roleId,$screenCode)==true ) {
             return $next($request);
         }
-        return redirect('/home');
+        return redirect('/');
     }
-    protected function hasAcl($roleId){
-        return true;
+
+    /**
+     * @param $roleId
+     * @param $screenCode
+     * @return bool
+     * validate has role
+     */
+    protected function hasAcl($roleId,$screenCode){
+        $configAcl = Config::get('acl');
+        if(isset($configAcl[$roleId])&& isset($configAcl[$roleId][$screenCode]) && $configAcl[$roleId][$screenCode]==1){
+            return true;
+        }
+        return false;
     }
 }

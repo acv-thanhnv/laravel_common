@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use App\Services\Interfaces\DevServiceInterface;
 
-
 class DevService extends BaseService implements DevServiceInterface
 {
     public function getLanguageCodeList()
@@ -282,15 +281,7 @@ class DevService extends BaseService implements DevServiceInterface
         return ($controllers);
     }
     public function test(){
-        echo 'DevService';
-        echo '<pre>';
-        $curentActionInfo = Route::getCurrentRoute()->getAction();
-        $module = strtolower(trim(str_replace('App\Http\Controllers', '', $curentActionInfo['namespace']), '\\'));
-        $_action = explode('@', $curentActionInfo['controller']);
-        $_namespaces_chunks = explode('\\', $_action[0]);
-        $controllers = strtolower(end($_namespaces_chunks));
-        $action = strtolower(end($_action));
-        $screenCode = $module.'\\'.$controllers.'\\'.$action;
-        echo ($screenCode);
+        echo "test dev";
     }
+
 }
