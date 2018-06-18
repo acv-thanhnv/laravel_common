@@ -1770,7 +1770,7 @@ cssnano@^3.10.0:
     postcss-merge-idents "^2.1.5"
     postcss-merge-longhand "^2.0.1"
     postcss-merge-rules "^2.0.3"
-    postcss-minify-font-values "^1.0.2"
+    postcss-minify-fonts-values "^1.0.2"
     postcss-minify-gradients "^1.0.1"
     postcss-minify-params "^1.0.4"
     postcss-minify-selectors "^2.0.4"
@@ -5358,7 +5358,7 @@ postcss-message-helpers@^2.0.0:
 
 postcss-minify-font-values@^1.0.2:
   version "1.0.5"
-  resolved "https://registry.yarnpkg.com/postcss-minify-font-values/-/postcss-minify-font-values-1.0.5.tgz#4b58edb56641eba7c8474ab3526cafd7bbdecb69"
+  resolved "https://registry.yarnpkg.com/postcss-minify-fonts-values/-/postcss-minify-fonts-values-1.0.5.tgz#4b58edb56641eba7c8474ab3526cafd7bbdecb69"
   dependencies:
     object-assign "^4.0.1"
     postcss "^5.0.4"

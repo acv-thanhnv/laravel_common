@@ -17,4 +17,5 @@ Route::get('/dev/initProject', 'DevController@initProject')->name('initProject')
 
 Route::get('/dev/translation', 'DevController@translationManagement')->name('translationManagement');
 Route::get('/dev/acl', 'DevController@aclManangement')->name('aclManangement');
+Route::get('/dev/menu', 'DevController@menu')->name('menu');
 

@@ -12,6 +12,8 @@ interface DevServiceInterface
     public function test();
     public function getLanguageCodeList();
     public function getTranslateMessageArray( $translateType);
+    public function getTranslateList();
+    public function getCategoryWithLevelList();
     public function generationTranslateFile( $translateType, $fileName);
     public function generationTranslateScript( $translateType, $fileName);
     public function getRoleMapArray();

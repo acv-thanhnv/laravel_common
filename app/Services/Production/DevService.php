@@ -24,6 +24,9 @@ class DevService extends BaseService implements DevServiceInterface
         return $lang;
     }
 
+    public function getTranslateList(){
+        return SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array(''));
+    }
     /**
      * @param $translateType
      * @return array
@@ -59,7 +62,9 @@ class DevService extends BaseService implements DevServiceInterface
         }
         return $resuiltArr;
     }
-
+    public function getCategoryWithLevelList(){
+        return SDB::execSPs('GET_CATEGORY_WITH_LEVEL_LIST');
+    }
     /**
      * @param $validateArray
      * @param $fileName

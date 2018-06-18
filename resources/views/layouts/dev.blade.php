@@ -10,8 +10,10 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <script src="{{ asset('js/lib/jquery-3.3.1.min.js') }}" defer></script>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/lib/bootstrap.min.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -19,6 +21,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/lib/bootstrap.min.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -38,7 +41,7 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ml-auto pull-right">
                         <li class="nav-item">
                             <a class="nav-link font-weight-bold" href="{{ route('index') }}">initialization Project</a>
                         </li>
@@ -46,8 +49,12 @@
                             <a class="nav-link font-weight-bold" href="{{ route('translationManagement') }}">Translation</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link font-weight-bold" href="{{ route('menu') }}">Category</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link font-weight-bold" href="{{ route('aclManangement') }}">ACL</a>
                         </li>
+
                     </ul>
                 </div>
             </div>

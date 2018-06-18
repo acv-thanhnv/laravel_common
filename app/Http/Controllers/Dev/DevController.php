@@ -19,11 +19,15 @@ class DevController extends Controller
     public function translationManagement()
     {
         //form CRUD translate text
-        $dataTrans = $this->devService->getTranslateMessageArray('');
-        print_r($dataTrans);
-//      /  return view("dev/translation",compact('dataTrans'));
+        $dataTrans = $this->devService->getTranslateList();
+        return view("dev/translation",compact('dataTrans'));
     }
-
+    public function menu()
+    {
+        //form CRUD translate text
+        $dataCategory = $this->devService->getCategoryWithLevelList();
+        return view("dev/menu",compact('dataCategory'));
+    }
     public function generationLanguageFiles()
     {
         $translateType = 'validation';
@@ -31,7 +35,6 @@ class DevController extends Controller
         $this->devService->generationTranslateScript($translateType, 'validation_test_tmp');
 
     }
-
     public function generationAclConfigFiles()
     {
         $this->devService->generationAclFile();
