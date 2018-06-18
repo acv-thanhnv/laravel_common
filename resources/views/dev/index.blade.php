@@ -22,13 +22,13 @@
                                 - Import translate file (.\resources\lang\.*) to DB <br>
                                 <span class="text-warning font-weight-bold">Warning: read all file in .\resources\lang\.* and insert to Database</span>
                             </div>
-                            <div class="col-md-2 text-right"><button class="btn-primary btn">Execute</button></div>
+                            <div class="col-md-2 text-right"><button id="import-translate" class="btn-primary btn">Execute</button></div>
                         </div>
                         <div class="col-md-12 table-bordered">
                             <div class="col-md-10">
                                 - Insert all module, controller, action to screens table in Database
                             </div>
-                            <div class="col-md-2 text-right"><button class="btn-primary btn">Execute</button></div>
+                            <div class="col-md-2 text-right"><button id="import-action" class="btn-primary btn">Execute</button></div>
                         </div>
 
                         <div class="col-md-12 table-bordered">
@@ -38,12 +38,46 @@
                                 - Generation translate file :  .\resources\lang\.* <br>
                                 <span class="text-warning font-weight-bold">Warning: rewrite file in .\resources\lang\.* from Database, old data in file will be remove</span>
                             </div>
-                            <div class="col-md-2 text-right"><button class="btn-primary btn">Execute</button></div>
+                            <div class="col-md-2 text-right"><button id="init-role" class="btn-primary btn">Execute</button></div>
                         </div>
                         <div class="clearfix"></div>
                     </div>
                 </div>
             </div>
         </div>
+
+@endsection
+@section('scripts')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('click', '#import-translate', function () {
+                $.ajax({
+                    type: 'Post',
+                    url: "<?php echo @route('importTranslateToDB')?>",
+                    success: function (result) {
+                        alert('OK');
+                    }
+                });
+            });
+            $(document).on('click', '#import-action', function () {
+                $.ajax({
+                    type: 'Post',
+                    url: "<?php echo @route('importScreensList')?>",
+                    success: function (result) {
+                        alert('OK');
+                    }
+                });
+            });
+            $(document).on('click', '#init-role', function () {
+                $.ajax({
+                    type: 'Post',
+                    url: "<?php echo @route('initProject')?>",
+                    success: function (result) {
+                        alert('OK');
+                    }
+                });
+            });
+        });
+    </script>
 
 @endsection

@@ -150,29 +150,30 @@
                     }
                 });
             });
-        });
-        $(document).on('click', '#generation', function () {
-            $.ajax({
-                type: 'Post',
-                url: "<?php echo @route('generationAclFile')?>",
-                success: function (result) {
-                    $.alert(
-                        {
-                            title: 'Alert!',
-                            content: 'Gennerated!',
-                        }
-                    );
-                }
+            $(document).on('click', '#generation', function () {
+                $.ajax({
+                    type: 'Post',
+                    url: "<?php echo @route('generationAclFile')?>",
+                    success: function (result) {
+                        $.alert(
+                            {
+                                title: 'Alert!',
+                                content: 'Gennerated!',
+                            }
+                        );
+                    }
+                });
+            });
+            $(document).on('click', '#import', function () {
+                $.alert(
+                    {
+                        title: 'Alert!',
+                        content: 'Comming soon!',
+                    }
+                );
             });
         });
-        $(document).on('click', '#import', function () {
-            $.alert(
-                {
-                    title: 'Alert!',
-                    content: 'Comming soon!',
-                }
-            );
-        });
+
     </script>
 
 @endsection

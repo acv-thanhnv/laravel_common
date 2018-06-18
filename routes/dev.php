@@ -11,8 +11,8 @@ Route::get('/dev/readAclConfig', 'DevController@readAclConfig')->name('readAclCo
 Route::get('/dev/generationAclConfigFiles', 'DevController@generationAclConfigFiles')->name('generationAclConfigFiles');
 
 
-Route::get('/dev/importScreensList', 'DevController@importScreensList')->name('importScreensList');
-Route::get('/dev/importTranslateToDB', 'DevController@importTranslateToDB')->name('importTranslateToDB');
+Route::post('/dev/importScreensList', 'DevController@importScreensList')->name('importScreensList');
+
 Route::get('/dev/initProject', 'DevController@initProject')->name('initProject');
 
 Route::get('/dev/translation', 'DevController@translationManagement')->name('translationManagement');
@@ -27,5 +27,6 @@ Route::post('/dev/updateTranslate', 'DevController@updateTranslate')->name('upda
 
 Route::post('/dev/generationLanguageFiles', 'DevController@generationLanguageFiles')->name('generationLanguageFiles');
 
+Route::post('/dev/importTranslateToDB', 'DevController@importTranslateToDB')->name('importTranslateToDB');
 Route::any('/dev/newTextTrans', 'DevController@newTextTrans')->name('newTextTrans');
 

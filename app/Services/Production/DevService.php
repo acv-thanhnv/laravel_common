@@ -24,8 +24,8 @@ class DevService extends BaseService implements DevServiceInterface
         return $lang;
     }
 
-    public function getTranslateList(){
-        return SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array(''));
+    public function getTranslateList($translateType,$lang){
+        return SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType,$lang));
     }
     /**
      * @param $translateType
@@ -41,7 +41,7 @@ class DevService extends BaseService implements DevServiceInterface
             foreach ($lang as $item) {
                 $resuiltArr[$item->code] = array();
             }
-            $rules = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType));
+            $rules = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType,''));
 
             if (!empty($resuiltArr)) {
                 foreach ($resuiltArr as $itemKey => $itemValue) {

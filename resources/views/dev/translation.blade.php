@@ -91,82 +91,84 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
-        $(document).on('click', '.edit', function () {
-            var record = $(this).parents('tr.trans-record');
-            $(record).find('.text-trans').prop('readonly',false).select();
-            $(record).find('.save').removeClass('display-none');
-            $(this).addClass('display-none');
-        });
-        $(document).on('click', '#edit-all', function () {
-            $('.text-trans').prop('readonly',false);
-            $('.save').removeClass('display-none');
-            $('.edit').addClass('display-none');
-            $(this).addClass('display-none');
-            $('#save-all').removeClass('display-none');
-        });
-        $(document).on('click', '.save', function () {
-            var record = $(this).parents('tr.trans-record');
-            var text = $(record).find('.text-trans').val();
-            var data = {
-                id:$(this).data('id'),
-                text:text
-            };
+        $(document).ready(function () {
+            $(document).on('click', '.edit', function () {
+                var record = $(this).parents('tr.trans-record');
+                $(record).find('.text-trans').prop('readonly', false).select();
+                $(record).find('.save').removeClass('display-none');
+                $(this).addClass('display-none');
+            });
+            $(document).on('click', '#edit-all', function () {
+                $('.text-trans').prop('readonly', false);
+                $('.save').removeClass('display-none');
+                $('.edit').addClass('display-none');
+                $(this).addClass('display-none');
+                $('#save-all').removeClass('display-none');
+            });
+            $(document).on('click', '.save', function () {
+                var record = $(this).parents('tr.trans-record');
+                var text = $(record).find('.text-trans').val();
+                var data = {
+                    id: $(this).data('id'),
+                    text: text
+                };
 
-            $.ajax({
-                type:'Post',
-                data:data,
-                url: "<?php echo @route('updateTranslate')?>",
-                success: function (result) {
-                    $(record).find('.save').addClass('display-none');
-                    $(record).find('.edit').removeClass('display-none');
-                    $(record).find('.text-trans').prop('readonly',true);
-                }
+                $.ajax({
+                    type: 'Post',
+                    data: data,
+                    url: "<?php echo @route('updateTranslate')?>",
+                    success: function (result) {
+                        $(record).find('.save').addClass('display-none');
+                        $(record).find('.edit').removeClass('display-none');
+                        $(record).find('.text-trans').prop('readonly', true);
+                    }
+                });
             });
-        });
-        $(document).on('click', '#generation', function () {
-            $.ajax({
-                type:'Post',
-                url: "<?php echo @route('generationLanguageFiles')?>",
-                success: function (result) {
-                    alert('OK');
-                }
+            $(document).on('click', '#generation', function () {
+                $.ajax({
+                    type: 'Post',
+                    url: "<?php echo @route('generationLanguageFiles')?>",
+                    success: function (result) {
+                        alert('OK');
+                    }
+                });
             });
-        });
-        $(document).on('click', '#add', function () {
-            $.confirm({
-                title: 'New text translation',
-                Width: '80%',
-                useBootstrap: false,
-                content: function(){
-                    var self = this;
-                    return $.ajax({
-                        url: "<?php echo @route('newTextTrans')?>",
-                    }).done(function (response) {
-                        self.setContent(response);
-                    }).fail(function(){
-                        self.setContent('');
-                    });
-                },
-                buttons: {
-                    Save: {
-                        text: '<span class="glyphicon glyphicon-floppy-disk"></span> Save',
-                        btnClass:'btn btn-primary',
-                        action: function () {
-                            $.alert('save the user!');
-                        }
+            $(document).on('click', '#add', function () {
+                $.confirm({
+                    title: 'New text translation',
+                    Width: '80%',
+                    useBootstrap: false,
+                    content: function () {
+                        var self = this;
+                        return $.ajax({
+                            url: "<?php echo @route('newTextTrans')?>",
+                        }).done(function (response) {
+                            self.setContent(response);
+                        }).fail(function () {
+                            self.setContent('');
+                        });
                     },
-                    cancel:{
-                        text: ' Cancel',
-                            btnClass:'btn btn-default',
+                    buttons: {
+                        Save: {
+                            text: '<span class="glyphicon glyphicon-floppy-disk"></span> Save',
+                            btnClass: 'btn btn-primary',
+                            action: function () {
+                                $.alert('save the user!');
+                            }
+                        },
+                        cancel: {
+                            text: ' Cancel',
+                            btnClass: 'btn btn-default',
                             action: function () {
                                 close();
                             }
+                        }
                     }
-                }
 
+
+                });
 
             });
-
         });
     </script>
 

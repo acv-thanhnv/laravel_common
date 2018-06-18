@@ -21,7 +21,7 @@ class DevController extends Controller
     {
         //form CRUD translate text
         $langList = $this->devService->getLanguageCodeList();
-        $dataTrans = $this->devService->getTranslateList();
+        $dataTrans = $this->devService->getTranslateList('','');
         return view("dev/translation",compact(['dataTrans','langList']));
     }
     public function menu()
