@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dev;
 
 use App\Http\Controllers\Controller;
 use App\Services\Interfaces\DevServiceInterface;
+use Illuminate\Http\Request;
 
 class DevController extends Controller
 {
@@ -19,8 +20,9 @@ class DevController extends Controller
     public function translationManagement()
     {
         //form CRUD translate text
+        $langList = $this->devService->getLanguageCodeList();
         $dataTrans = $this->devService->getTranslateList();
-        return view("dev/translation",compact('dataTrans'));
+        return view("dev/translation",compact(['dataTrans','langList']));
     }
     public function menu()
     {
@@ -67,8 +69,34 @@ class DevController extends Controller
     {
         return view("dev/index");
     }
+    public function generationAclFile(){
+        $this->devService->generationAclFile();
+        return null;
+    }
     public function aclManangement(){
-        return view("dev/acl");
+        $dataAcl =  $this->devService->getRoleInfoFromDB();
+        return view("dev/acl",compact('dataAcl'));
+    }
+    public function updateAclActive(Request $request){
+        $active =  $request->input('active');
+        $roleMapId = $request->input('role_map_id');
+        $isActive = 0;
+        if(isset($active) && strtolower($active)  == 'true'){
+            $isActive = 1;
+        }
+        $this->devService->updateActiveAcl($roleMapId,$isActive);
+        return null;
+    }
+    public function updateTranslate(Request $request){
+        $id =  $request->input('id');
+        $transText = $request->input('text');
+        $this->devService->updateTranslateText($id,$transText);
+        return null;
+    }
+    public function newTextTrans(){
+        $langList = $this->devService->getLanguageCodeList();
+        $comboList = $this->devService->getNewTransComboList();
+        return view("dev/addtranslate",compact(['langList','comboList']))->renderSections()['content'];
     }
 
 }

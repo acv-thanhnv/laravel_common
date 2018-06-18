@@ -65,6 +65,9 @@ class DevService extends BaseService implements DevServiceInterface
     public function getCategoryWithLevelList(){
         return SDB::execSPs('GET_CATEGORY_WITH_LEVEL_LIST');
     }
+    public function getRoleInfoFromDB(){
+        return SDB::execSPs('DEV_GET_ROLES_MAP_ACTION_LST');
+    }
     /**
      * @param $validateArray
      * @param $fileName
@@ -140,7 +143,12 @@ class DevService extends BaseService implements DevServiceInterface
         fclose($fh);
 
     }
+    public function generationTranslateFileAndScript(){
 
+    }
+    public function getNewTransComboList(){
+        return SDB::execSPs('DEV_ADD_TRANSLATE_COMBO_LST');
+    }
     /**
      * @return array
      * HELPER: get role mapping screen to Array
@@ -330,6 +338,12 @@ class DevService extends BaseService implements DevServiceInterface
 
     }
 
+    public function updateActiveAcl($roleMapId,$isActive){
+        SDB::execSPs("DEV_ROLE_UPDATE_ACTIVE_ACT",array($roleMapId,$isActive));
+    }
+    public function updateTranslateText($id,$transText){
+        SDB::execSPs("DEV_TRANSLATE_UPDATE_TEXT_ACT",array($id,$transText));
+    }
     /**
      * @return array
      */

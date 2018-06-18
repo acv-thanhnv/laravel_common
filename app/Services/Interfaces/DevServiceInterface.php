@@ -14,6 +14,8 @@ interface DevServiceInterface
     public function getTranslateMessageArray( $translateType);
     public function getTranslateList();
     public function getCategoryWithLevelList();
+    public function getRoleInfoFromDB();
+    public function generationTranslateFileAndScript();
     public function generationTranslateFile( $translateType, $fileName);
     public function generationTranslateScript( $translateType, $fileName);
     public function getRoleMapArray();
@@ -21,4 +23,8 @@ interface DevServiceInterface
     public function getConfigDataFromFile($name);
     public function generationRoleDataToDB();
     public function generationTransDataToDB();
+    public function getNewTransComboList();
+
+    public function updateActiveAcl($roleMapId,$isActive);
+    public function updateTranslateText($id,$transText);
 }
