@@ -6,15 +6,13 @@
  * Time: 10:28 AM
  */
 
-namespace App\Services\Production;
+namespace App\Services\Dev\Production;
 
 use App\Dao\SDB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
-use App\Services\Interfaces\DevServiceInterface;
-use Psr\Log\NullLogger;
-use Symfony\Component\Console\Helper\Table;
+use App\Services\Dev\Interfaces\DevServiceInterface;
 
 class DevService extends BaseService implements DevServiceInterface
 {

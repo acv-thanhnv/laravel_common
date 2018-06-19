@@ -6,7 +6,7 @@
  * Time: 10:29 AM
  */
 
-namespace App\Services\Production;
+namespace App\Services\Dev\Production;
 
 
 class BaseService

@@ -6,6 +6,7 @@
  */
 //Router config here...
 Route::get('/dev', 'DevController@index')->name('index');
+Route::get('/dev/test', 'DevController@test')->name('test');
 Route::get('/dev/translationManagement', 'DevController@translationManagement')->name('translationManagement');
 Route::get('/dev/readAclConfig', 'DevController@readAclConfig')->name('readAclConfig');
 Route::get('/dev/generationAclConfigFiles', 'DevController@generationAclConfigFiles')->name('generationAclConfigFiles');

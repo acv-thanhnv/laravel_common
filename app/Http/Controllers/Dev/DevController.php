@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Dev;
 
+use App\Dao\SDB;
 use App\Http\Controllers\Controller;
-use App\Services\Interfaces\DevServiceInterface;
+use App\Services\Dev\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
 
 class DevController extends Controller
@@ -97,6 +98,13 @@ class DevController extends Controller
         $langList = $this->devService->getLanguageCodeList();
         $comboList = $this->devService->getNewTransComboList();
         return view("dev/addtranslate",compact(['langList','comboList']))->renderSections()['content'];
+    }
+    public function test(){
+        echo '<pre>';
+        $a = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST',array('dsd','dh'));
+        print_r($a);
+        //$b  = get_properties ($a[0][0]);
+        //var_dump($b);
     }
 
 }
