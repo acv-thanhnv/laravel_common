@@ -13,7 +13,7 @@ Route::get('/dev/generationAclConfigFiles', 'DevController@generationAclConfigFi
 
 Route::post('/dev/importScreensList', 'DevController@importScreensList')->name('importScreensList');
 
-Route::get('/dev/initProject', 'DevController@initProject')->name('initProject');
+Route::post('/dev/initProject', 'DevController@initProject')->name('initProject');
 
 Route::get('/dev/translation', 'DevController@translationManagement')->name('translationManagement');
 Route::get('/dev/acl', 'DevController@aclManangement')->name('aclManangement');
