@@ -30,4 +30,4 @@ Route::post('/dev/generationLanguageFiles', 'DevController@generationLanguageFil
 
 Route::post('/dev/importTranslateToDB', 'DevController@importTranslateToDB')->name('importTranslateToDB');
 Route::any('/dev/newTextTrans', 'DevController@newTextTrans')->name('newTextTrans');
-
+Route::any('/dev/createNewTranslationItem', 'DevController@createNewTranslationItem')->name('createNewTranslationItem');

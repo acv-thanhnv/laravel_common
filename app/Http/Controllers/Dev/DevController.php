@@ -6,6 +6,7 @@ use App\Dao\SDB;
 use App\Http\Controllers\Controller;
 use App\Services\Dev\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class DevController extends Controller
 {
@@ -23,7 +24,25 @@ class DevController extends Controller
         //form CRUD translate text
         $langList = $this->devService->getLanguageCodeList();
         $dataTrans = $this->devService->getTranslateList('','');
-        return view("dev/translation",compact(['dataTrans','langList']));
+        $dataComboFilter = $this->devService->getNewTransComboList();
+        return view("dev/translation",compact(['dataTrans','langList','dataComboFilter']));
+    }
+    public function createNewTranslationItem(Request $request){
+        $validatedData = $request->validate([
+            'text_code' => 'required',
+        ]);
+        //if(!$validatedData->fails()){
+            $transType =  $request->input('trans_type');
+            $transInputType = $request->input('trans_input_type');
+            $transTextCode = $request->input('text_code');
+            $textTrans = $request->input('text_trans');
+            $langs = $request->input('lang');
+            $delimiter = Config::get('app.DELIMITER');
+            $this->devService->insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans,$langs,$delimiter);
+            return response()->json(['success'=>'Record is successfully added']);
+       // }else{
+       //     return response()->json($validatedData->messages(), 200);
+        //}
     }
     public function menu()
     {
@@ -100,11 +119,43 @@ class DevController extends Controller
         return view("dev/addtranslate",compact(['langList','comboList']))->renderSections()['content'];
     }
     public function test(){
-        echo '<pre>';
-        $a = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST',array('dsd','dh'));
-        print_r($a);
-        //$b  = get_properties ($a[0][0]);
-        //var_dump($b);
+        // $categoryData = SDB::execSPs('GET_CATEGORY_LST');
+
+        $procName = 'GET_CATEGORY_LST';
+        $isExecute= false;
+
+        $syntax = '';
+        if(isset( $parameters) && is_array($parameters)){
+            for ($i = 0; $i < count($parameters); $i++) {
+                $syntax .= (!empty($syntax) ? ',' : '') . '?';
+            }
+        }
+        $syntax = 'CALL ' . $procName . '(' . $syntax . ');';
+
+        $pdo = parent::connection()->getPdo();
+        $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+        $stmt = $pdo->prepare($syntax,[\PDO::ATTR_CURSOR=>\PDO::CURSOR_SCROLL]);
+        if(isset( $parameters) && is_array($parameters)) {
+            for ($i = 0; $i < count($parameters); $i++) {
+                $stmt->bindValue((1 + $i), $parameters[$i]);
+            }
+        }
+        $exec = $stmt->execute();
+        if (!$exec) return $pdo->errorInfo();
+        if ($isExecute) return $exec;
+
+        $results = [];
+        do {
+            try {
+                $results[] = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            } catch (\Exception $ex) {
+
+            }
+        } while ($stmt->nextRowset());
+
+
+        if (1 === count($results)) return $results[0];
+
     }
 
 }

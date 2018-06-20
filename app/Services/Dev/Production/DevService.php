@@ -177,7 +177,6 @@ class DevService extends BaseService implements DevServiceInterface
             }
         }
 
-
         return $resultArr;
     }
 
@@ -279,11 +278,13 @@ class DevService extends BaseService implements DevServiceInterface
         $dir = base_path() . '/resources/lang';
         $langList = array_diff(scandir($dir), array('..', '.'));
         $id = 0;
+        SDB::execSPs('DEV_BACKUP_TRANSLATE_ACT');
         SDB::table('dev_translation')->truncate();
         foreach ($langList as $lang) {
             $dir = base_path() . '/resources/lang/' . $lang;
             $typeTranslateList = array_diff(scandir($dir), array('..', '.'));
             Lang::setLocale($lang);
+
             foreach ($typeTranslateList as $translateFileName) {
                 $typeTranslate = str_replace('.php', '', $translateFileName);
                 $tran = Lang::get($typeTranslate);
@@ -342,6 +343,9 @@ class DevService extends BaseService implements DevServiceInterface
     public function updateTranslateText($id,$transText){
         SDB::execSPs("DEV_TRANSLATE_UPDATE_TEXT_ACT",array($id,$transText));
     }
+    public function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans,$langs,$delimiter){
+        SDB::execSPs("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT",array($transType,$transInputType,$transTextCode,$textTrans,$langs,$delimiter));
+    }
     /**
      * @return array
      */
@@ -383,10 +387,7 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function test()
     {
-        echo "test dev";
-        echo '<pre>';
-        print_r(json_encode($this->getCatagoryList()));
-
+       echo 'devservice';
     }
 }
 

@@ -2,6 +2,7 @@
 
 return [
     'SYSTEM_ADMIN_ROLE_VALUE'=>1,
+    'DELIMITER' => '|#$%-|',
     /*
     |--------------------------------------------------------------------------
     | Application Name

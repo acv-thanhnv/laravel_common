@@ -18,6 +18,12 @@
     .btn{
         cursor: pointer;
     }
+    .form-title{
+        padding-top: 7px;
+    }
+    #edit-all.open{
+        color: green;
+    }
 </style>
 @section('content')
         <div class="row justify-content-center">
@@ -27,16 +33,40 @@
                     <fieldset class="border">
                         <legend>Filter:</legend>
                         <div class="col-md-12 filter">
-                            <div class="col-md-1">Language</div>
-                            <div class="col-md-4">
-                                <select id="trans-lang" class="lang form-control">
-                                    <option value="">---</option>
-                                    <?php foreach ($langList as $langItem){?>
-                                    <option value="<?php echo $langItem->code;?>"><?php echo $langItem->name?></option>
-                                    <?php   } ?>
-                                </select>
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-2 form-title">Language</div>
+                                <div class="col-md-4">
+                                    <select id="trans-lang" class="lang form-control">
+                                        <option value="">---</option>
+                                        <?php foreach ($langList as $langItem){?>
+                                        <option value="<?php echo $langItem->code;?>"><?php echo $langItem->name?></option>
+                                        <?php   } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 form-title">Translate type</div>
+                                <div class="col-md-4">
+                                    <select id="trans-type" class="lang form-control">
+                                        <option value="">---</option>
+                                        <?php if(isset($dataComboFilter[1])&& count($dataComboFilter[1])>0) {?>
+                                        <?php foreach ($dataComboFilter[1] as $translateTypeItem){?>
+                                        <option value="<?php echo $translateTypeItem->code;?>"><?php echo $translateTypeItem->code?></option>
+                                        <?php   }
+                                        }?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-2 form-title">Text Code</div>
+                                <div class="col-md-4">
+                                    <input type="text" id="trans-text-code" class="form-control"/>
+                                </div>
+                                <div class="col-md-2 form-title">Text Translated</div>
+                                <div class="col-md-4">
+                                    <input type="text" id="trans-text-translated" class="form-control"/>
+                                </div>
                             </div>
                         </div>
+
 
                     </fieldset>
 
@@ -45,7 +75,7 @@
                         <button id="generation" class="btn btn-primary pull-right glyphicon glyphicon-save-file" title="Generate to translate file"></button>
                     </div>
                     <div class="card-body">
-                        <table class="table-bordered table table-hover w-100">
+                        <table id="tbl-trans" class="table-bordered table table-hover w-100">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -72,7 +102,7 @@
                                 <td><?php echo $item->translate_type_code; ?></td>
                                 <td><?php echo $item->code; ?></td>
                                 <td><?php echo $item->type_code; ?></td>
-                                <td><input class="form-control text-trans" readonly value="<?php echo $item->text; ?>" /></td>
+                                <td><span style="display:none;"><?php echo $item->text; ?></span><input class="form-control text-trans" readonly value="<?php echo $item->text; ?>" /></td>
                                 <td class="text-center" style="vertical-align: middle;">
                                     <span class="edit glyphicon glyphicon-edit"></span>
                                     <span class="save glyphicon glyphicon-floppy-saved display-none" data-id="<?php echo $item->id; ?>"></span>
@@ -92,6 +122,33 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
+            var table = $('#tbl-trans').DataTable(
+                {
+                    bJQueryUI: true,
+                    info:     false,
+                    paging: false,
+                    dom: 't',
+                    searching: true,
+                    "columnDefs": [ {
+                        "targets": 6,
+                        "orderable": false
+                    } ]
+                }
+            );
+
+            $('#trans-lang').on( 'change', function () {
+                table.column(1).search( this.value ).draw();
+            } );
+            $('#trans-type').on( 'change', function () {
+                table.column(2).search( this.value ).draw();
+            } );
+            $('#trans-text-code').on( 'change', function () {
+                table.column(3).search( this.value ).draw();
+            } );
+            $('#trans-text-translated').on( 'change', function () {
+                table.column(5).search( this.value ).draw();
+            } );
+
             $(document).on('click', '.edit', function () {
                 var record = $(this).parents('tr.trans-record');
                 $(record).find('.text-trans').prop('readonly', false).select();
@@ -99,11 +156,18 @@
                 $(this).addClass('display-none');
             });
             $(document).on('click', '#edit-all', function () {
-                $('.text-trans').prop('readonly', false);
-                $('.save').removeClass('display-none');
-                $('.edit').addClass('display-none');
-                $(this).addClass('display-none');
-                $('#save-all').removeClass('display-none');
+
+                if($(this).hasClass('open')){
+                    $(this).removeClass('open');
+                    $('.text-trans').prop('readonly', true);
+                    $('.save').addClass('display-none');
+                    $('.edit').removeClass('display-none');
+                }else{
+                    $(this).addClass('open');
+                    $('.text-trans').prop('readonly', false);
+                    $('.save').removeClass('display-none');
+                    $('.edit').addClass('display-none');
+                }
             });
             $(document).on('click', '.save', function () {
                 var record = $(this).parents('tr.trans-record');
@@ -114,7 +178,7 @@
                 };
 
                 $.ajax({
-                    type: 'Post',
+                    method: 'Post',
                     data: data,
                     url: "<?php echo @route('updateTranslate')?>",
                     success: function (result) {
@@ -126,18 +190,23 @@
             });
             $(document).on('click', '#generation', function () {
                 $.ajax({
-                    type: 'Post',
+                    method: 'Post',
                     url: "<?php echo @route('generationLanguageFiles')?>",
                     success: function (result) {
                         alert('OK');
                     }
                 });
             });
+            $(document).on('click', '.delete', function () {
+                alert('Comming soon...');
+            });
+
             $(document).on('click', '#add', function () {
                 $.confirm({
                     title: 'New text translation',
                     Width: '80%',
                     useBootstrap: false,
+                    closeOnclick: false,
                     content: function () {
                         var self = this;
                         return $.ajax({
@@ -153,14 +222,16 @@
                             text: '<span class="glyphicon glyphicon-floppy-disk"></span> Save',
                             btnClass: 'btn btn-primary',
                             action: function () {
-                                $.alert('save the user!');
+                                saveNewTranslateText(this.$content,function(res){
+                                    console.log(res);
+                                });
+                                return false;
                             }
                         },
                         cancel: {
                             text: ' Cancel',
                             btnClass: 'btn btn-default',
                             action: function () {
-                                close();
                             }
                         }
                     }
@@ -169,7 +240,43 @@
                 });
 
             });
+
         });
+        function saveNewTranslateText(popupContent,callback){
+            var textTrans = "";
+            var textLangs = "";
+            var delimiter = _DELIMITER;
+            $(popupContent).find('.trans-text').each(function () {
+                textLangs = textLangs+$(this).data('lang') + delimiter;
+                textTrans = textTrans+$(this).val() + delimiter;
+            });
+            var data =
+            {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                trans_type:$(popupContent).find('#trans-type').val(),
+                trans_input_type:$(popupContent).find('#trans-input-type').val(),
+                text_code:$(popupContent).find('#trans-code').val(),
+                text_trans:textTrans,
+                lang:textLangs
+            };
+           $.ajax({
+                data:data,
+                type:'post',
+                dataType:'json',
+                url: "<?php  echo @route('createNewTranslationItem')?>",
+                success: function (response) {
+                    if(callback){
+                        callback(response);
+                    }
+                },
+               error:function(response){
+                   if(callback){
+                       callback(response.responseJSON);
+                   }
+
+               }
+            });
+        }
     </script>
 
 @endsection

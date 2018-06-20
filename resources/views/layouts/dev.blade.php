@@ -11,7 +11,11 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <script src="{{ asset('js/lib/jquery-3.3.1.min.js')}}"></script>
+
     <script src="{{ asset('js/lib/jquery-confirm.js')}}"></script>
+
+    <script src="{{ asset('js/lib/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ asset('js/common.js')}}"></script>
     <!-- Scripts -->
     <script src="{{ asset('js/lib/bootstrap.min.js') }}"></script>
 
@@ -20,9 +24,9 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
-
     <link href="{{ asset('css/lib/jquery-confirm.css') }}" rel="stylesheet">
     <link href="{{ asset('css/lib/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/lib/jquery.dataTables.min.css') }}" rel="stylesheet">
     <style>
         .navbar-laravel{
             position: fixed;
