@@ -228,7 +228,7 @@
                                 saveNewTranslateText(this.$content,function(res){
                                     if(res.status.code == 0){
                                         this.close();
-                                        location.reload();
+                                       // location.reload();
                                     }
                                 });
                                 return false;

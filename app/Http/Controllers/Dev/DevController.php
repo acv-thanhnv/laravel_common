@@ -8,7 +8,7 @@ use App\Services\Dev\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use App\CommonHelper;
-
+use Validator;
 class DevController extends Controller
 {
     protected $devService;
@@ -29,15 +29,25 @@ class DevController extends Controller
         return view("dev/translation",compact(['dataTrans','langList','dataComboFilter']));
     }
     public function createNewTranslationItem(Request $request){
-        $validatedData = $request->validate([
-            'text_code' => 'required',
-        ]);
-        $transType = $request->input('trans_type');
-        $transInputType = $request->input('trans_input_type');
-        $transTextCode = $request->input('text_code');
-        $textTrans = $request->input('text_trans');
-        $dataFromDB = $this->devService->insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans);
-        return CommonHelper::generateResponeJSON($dataFromDB);
+        $validator =
+            Validator::make($request->all(), [
+                'text_code' => 'required'
+            ]);
+
+        if($validator->fails() ){
+            $error = array($validator->errors());
+            //print_r($validator->errors());
+            //die();
+            return CommonHelper::generateResponeJSON(CommonHelper::convertVaidateErrorToCommonStruct($error));
+        }else{
+            $transType = $request->input('trans_type');
+            $transInputType = $request->input('trans_input_type');
+            $transTextCode = $request->input('text_code');
+            $textTrans = $request->input('text_trans');
+            $dataFromDB = $this->devService->insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans);
+            return CommonHelper::generateResponeJSON($dataFromDB);
+        }
+
     }
     public function menu()
     {

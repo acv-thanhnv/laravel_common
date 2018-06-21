@@ -45,8 +45,7 @@ class SDB extends DB
             $results =  array(
                 (object) [
                     'code'=>-9999,
-                    'message_code'=>'SDB_exception',
-                    'message'=>$exception->getMessage()
+                    'data_error'=>array('SDB_exception'=>$exception->getMessage())
                 ]
             );
         }
