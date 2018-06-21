@@ -1,6 +1,7 @@
 <?php
 namespace App\Dao;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -44,7 +45,7 @@ class SDB extends DB
         }catch (\Exception $exception){
             $results =  array(
                 (object) [
-                    'code'=>-9999,
+                    'code'=>Config::get('constants.exception_error_code'),
                     'data_error'=>array('SDB_exception'=>$exception->getMessage())
                 ]
             );
