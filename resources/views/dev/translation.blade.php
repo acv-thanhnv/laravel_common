@@ -124,6 +124,9 @@
         $(document).ready(function () {
             var table = $('#tbl-trans').DataTable(
                 {
+                    scrollY:        '50vh',
+                    scrollCollapse: true,
+                    fixedHeader: true,
                     bJQueryUI: true,
                     info:     false,
                     paging: false,
@@ -223,7 +226,10 @@
                             btnClass: 'btn btn-primary',
                             action: function () {
                                 saveNewTranslateText(this.$content,function(res){
-                                    console.log(res);
+                                    if(res.status.code == 0){
+                                        this.close();
+                                        location.reload();
+                                    }
                                 });
                                 return false;
                             }
@@ -243,12 +249,9 @@
 
         });
         function saveNewTranslateText(popupContent,callback){
-            var textTrans = "";
-            var textLangs = "";
-            var delimiter = _DELIMITER;
+            var textTrans = {};
             $(popupContent).find('.trans-text').each(function () {
-                textLangs = textLangs+$(this).data('lang') + delimiter;
-                textTrans = textTrans+$(this).val() + delimiter;
+                textTrans[$(this).data('lang')] = $(this).val();
             });
             var data =
             {
@@ -256,8 +259,7 @@
                 trans_type:$(popupContent).find('#trans-type').val(),
                 trans_input_type:$(popupContent).find('#trans-input-type').val(),
                 text_code:$(popupContent).find('#trans-code').val(),
-                text_trans:textTrans,
-                lang:textLangs
+                text_trans:JSON.stringify(textTrans)
             };
            $.ajax({
                 data:data,

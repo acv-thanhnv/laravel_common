@@ -343,8 +343,8 @@ class DevService extends BaseService implements DevServiceInterface
     public function updateTranslateText($id,$transText){
         SDB::execSPs("DEV_TRANSLATE_UPDATE_TEXT_ACT",array($id,$transText));
     }
-    public function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans,$langs,$delimiter){
-        SDB::execSPs("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT",array($transType,$transInputType,$transTextCode,$textTrans,$langs,$delimiter));
+    public function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans){
+        return SDB::execSPs("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT",array($transType,$transInputType,$transTextCode,$textTrans));
     }
     /**
      * @return array

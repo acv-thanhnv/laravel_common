@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Dev\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use App\CommonHelper;
 
 class DevController extends Controller
 {
@@ -31,18 +32,12 @@ class DevController extends Controller
         $validatedData = $request->validate([
             'text_code' => 'required',
         ]);
-        //if(!$validatedData->fails()){
-            $transType =  $request->input('trans_type');
-            $transInputType = $request->input('trans_input_type');
-            $transTextCode = $request->input('text_code');
-            $textTrans = $request->input('text_trans');
-            $langs = $request->input('lang');
-            $delimiter = Config::get('app.DELIMITER');
-            $this->devService->insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans,$langs,$delimiter);
-            return response()->json(['success'=>'Record is successfully added']);
-       // }else{
-       //     return response()->json($validatedData->messages(), 200);
-        //}
+        $transType = $request->input('trans_type');
+        $transInputType = $request->input('trans_input_type');
+        $transTextCode = $request->input('text_code');
+        $textTrans = $request->input('text_trans');
+        $dataFromDB = $this->devService->insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans);
+        return CommonHelper::generateResponeJSON($dataFromDB);
     }
     public function menu()
     {
@@ -119,42 +114,6 @@ class DevController extends Controller
         return view("dev/addtranslate",compact(['langList','comboList']))->renderSections()['content'];
     }
     public function test(){
-        // $categoryData = SDB::execSPs('GET_CATEGORY_LST');
-
-        $procName = 'GET_CATEGORY_LST';
-        $isExecute= false;
-
-        $syntax = '';
-        if(isset( $parameters) && is_array($parameters)){
-            for ($i = 0; $i < count($parameters); $i++) {
-                $syntax .= (!empty($syntax) ? ',' : '') . '?';
-            }
-        }
-        $syntax = 'CALL ' . $procName . '(' . $syntax . ');';
-
-        $pdo = parent::connection()->getPdo();
-        $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
-        $stmt = $pdo->prepare($syntax,[\PDO::ATTR_CURSOR=>\PDO::CURSOR_SCROLL]);
-        if(isset( $parameters) && is_array($parameters)) {
-            for ($i = 0; $i < count($parameters); $i++) {
-                $stmt->bindValue((1 + $i), $parameters[$i]);
-            }
-        }
-        $exec = $stmt->execute();
-        if (!$exec) return $pdo->errorInfo();
-        if ($isExecute) return $exec;
-
-        $results = [];
-        do {
-            try {
-                $results[] = $stmt->fetchAll(\PDO::FETCH_OBJ);
-            } catch (\Exception $ex) {
-
-            }
-        } while ($stmt->nextRowset());
-
-
-        if (1 === count($results)) return $results[0];
 
     }
 

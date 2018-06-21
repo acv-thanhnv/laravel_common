@@ -27,5 +27,5 @@ interface DevServiceInterface
 
     public function updateActiveAcl($roleMapId,$isActive);
     public function updateTranslateText($id,$transText);
-    function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans,$langs,$delimiter);
+    function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans);
 }
