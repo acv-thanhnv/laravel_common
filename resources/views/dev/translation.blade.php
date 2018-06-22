@@ -205,6 +205,7 @@
             });
 
             $(document).on('click', '#add', function () {
+
                 $.confirm({
                     title: 'New text translation',
                     Width: '80%',
@@ -226,9 +227,9 @@
                             btnClass: 'btn btn-primary',
                             action: function () {
                                 saveNewTranslateText(this.$content,function(res){
-                                    if(res.status.code == 0){
-                                        this.close();
-                                       // location.reload();
+
+                                    if(1*res.status.code == 0){
+                                        location.reload();
                                     }
                                 });
                                 return false;

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Dev;
 
 use App\Dao\SDB;
+use App\Entities\DEV_ADD_TRANSLATE_COMBO_LST_1;
+use App\Entities\DEV_GET_TRANSLATION_DATA_LST;
 use App\Http\Controllers\Controller;
 use App\Services\Dev\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
@@ -36,8 +38,6 @@ class DevController extends Controller
 
         if($validator->fails() ){
             $error = array($validator->errors());
-            //print_r($validator->errors());
-            //die();
             return CommonHelper::generateResponeJSON(CommonHelper::convertVaidateErrorToCommonStruct($error));
         }else{
             $transType = $request->input('trans_type');
@@ -57,9 +57,7 @@ class DevController extends Controller
     }
     public function generationLanguageFiles()
     {
-        $translateType = 'validation';
-        $this->devService->generationTranslateFile($translateType, 'validation_test');
-        $this->devService->generationTranslateScript($translateType, 'validation_test_tmp');
+        $this->devService->generationTranslateFileAndScript();
 
     }
     public function generationAclConfigFiles()
@@ -67,12 +65,6 @@ class DevController extends Controller
         $this->devService->generationAclFile();
     }
 
-    public function readAclConfig()
-    {
-        $a = $this->devService->getConfigDataFromFile('acl');
-        echo '<prev>';
-        print_r($a);
-    }
 
     public function importScreensList(){
         $this->devService->generationRoleDataToDB();
@@ -86,9 +78,7 @@ class DevController extends Controller
         $this->devService->generationAclFile();
 
         //generationTranslate validation
-        $translateType = 'validation';
-        $this->devService->generationTranslateFile($translateType, 'validation_test');
-        $this->devService->generationTranslateScript($translateType, 'validation_test_tmp');
+        $this->devService->generationTranslateFileAndScript();
     }
     public function index()
     {
@@ -123,8 +113,27 @@ class DevController extends Controller
         $comboList = $this->devService->getNewTransComboList();
         return view("dev/addtranslate",compact(['langList','comboList']))->renderSections()['content'];
     }
+    public function userAcl(){
+
+    }
     public function test(){
+        SDB::getDataAutomic('DEV_ROLE_UPDATE_ACTIVE_ACT');
+        echo '<pre>';
+
+        $a =SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST',array('',''))  ;
+        $foo = new MyClass($a);
+        $b = new MyClass($a);
+        $c= [0];
+
+        foreach ($a as $b){
+
+
+        }
+        print_r($foo);
+
 
     }
 
+
 }
+

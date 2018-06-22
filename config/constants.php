@@ -8,5 +8,5 @@
 return [
     'from_validate_error_code'=>-9998,
     'exception_error_code'=>-9999,
-    'success_code'=>0,
+    'success_code'=>0
 ];

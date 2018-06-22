@@ -77,8 +77,6 @@
             <div class="card">
                 <div class="card-header font-weight-bold">ACL</div>
                 <div class="function text-right">
-                    <button id="import" class="btn btn-primary">Import config file to Database <span
-                            class="glyphicon glyphicon-oil"></span></button>
                     <button id="generation" class="btn btn-primary">Generate to config file <span
                             class="glyphicon glyphicon-file"></span></button>
 
@@ -164,14 +162,7 @@
                     }
                 });
             });
-            $(document).on('click', '#import', function () {
-                $.alert(
-                    {
-                        title: 'Alert!',
-                        content: 'Comming soon!',
-                    }
-                );
-            });
+
         });
 
     </script>

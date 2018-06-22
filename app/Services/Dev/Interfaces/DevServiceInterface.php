@@ -23,6 +23,7 @@ interface DevServiceInterface
     public function getConfigDataFromFile($name);
     public function generationRoleDataToDB();
     public function generationTransDataToDB();
+
     public function getNewTransComboList();
 
     public function updateActiveAcl($roleMapId,$isActive);
