@@ -32,6 +32,11 @@ class CommonHelper
         }
         return json_encode($result);
     }
+
+    /**
+     * @param $error
+     * @return array
+     */
     public static function convertVaidateErrorToCommonStruct($error){
         $result = array(
             array(

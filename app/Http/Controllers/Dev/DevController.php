@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dev;
 
 use App\Dao\SDB;
 use App\Http\Controllers\Controller;
+use App\Rules\UpperCaseRule;
 use App\Services\Dev\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -36,8 +37,6 @@ class DevController extends Controller
 
         if($validator->fails() ){
             $error = array($validator->errors());
-            //print_r($validator->errors());
-            //die();
             return CommonHelper::generateResponeJSON(CommonHelper::convertVaidateErrorToCommonStruct($error));
         }else{
             $transType = $request->input('trans_type');
@@ -121,6 +120,15 @@ class DevController extends Controller
         $langList = $this->devService->getLanguageCodeList();
         $comboList = $this->devService->getNewTransComboList();
         return view("dev/addtranslate",compact(['langList','comboList']))->renderSections()['content'];
+    }
+    public function testCustomValidate(Request $request){
+        $validator =
+            Validator::make($request->all(), [
+                'text_code' => ['required', new UpperCaseRule()]
+            ]);
+        if($validator->fails()){
+            dd( $validator->errors());
+        }
     }
     public function test(){
 
