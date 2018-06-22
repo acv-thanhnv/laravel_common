@@ -57,9 +57,7 @@ class DevController extends Controller
     }
     public function generationLanguageFiles()
     {
-        $translateType = 'validation';
-        $this->devService->generationTranslateFile($translateType, 'validation_test');
-        $this->devService->generationTranslateScript($translateType, 'validation_test_tmp');
+        $this->devService->generationTranslateFileAndScript();
 
     }
     public function generationAclConfigFiles()
@@ -67,12 +65,6 @@ class DevController extends Controller
         $this->devService->generationAclFile();
     }
 
-    public function readAclConfig()
-    {
-        $a = $this->devService->getConfigDataFromFile('acl');
-        echo '<prev>';
-        print_r($a);
-    }
 
     public function importScreensList(){
         $this->devService->generationRoleDataToDB();
@@ -86,10 +78,17 @@ class DevController extends Controller
         $this->devService->generationAclFile();
 
         //generationTranslate validation
-        $translateType = 'validation';
-        $this->devService->generationTranslateFile($translateType, 'validation_test');
-        $this->devService->generationTranslateScript($translateType, 'validation_test_tmp');
+        $this->devService->generationTranslateFileAndScript();
     }
+
+
+    public function readAclConfig()
+    {
+        $a = $this->devService->getConfigDataFromFile('acl');
+        echo '<prev>';
+        print_r($a);
+    }
+
     public function index()
     {
         return view("dev/index");
