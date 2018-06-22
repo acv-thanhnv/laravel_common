@@ -24,6 +24,9 @@
     #edit-all.open{
         color: green;
     }
+    .text-warning{
+        color: orange;
+    }
 </style>
 @section('content')
         <div class="row justify-content-center">
@@ -202,13 +205,37 @@
                 });
             });
             $(document).on('click', '#import', function () {
-                $.ajax({
-                    method: 'Post',
-                    url: "<?php echo @route('importTranslateToDB')?>",
-                    success: function (result) {
-                        alert('OK');
+                $.confirm({
+                    title: '<p class="text-warning">Warning</p>',
+                    Width: '20%',
+                    useBootstrap: false,
+                    closeOnclick: false,
+                    content: "If you import to database, old data will be remove",
+                    buttons: {
+                        Save: {
+                            text: 'OK',
+                            btnClass: 'btn btn-primary',
+                            action: function () {
+                                $.ajax({
+                                    method: 'Post',
+                                    url: "<?php echo @route('importTranslateToDB')?>",
+                                    success: function (result) {
+                                        alert('OK');
+                                    }
+                                });
+                            }
+                        },
+                        cancel: {
+                            text: ' Cancel',
+                            btnClass: 'btn btn-default',
+                            action: function () {
+                            }
+                        }
                     }
+
+
                 });
+
             });
             $(document).on('click', '.delete', function () {
                 alert('Comming soon...');
