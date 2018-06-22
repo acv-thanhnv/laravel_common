@@ -5,6 +5,7 @@
  * Date: 6/14/2018
  * Time: 10:28 AM
  */
+
 namespace App\Services\Dev\Production;
 
 use App\Dao\SDB;
@@ -21,15 +22,17 @@ class DevService extends BaseService implements DevServiceInterface
         return $lang;
     }
 
-    public function getTranslateList($translateType,$lang){
-        return SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType,$lang));
+    public function getTranslateList($translateType, $lang)
+    {
+        return SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType, $lang));
     }
+
     /**
      * @param $translateType
      * @return array
      * HELPER: Get data translated text by type ( validation, auth, label...)
      */
-    public function getTranslateMessageArray($translateType='')
+    public function getTranslateMessageArray($translateType = '')
     {
         $resuiltArr = [];
         $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
@@ -38,7 +41,7 @@ class DevService extends BaseService implements DevServiceInterface
             foreach ($lang as $item) {
                 $resuiltArr[$item->code] = array();
             }
-            $rules = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType,''));
+            $rules = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType, ''));
 
             if (!empty($resuiltArr)) {
                 foreach ($resuiltArr as $itemKey => $itemValue) {
@@ -59,12 +62,17 @@ class DevService extends BaseService implements DevServiceInterface
         }
         return $resuiltArr;
     }
-    public function getCategoryWithLevelList(){
+
+    public function getCategoryWithLevelList()
+    {
         return SDB::execSPs('GET_CATEGORY_WITH_LEVEL_LIST');
     }
-    public function getRoleInfoFromDB(){
+
+    public function getRoleInfoFromDB()
+    {
         return SDB::execSPs('DEV_GET_ROLES_MAP_ACTION_LST');
     }
+
     /**
      * @param $validateArray
      * @param $fileName
@@ -95,13 +103,13 @@ class DevService extends BaseService implements DevServiceInterface
                 if (!empty($langGroupContent)) {
                     foreach ($langGroupContent as $keycode => $value) {
                         if (!is_array($value)) {
-                            $contentFile .= "\t".'"' . $keycode . '"=>"' . $value . '"'.",\n";
+                            $contentFile .= "\t" . '"' . $keycode . '"=>"' . $value . '"' . ",\n";
                         } else {
                             $contentFile .= "\t'" . $keycode . "'=>[\n";
 
                             if (!empty($value)) {
                                 foreach ($value as $inputType => $text) {
-                                    $contentFile .= "\t\t".'"' . $inputType . '"=>"' . $text . '"'.",\n";
+                                    $contentFile .= "\t\t" . '"' . $inputType . '"=>"' . $text . '"' . ",\n";
                                 }
                             }
                             $contentFile .= "\t],\n";
@@ -140,18 +148,23 @@ class DevService extends BaseService implements DevServiceInterface
         fclose($fh);
 
     }
-    public function generationTranslateFileAndScript(){
-        $transTypeList =  SDB::execSPs("DEV_GET_TRANSLATION_TYPE_LST");
-        if(!empty($transTypeList)){
-            foreach ($transTypeList as $item){
-                $this->generationTranslateScript($item->code,$item->code);
-                $this->generationTranslateFile($item->code,$item->code);
+
+    public function generationTranslateFileAndScript()
+    {
+        $transTypeList = SDB::execSPs("DEV_GET_TRANSLATION_TYPE_LST");
+        if (!empty($transTypeList)) {
+            foreach ($transTypeList as $item) {
+                $this->generationTranslateScript($item->code, $item->code);
+                $this->generationTranslateFile($item->code, $item->code);
             }
         }
     }
-    public function getNewTransComboList(){
+
+    public function getNewTransComboList()
+    {
         return SDB::execSPs('DEV_ADD_TRANSLATE_COMBO_LST');
     }
+
     /**
      * @return array
      * HELPER: get role mapping screen to Array
@@ -285,72 +298,78 @@ class DevService extends BaseService implements DevServiceInterface
         $id = 0;
         SDB::execSPs('DEV_BACKUP_TRANSLATE_ACT');
         SDB::table('dev_translation')->truncate();
-        foreach ($langList as $lang) {
-            $dir = base_path() . '/resources/lang/' . $lang;
-            $typeTranslateList = array_diff(scandir($dir), array('..', '.'));
-            Lang::setLocale($lang);
+        if (!empty($langList)) {
+            foreach ($langList as $lang) {
+                $dir = base_path() . '/resources/lang/' . $lang;
+                $typeTranslateList = array_diff(scandir($dir), array('..', '.'));
+                Lang::setLocale($lang);
+                if (!empty($typeTranslateList)) {
+                    foreach ($typeTranslateList as $translateFileName) {
+                        $typeTranslate = str_replace('.php', '', $translateFileName);
+                        $tran = Lang::get($typeTranslate);
+                        $dataTrans = array();
+                        if (is_array($tran)&&!empty($tran)) {
+                            foreach ($tran as $tranItemKey => $tranItemValue) {
+                                if (!is_array($tranItemValue)) {
+                                    $id++;
+                                    $dataTrans[] = array(
+                                        'id' => $id,
+                                        'lang_code' => strtolower($lang),
+                                        'input_type' => '',
+                                        'code' => $tranItemKey,
+                                        'text' => $tranItemValue,
+                                        'translate_type' => $typeTranslate,
+                                        'created_at' => now(),
+                                        'is_deleted' => 0
+                                    );
+                                } else {
+                                    if (is_array($tranItemValue) && !empty($tranItemValue)) {
+                                        foreach ($tranItemValue as $inputTypeKey => $inputValueMss) {
+                                            if (!is_array($inputValueMss)) {
+                                                $id++;
+                                                $dataTrans[] = array(
+                                                    'id' => $id,
+                                                    'lang_code' => strtolower($lang),
+                                                    'input_type' => $inputTypeKey,
+                                                    'code' => $tranItemKey,
+                                                    'text' => $inputValueMss,
+                                                    'translate_type_code' => $typeTranslate,
+                                                    'created_at' => now(),
+                                                    'is_deleted' => 0
+                                                );
+                                            }
 
-            foreach ($typeTranslateList as $translateFileName) {
-                $typeTranslate = str_replace('.php', '', $translateFileName);
-                $tran = Lang::get($typeTranslate);
-                $dataTrans = array();
-                if (!empty($tran)) {
-                    foreach ($tran as $tranItemKey => $tranItemValue) {
-
-                        if (!is_array($tranItemValue)) {
-                            $id++;
-                            $dataTrans[] = array(
-                                'id' => $id,
-                                'lang_code' => strtolower($lang),
-                                'input_type' => '',
-                                'code' => $tranItemKey,
-                                'text' => $tranItemValue,
-                                'translate_type' => $typeTranslate,
-                                'created_at' => now(),
-                                'is_deleted' => 0
-                            );
-                        } else {
-                            if (!empty($tranItemValue)) {
-                                foreach ($tranItemValue as $inputTypeKey => $inputValueMss) {
-                                    if(!is_array($inputValueMss)){
-                                        $id++;
-                                        $dataTrans[] = array(
-                                            'id' => $id,
-                                            'lang_code' => strtolower($lang),
-                                            'input_type' => $inputTypeKey,
-                                            'code' => $tranItemKey,
-                                            'text' => $inputValueMss,
-                                            'translate_type_code' => $typeTranslate,
-                                            'created_at' => now(),
-                                            'is_deleted' => 0
-                                        );
+                                        }
                                     }
 
                                 }
+
                             }
-
                         }
-
+                        if (!empty($dataTrans)) {
+                            SDB::table('dev_translation')->insert($dataTrans);
+                        }
                     }
                 }
-                if(!empty($dataTrans)){
-                    SDB::table('dev_translation')->insert($dataTrans);
-                }
             }
-
         }
-
     }
 
-    public function updateActiveAcl($roleMapId,$isActive){
-        SDB::execSPs("DEV_ROLE_UPDATE_ACTIVE_ACT",array($roleMapId,$isActive));
+    public function updateActiveAcl($roleMapId, $isActive)
+    {
+        SDB::execSPs("DEV_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
     }
-    public function updateTranslateText($id,$transText){
-        SDB::execSPs("DEV_TRANSLATE_UPDATE_TEXT_ACT",array($id,$transText));
+
+    public function updateTranslateText($id, $transText)
+    {
+        SDB::execSPs("DEV_TRANSLATE_UPDATE_TEXT_ACT", array($id, $transText));
     }
-    public function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans){
-        return SDB::execSPs("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT",array($transType,$transInputType,$transTextCode,$textTrans));
+
+    public function insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans)
+    {
+        return SDB::execSPs("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));
     }
+
     /**
      * @return array
      */
@@ -392,7 +411,7 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function test()
     {
-       echo 'devservice';
+        echo 'devservice';
     }
 }
 

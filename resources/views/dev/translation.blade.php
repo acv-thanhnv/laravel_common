@@ -72,6 +72,7 @@
 
                     <div class="function col-md-12">
                         <button id="add" class="btn btn-primary pull-left glyphicon-plus" title="Add new text"></button>
+                        <button id="import" class="btn btn-danger pull-right glyphicon glyphicon-oil" style="margin-left: 10px;" title="Import translate file to Database"></button>
                         <button id="generation" class="btn btn-primary pull-right glyphicon glyphicon-save-file" title="Generate to translate file"></button>
                     </div>
                     <div class="card-body">
@@ -195,6 +196,15 @@
                 $.ajax({
                     method: 'Post',
                     url: "<?php echo @route('generationLanguageFiles')?>",
+                    success: function (result) {
+                        alert('OK');
+                    }
+                });
+            });
+            $(document).on('click', '#import', function () {
+                $.ajax({
+                    method: 'Post',
+                    url: "<?php echo @route('importTranslateToDB')?>",
                     success: function (result) {
                         alert('OK');
                     }
