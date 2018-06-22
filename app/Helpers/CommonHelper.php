@@ -6,7 +6,7 @@
  * Time: 9:32 AM
  */
 
-namespace App;
+namespace App\Helpers;
 
 
 use Illuminate\Support\Facades\Config;

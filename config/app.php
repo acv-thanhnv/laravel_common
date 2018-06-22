@@ -160,7 +160,11 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        /**
+         * Dev module provider...
+         * @author thanhvn
+         */
+        App\Providers\Dev\DevServiceProvider::class,
     ],
 
     /*

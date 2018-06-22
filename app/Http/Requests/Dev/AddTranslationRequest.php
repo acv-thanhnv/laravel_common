@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @author thanhnv
+ */
 namespace App\Http\Requests\Dev;
 
 use Illuminate\Foundation\Http\FormRequest;

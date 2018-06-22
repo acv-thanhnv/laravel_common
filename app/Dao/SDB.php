@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author thanhnv
+ */
 namespace App\Dao;
 
 use Illuminate\Support\Facades\Config;

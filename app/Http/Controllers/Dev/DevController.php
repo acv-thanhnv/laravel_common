@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @author thanhnv
+ */
 namespace App\Http\Controllers\Dev;
 
 use App\Dao\SDB;
@@ -7,8 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Rules\UpperCaseRule;
 use App\Services\Dev\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
-use App\CommonHelper;
+use App\Helpers\CommonHelper;
 use Validator;
 class DevController extends Controller
 {

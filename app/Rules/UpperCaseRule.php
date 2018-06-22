@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @author thanhnv
+ */
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;

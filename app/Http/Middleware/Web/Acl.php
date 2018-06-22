@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @author thanhnv
+ */
 namespace App\Http\Middleware\Web;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
