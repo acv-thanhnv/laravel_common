@@ -76,7 +76,6 @@ class DevController extends Controller
     {
         $this->devService->generationRoleDataToDB();
         $this->devService->generationAclFile();
-
         //generationTranslate validation
         $this->devService->generationTranslateFileAndScript();
     }

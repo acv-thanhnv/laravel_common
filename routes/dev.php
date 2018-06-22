@@ -27,6 +27,8 @@ Route::post('/dev/generationAclFile', 'DevController@generationAclFile')->name('
 Route::post('/dev/updateTranslate', 'DevController@updateTranslate')->name('updateTranslate');
 
 Route::post('/dev/generationLanguageFiles', 'DevController@generationLanguageFiles')->name('generationLanguageFiles');
+Route::post('/dev/generationTransDataToDB', 'DevController@generationTransDataToDB')->name('generationTransDataToDB');
+
 
 Route::post('/dev/importTranslateToDB', 'DevController@importTranslateToDB')->name('importTranslateToDB');
 Route::any('/dev/newTextTrans', 'DevController@newTextTrans')->name('newTextTrans');
