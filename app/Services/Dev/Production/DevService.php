@@ -96,13 +96,13 @@ class DevService extends BaseService implements DevServiceInterface
                 if (!empty($langGroupContent)) {
                     foreach ($langGroupContent as $keycode => $value) {
                         if (!is_array($value)) {
-                            $contentFile .= "\t'" . $keycode . "'=>'" . $value . "',\n";
+                            $contentFile .= "\t".'"' . $keycode . '"=>"' . $value . '"'.",\n";
                         } else {
                             $contentFile .= "\t'" . $keycode . "'=>[\n";
 
                             if (!empty($value)) {
                                 foreach ($value as $inputType => $text) {
-                                    $contentFile .= "\t\t'" . $inputType . "'=>'" . $text . "',\n";
+                                    $contentFile .= "\t\t".'"' . $inputType . '"=>"' . $text . '"'.",\n";
                                 }
                             }
                             $contentFile .= "\t],\n";
