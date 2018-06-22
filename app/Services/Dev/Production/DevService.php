@@ -142,7 +142,13 @@ class DevService extends BaseService implements DevServiceInterface
 
     }
     public function generationTranslateFileAndScript(){
-
+        $transTypeList =  SDB::execSPs("DEV_GET_TRANSLATION_TYPE_LST");
+        if(!empty($transTypeList)){
+            foreach ($transTypeList as $item){
+                $this->generationTranslateScript($item->code,$item->code);
+                $this->generationTranslateFile($item->code,$item->code);
+            }
+        }
     }
     public function getNewTransComboList(){
         return SDB::execSPs('DEV_ADD_TRANSLATE_COMBO_LST');
