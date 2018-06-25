@@ -1,6 +1,14 @@
 <?php 
 //This is dev automatic generate 
  return [
+	'1'=>'',
+	'12'=>'21',
+	'123'=>'123',
+	'1233'=>'1233',
+	'12334'=>'1233',
+	'123346'=>'1233',
+	'134'=>'134',
+	'1345'=>'134',
 	'accepted'=>'The :attribute must be accepted.',
 	'active_url'=>'The :attribute is not a valid URL.',
 	'after'=>'The :attribute must be a date after :date.',
@@ -21,6 +29,7 @@
 	'confirmed'=>'The :attribute confirmation does not match.',
 	'date'=>'The :attribute is not a valid date.',
 	'date_format'=>'The :attribute does not match the format :format.',
+	'dfg'=>'',
 	'different'=>'The :attribute and :other must be different.',
 	'digits'=>'The :attribute must be :digits digits.',
 	'digits_between'=>'The :attribute must be between :min and :max digits.',
@@ -81,6 +90,7 @@
 	'not_regex'=>'The :attribute format is invalid.',
 	'numeric'=>'The :attribute must be a number.',
 	'present'=>'The :attribute field must be present.',
+	'q?'=>'ưq',
 	'regex'=>'The :attribute format is invalid.',
 	'required'=>'The :attribute field is required.',
 	'required_if'=>'The :attribute field is required when :other is :value.',
@@ -89,6 +99,7 @@
 	'required_without'=>'The :attribute field is required when :values is not present.',
 	'required_without_all'=>'The :attribute field is required when none of :values are present.',
 	'required_with_all'=>'The :attribute field is required when :values is present.',
+	'rew'=>'rw',
 	'same'=>'The :attribute and :other must match.',
 	'size'=>[
 		'array'=>'The :attribute must contain :size items.',

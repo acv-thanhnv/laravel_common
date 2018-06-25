@@ -41,7 +41,7 @@ class CommonHelper
         $result = array(
             array(
                 'code'=>Config::get('constants.from_validate_error_code'),
-                'data_error'=>$error
+                'data_error'=>json_encode($error)
             )
         );
 
