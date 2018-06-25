@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Dev;
 
+use App\Dao\DataResultCollection;
 use App\Dao\SDB;
-use App\Entities\DEV_ADD_TRANSLATE_COMBO_LST_1;
 use App\Entities\DEV_GET_TRANSLATION_DATA_LST;
 use App\Http\Controllers\Controller;
 use App\Services\Dev\Interfaces\DevServiceInterface;
@@ -117,22 +117,26 @@ class DevController extends Controller
 
     }
     public function test(){
-        SDB::getDataAutomic('DEV_ROLE_UPDATE_ACTIVE_ACT');
         echo '<pre>';
+        SDB::generatetEntityClass('DEV_GET_PARAM_OF_SPS_LST');
+        $a = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST',array('',''))  ;
 
-        $a =SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST',array('',''))  ;
-        $foo = new MyClass($a);
-        $b = new MyClass($a);
-        $c= [0];
+        $c=  new DEV_GET_TRANSLATION_DATA_LST($a->first());
+       // print_r($c);
 
-        foreach ($a as $b){
+        echo \SDBStatusCode::Excep;
 
-
-        }
-        print_r($foo);
 
 
     }
+
+
+}
+Class A{
+    public $dataFromDB;
+    public $status;
+    public $errorCode = -99999;
+    public $message;
 
 
 }
