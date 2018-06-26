@@ -4,7 +4,6 @@
  */
 
 namespace App\Dev\Http\Controllers;
-use App\Http\Controllers\Controller;
 use App\Dev\Rules\UpperCaseRule;
 use App\Dev\Services\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
