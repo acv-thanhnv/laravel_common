@@ -11,7 +11,12 @@ class Entity{
     {
         $props=  get_object_vars ($this);
         foreach ($props as $prop=>$value){
-            $this->{$prop} = $object->{$prop};
+            if(isset($object->{$prop})){
+                $this->{$prop} = $object->{$prop};
+            }else{
+                $this->{$prop} = 'Not exists properties';
+            }
+
         }
     }
 }

@@ -40,6 +40,12 @@
                             </div>
                             <div class="col-md-2 text-right"><button id="init-role" class="btn-primary btn">Execute</button></div>
                         </div>
+                        <div class="col-md-12 table-bordered">
+                            <div class="col-md-10">
+                                <span class="text-warning font-weight-bold">- Generate all of EntityClass for Dev ( Required )</span>
+                            </div>
+                            <div class="col-md-2 text-right"><button id="generate-entity" class="btn-primary btn">Execute</button></div>
+                        </div>
                         <div class="clearfix"></div>
                     </div>
                 </div>
@@ -77,6 +83,16 @@
                     }
                 });
             });
+            $(document).on('click', '#generate-entity', function () {
+                $.ajax({
+                    type: 'Post',
+                    url: "<?php echo @route('generateEntity')?>",
+                    success: function (result) {
+                        alert('OK');
+                    }
+                });
+            });
+
         });
     </script>
 

@@ -13,18 +13,19 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use App\Services\Dev\Interfaces\DevServiceInterface;
+use App\Dao\DataResultCollection;
 
 class DevService extends BaseService implements DevServiceInterface
 {
-    public function getLanguageCodeList()
+    public function getLanguageCodeList():DataResultCollection
     {
-        $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
+        $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
         return $lang;
     }
 
-    public function getTranslateList($translateType, $lang)
+    public function getTranslateList($translateType, $lang):DataResultCollection
     {
-        return SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType, $lang));
+        return SDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, $lang));
     }
 
     /**
@@ -35,13 +36,13 @@ class DevService extends BaseService implements DevServiceInterface
     public function getTranslateMessageArray($translateType = '')
     {
         $resuiltArr = [];
-        $lang = SDB::execSPs('DEV_GET_LANGUAGE_CODE_LST');
+        $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
         if (!empty($lang)) {
 
             foreach ($lang as $item) {
                 $resuiltArr[$item->code] = array();
             }
-            $rules = SDB::execSPs('DEV_GET_TRANSLATION_DATA_LST', array($translateType, ''));
+            $rules = SDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, ''));
 
             if (!empty($resuiltArr)) {
                 foreach ($resuiltArr as $itemKey => $itemValue) {
@@ -63,9 +64,9 @@ class DevService extends BaseService implements DevServiceInterface
         return $resuiltArr;
     }
 
-    public function getCategoryWithLevelList()
+    public function getCategoryWithLevelList():DataResultCollection
     {
-        return SDB::execSPs('GET_CATEGORY_WITH_LEVEL_LIST');
+        return SDB::execSPsToDataResultCollection('GET_CATEGORY_WITH_LEVEL_LIST');
     }
 
     public function getRoleInfoFromDB()
@@ -151,7 +152,7 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function generationTranslateFileAndScript()
     {
-        $transTypeList = SDB::execSPs("DEV_GET_TRANSLATION_TYPE_LST");
+        $transTypeList = SDB::execSPsToDataResultCollection("DEV_GET_TRANSLATION_TYPE_LST");
         if (!empty($transTypeList)) {
             foreach ($transTypeList as $item) {
                 $this->generationTranslateScript($item->code, $item->code);
@@ -258,7 +259,7 @@ class DevService extends BaseService implements DevServiceInterface
     {
         $data = $this->getListScreen();
         $systemAdminRole = Config::get('app.SYSTEM_ADMIN_ROLE_VALUE');
-        $roleList = SDB::execSPs('DEV_GET_ROLES_LST');
+        $roleList = SDB::execSPsToDataResultCollection('DEV_GET_ROLES_LST');
         SDB::table('sys_screens')->truncate();
         SDB::table('sys_screens')->insert($data);
         SDB::table('sys_role_map_screen')->truncate();
@@ -296,7 +297,7 @@ class DevService extends BaseService implements DevServiceInterface
         $dir = base_path() . '/resources/lang';
         $langList = array_diff(scandir($dir), array('..', '.'));
         $id = 0;
-        SDB::execSPs('DEV_BACKUP_TRANSLATE_ACT');
+        SDB::execSPsToDataResultCollection('DEV_BACKUP_TRANSLATE_ACT');
         SDB::table('dev_translation')->truncate();
         if (!empty($langList)) {
             foreach ($langList as $lang) {
@@ -357,19 +358,34 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function updateActiveAcl($roleMapId, $isActive)
     {
-        SDB::execSPs("DEV_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
+        SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
     }
 
     public function updateTranslateText($id, $transText)
     {
-        SDB::execSPs("DEV_TRANSLATE_UPDATE_TEXT_ACT", array($id, $transText));
+        SDB::execSPsToDataResultCollection("DEV_TRANSLATE_UPDATE_TEXT_ACT", array($id, $transText));
     }
 
     public function insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans)
     {
-        return SDB::execSPs("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));
+        return SDB::execSPsToDataResultCollection("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));
     }
-
+    public function generateEntityClass(){
+        echo '<pre>';
+        $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
+        if($spsList->status==\SDBStatusCode::OK){
+            foreach ($spsList->data as $row){
+                SDB::generatetEntityClass($row->Name);
+            }
+        }
+    }
+    public function generateSpecEntityClass($spName){
+        SDB::generatetEntityClass($spName);
+    }
+    public function getAllSPList():DataResultCollection{
+        $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
+        return $spsList;
+    }
     /**
      * @return array
      */
@@ -405,7 +421,7 @@ class DevService extends BaseService implements DevServiceInterface
      */
     protected function getCatagoryList()
     {
-        $categoryData = SDB::execSPs('GET_CATEGORY_LST');
+        $categoryData = SDB::execSPsToDataResultCollection('GET_CATEGORY_LST');
         return $categoryData;
     }
 

@@ -26,7 +26,7 @@ class SDB extends DB
      * @param bool $isExecute
      * @return \Illuminate\Support\Collection|mixed
      */
-    public static function execSPs($procName, $parameters = null, $isExecute = false):DataResultCollection
+    public static function execSPsToDataResultCollection($procName, $parameters = null, $isExecute = false):DataResultCollection
     {
         $results =  new \ArrayObject();
         $dataResult = new DataResultCollection();
@@ -86,7 +86,7 @@ class SDB extends DB
         $dataStruct = '';
         $meta = [];
         SDB::beginTransaction();
-        $paramInfor = SDB::execSPs('DEV_GET_PARAM_OF_SPS_LST',array($procName));
+        $paramInfor = SDB::execSPsToDataResultCollection('DEV_GET_PARAM_OF_SPS_LST',array($procName));
         $param = array();
         if($paramInfor->status !== \SDBStatusCode::DataNull){
             foreach ($paramInfor->data as $p){
@@ -147,7 +147,7 @@ class SDB extends DB
 
             $contentFile .="class ".$classEntityName." extends Entity{\n";
             foreach ($meta as $propVal ){
-                $contentFile.="\tpublic $".$propVal['name'].";\n";
+                $contentFile.="\tpublic $".str_replace(" ","_", $propVal['name']).";\n";
             }
             $contentFile = $contentFile."\tpublic  function __construct(\$object){\n";
             $contentFile = $contentFile."\t\t parent::__construct(\$object);\n";
@@ -160,6 +160,54 @@ class SDB extends DB
             fclose($fh);
         }
         return $meta;
+    }
+
+    /**
+     * @param $procName
+     * @param null $parameters
+     * @param bool $isExecute
+     * @return array|mixed
+     */
+    public static function execSPs($procName, $parameters = null, $isExecute = false)
+    {
+        $results = [];
+        try{
+            $syntax = '';
+            if(isset( $parameters) && is_array($parameters)){
+                for ($i = 0; $i < count($parameters); $i++) {
+                    $syntax .= (!empty($syntax) ? ',' : '') . '?';
+                }
+            }
+            $syntax = 'CALL ' . $procName . '(' . $syntax . ');';
+
+            $pdo = parent::connection()->getPdo();
+            $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+            $stmt = $pdo->prepare($syntax,[\PDO::ATTR_CURSOR=>\PDO::CURSOR_SCROLL]);
+            if(isset( $parameters) && is_array($parameters)) {
+                for ($i = 0; $i < count($parameters); $i++) {
+                    $stmt->bindValue((1 + $i), $parameters[$i]);
+                }
+            }
+            $exec = $stmt->execute();
+            if (!$exec) return $pdo->errorInfo();
+            if ($isExecute) return $exec;
+            do {
+                try {
+                    $results[] = $stmt->fetchAll(\PDO::FETCH_OBJ);
+                } catch (\Exception $ex) {
+
+                }
+            } while ($stmt->nextRowset());
+            if (1 === count($results)) return $results[0];
+        }catch (\Exception $exception){
+            $results =  array(
+                (object) [
+                    'code'=>-9999,
+                    'data_error'=>array('SDB_exception'=>$exception->getMessage())
+                ]
+            );
+        }
+        return $results;
     }
 
 }

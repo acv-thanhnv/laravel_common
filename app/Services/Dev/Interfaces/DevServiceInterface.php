@@ -6,14 +6,16 @@
  * Time: 10:23 AM
  */
 namespace App\Services\Dev\Interfaces;
+use App\Dao\DataResultCollection;
 
 interface DevServiceInterface
 {
     public function test();
-    public function getLanguageCodeList();
+    public function getLanguageCodeList():DataResultCollection;
     public function getTranslateMessageArray( $translateType);
-    public function getTranslateList($translateType,$lang);
-    public function getCategoryWithLevelList();
+    public function getTranslateList($translateType,$lang):DataResultCollection;
+    public function getCategoryWithLevelList():DataResultCollection;
+    public function getAllSPList():DataResultCollection;
     public function getRoleInfoFromDB();
     public function generationTranslateFileAndScript();
     public function generationTranslateFile( $translateType, $fileName);
@@ -29,4 +31,6 @@ interface DevServiceInterface
     public function updateActiveAcl($roleMapId,$isActive);
     public function updateTranslateText($id,$transText);
     function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans);
+    public function generateEntityClass();
+    public function generateSpecEntityClass($spName);
 }
