@@ -8,12 +8,12 @@
 
 namespace App\Dev\Services\Production;
 
-use App\Dao\SDB;
+use App\Core\Dao\SDB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use App\Dev\Services\Interfaces\DevServiceInterface;
-use App\Dao\DataResultCollection;
+use App\Core\Dao\DataResultCollection;
 
 class DevService extends BaseService implements DevServiceInterface
 {

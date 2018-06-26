@@ -6,7 +6,7 @@
  * Time: 10:23 AM
  */
 namespace App\Dev\Services\Interfaces;
-use App\Dao\DataResultCollection;
+use App\Core\Dao\DataResultCollection;
 
 interface DevServiceInterface
 {
