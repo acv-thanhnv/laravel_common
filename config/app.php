@@ -1,8 +1,11 @@
 <?php
 
 return [
-    'SYSTEM_ADMIN_ROLE_VALUE'=>1,
-    'DELIMITER' => '|#$%-|',
+    /**
+     * Developer config
+     */
+    'SYSTEM_ADMIN_ROLE_VALUE'=>1,//user to set default role when init project
+    'DEV_MODE'=>env('DEV_MODE', false),//DEV_MODE allow active Module Dev
     /*
     |--------------------------------------------------------------------------
     | Application Name

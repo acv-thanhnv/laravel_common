@@ -55,7 +55,7 @@ class SDB extends DB
                 try {
                     $results[] = $stmt->fetchAll(\PDO::FETCH_OBJ);
                 } catch (\Exception $ex) {
-                    throwException();
+                    //Next, don't exception handler here
                 }
             } while ($stmt->nextRowset());
             if (isset($results[0]))  $dataResult->data = $results[0];

@@ -40,10 +40,9 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoutes();
         $this->mapWebRoutes();
         //only active in debug mode
-        if(Config::get('app.debug')==true){
+        if(Config::get('app.DEV_MODE')==true){
             $this->mapDevRoutes();
         }
-
     }
 
     /**
