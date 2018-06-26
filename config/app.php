@@ -155,16 +155,16 @@ return [
         /*
          * Application Services Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
+        App\Core\Providers\AppServiceProvider::class,
+        App\Core\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        App\Core\Providers\EventServiceProvider::class,
+        App\Core\Providers\RouteServiceProvider::class,
         /**
          * Dev module provider...
          * @author thanhvn
          */
-        App\Providers\Dev\DevServiceProvider::class,
+        App\Dev\Providers\DevServiceProvider::class,
     ],
 
     /*

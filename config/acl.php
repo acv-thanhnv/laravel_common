@@ -13,7 +13,7 @@
 		'\resetpasswordcontroller\reset'=>'1',
 		'api\somecontroller\index'=>'1',
 		'web\homecontroller\index'=>'1',
-		'web\somecontroller\index'=>'1',
+		'web\somecontroller\index'=>'0',
 	],
 	'2'=>[
 		'\logincontroller\showloginform'=>'0',

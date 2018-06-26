@@ -93,8 +93,7 @@
         $(document).ready(function () {
             var table = $('#tbl-trans').DataTable(
                 {
-                    scrollY:        '50vh',
-                    scrollCollapse: true,
+                    scrollCollapse: false,
                     fixedHeader: true,
                     bJQueryUI: true,
                     info:     false,
