@@ -5,7 +5,7 @@
  * Date: 6/21/2018
  * Time: 5:29 PM
  */
-namespace App\Entities;
+namespace App\Dev\Entities;
 class Entity{
     public function __construct($object)
     {

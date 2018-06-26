@@ -75,7 +75,7 @@
                                 <td><?php echo $item->Modified; ?></td>
                                 <td><?php echo $item->Created; ?></td>
                                 <td class="text-center" style="vertical-align: middle;">
-                                    <span class="excute-one btn glyphicon glyphicon-play" data-name="<?php echo $item->Name; ?>"></span>
+                                    <span class="excute-one btn glyphicon glyphicon-play" data-name="<?php echo $item->Name; ?>" title="Generate Entity Class"></span>
                                 </td>
                             </tr>
                             <?php }
