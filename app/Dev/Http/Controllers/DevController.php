@@ -170,6 +170,9 @@ class DevController extends Controller
         $spName = $request->input('name');
         $this->devService->generateSpecEntityClass($spName);
     }
+    public function doc(){
+        return view("dev/document");
+    }
     public function userAcl(){
         return view("dev/useracl");
     }
