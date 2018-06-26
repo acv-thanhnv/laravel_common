@@ -37,9 +37,9 @@ class DevService extends BaseService implements DevServiceInterface
     {
         $resuiltArr = [];
         $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
-        if (!empty($lang)) {
+        if ($lang->data==\SDBStatusCode::OK) {
 
-            foreach ($lang as $item) {
+            foreach ($lang->data as $item) {
                 $resuiltArr[$item->code] = array();
             }
             $rules = SDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, ''));
@@ -153,8 +153,8 @@ class DevService extends BaseService implements DevServiceInterface
     public function generationTranslateFileAndScript()
     {
         $transTypeList = SDB::execSPsToDataResultCollection("DEV_GET_TRANSLATION_TYPE_LST");
-        if (!empty($transTypeList)) {
-            foreach ($transTypeList as $item) {
+        if ($transTypeList->status==\SDBStatusCode::OK) {
+            foreach ($transTypeList->data as $item) {
                 $this->generationTranslateScript($item->code, $item->code);
                 $this->generationTranslateFile($item->code, $item->code);
             }
