@@ -4,8 +4,6 @@
  */
 
 namespace App\Dev\Http\Controllers;
-
-use App\Dao\SDB;
 use App\Http\Controllers\Controller;
 use App\Dev\Rules\UpperCaseRule;
 use App\Dev\Services\Interfaces\DevServiceInterface;

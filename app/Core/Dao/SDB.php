@@ -5,7 +5,7 @@
 namespace App\Core\Dao;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use App\Core\Dao\DataResultCollection;
+use App\Core\Entities\DataResultCollection;
 use Illuminate\Support\Facades\Log;
 /**
  * Class SDB

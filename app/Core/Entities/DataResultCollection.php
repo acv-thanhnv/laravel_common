@@ -6,7 +6,7 @@
  * Time: 9:18 AM
  */
 
-namespace App\Core\Dao;
+namespace App\Core\Entities;
 
 
 class DataResultCollection

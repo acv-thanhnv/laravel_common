@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use App\Dev\Services\Interfaces\DevServiceInterface;
-use App\Core\Dao\DataResultCollection;
+use App\Core\Entities\DataResultCollection;
 
 class DevService extends BaseService implements DevServiceInterface
 {
