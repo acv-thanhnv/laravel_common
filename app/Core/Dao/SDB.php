@@ -2,10 +2,10 @@
 /**
  * @author thanhnv
  */
-namespace App\Dao;
+namespace App\Core\Dao;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use App\Dao\DataResultCollection;
+use App\Core\Dao\DataResultCollection;
 
 /**
  * Class SDB
@@ -18,7 +18,8 @@ class SDB extends DB
     public const _defaultValue = [
         'varchar'=>'',
         'int'=>0,
-        'datetime'=>'2018-01-01 00:00'
+        'datetime'=>'2018-01-01 00:00',
+        'tinyint'=>0
     ];
     /**
      * @param $procName
