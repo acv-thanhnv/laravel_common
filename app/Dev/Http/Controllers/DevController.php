@@ -8,6 +8,7 @@ use App\Dev\Rules\UpperCaseRule;
 use App\Dev\Services\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
 use App\Dev\Helpers\CommonHelper;
+use Illuminate\Support\Facades\Log;
 use Validator;
 use Illuminate\Support\Facades\Route;
 
@@ -188,6 +189,7 @@ class DevController extends Controller
     }
     public function test()
     {
+        Log::debug('test');
         echo '<pre>';
        // $this->devService->generationTranslateScript('validation','validation');
 
