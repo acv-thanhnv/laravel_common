@@ -26,7 +26,10 @@
     }
     .text-warning{
         color: orange;
-    }
+    }legend{
+         font-size: 16px !important;
+     }
+
 </style>
 @section('content')
         <div class="row justify-content-center">
