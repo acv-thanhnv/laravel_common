@@ -15,7 +15,7 @@ class DataResultCollection
     public $status;
     public $message;
     public $errorCode = [];
-
+    
 
     public function first()
     {

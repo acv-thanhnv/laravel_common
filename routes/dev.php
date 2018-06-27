@@ -21,6 +21,7 @@ Route::get('/dev/acl', 'DevController@aclManangement')->name('aclManangement');
 Route::get('/dev/menu', 'DevController@menu')->name('menu');
 
 Route::post('/dev/updateAclActive', 'DevController@updateAclActive')->name('updateAclActive');
+Route::post('/dev/updateAclActiveAll', 'DevController@updateAclActiveAll')->name('updateAclActiveAll');
 
 Route::post('/dev/generationAclFile', 'DevController@generationAclFile')->name('generationAclFile');
 Route::get('/dev/userAcl', 'DevController@userAcl')->name('userAcl');

@@ -19,7 +19,8 @@ class SDB extends DB
         'varchar'=>'',
         'int'=>0,
         'datetime'=>'2018-01-01 00:00',
-        'tinyint'=>0
+        'tinyint'=>0,
+        'json'=>'{}'
     ];
     /**
      * @param $procName
@@ -71,7 +72,7 @@ class SDB extends DB
             if(env('APP_DEBUG')==true){
                 abort($exception->getMessage());
             }else{
-                Log::error($exception->getMessage());
+                Log::alert($exception->getMessage());
             }
         }
         $dataResult->status =\SDBStatusCode::OK;

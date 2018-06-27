@@ -3,6 +3,7 @@
  * @author thanhnv
  */
 namespace App\Core\Http\Middleware;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
@@ -19,18 +20,22 @@ class Acl
      */
     public function handle($request, Closure $next)
     {
-        $curentActionInfo = Route::getCurrentRoute()->getAction();
-        $module = strtolower(trim(str_replace('App\\', '', $curentActionInfo['namespace']), '\\'));
-        $module =  explode("\\",$module)[0];
-        $_action = explode('@', $curentActionInfo['controller']);
-        $_namespaces_chunks = explode('\\', $_action[0]);
-        $controllers = strtolower(end($_namespaces_chunks));
-        $action = strtolower(end($_action));
-        $screenCode = $module.'\\'.$controllers.'\\'.$action;
-        $roleId = null;
+        $publicRole = Config::get('app.PUBLIC_ROLE_VALUE');
+        $roleId = $publicRole;
+        $screenCode = '';
         if(Auth::check()){
             $roleId = Auth::user()->role_value;
         }
+        $curentActionInfo = Route::getCurrentRoute()->getAction();
+        Log::debug($curentActionInfo);
+        $module = strtolower(trim(str_replace('App\\', '', $curentActionInfo['namespace']), '\\'));
+        $module =  explode("\\",$module)[0];
+        $_action =isset($curentActionInfo['controller'])? explode('@', $curentActionInfo['controller']):array();
+        $_namespaces_chunks =isset($_action[0])? explode('\\', $_action[0]):array();
+        $controllers = strtolower(end($_namespaces_chunks));
+        $action = strtolower(end($_action));
+        $screenCode = $module.'\\'.$controllers.'\\'.$action;
+
         if ($this->hasAcl($roleId,$screenCode)==true ) {
             return $next($request);
         }

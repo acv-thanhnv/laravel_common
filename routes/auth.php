@@ -10,14 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-/**
- * Default router config
- */
-Route::get('/', function () {
-    return view('welcome');
-});
 // Authentication Routes...
 Route::get('login', 'LoginController@showLoginForm')->name('login');
 Route::post('login', 'LoginController@login');

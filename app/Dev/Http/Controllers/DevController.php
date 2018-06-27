@@ -9,7 +9,7 @@ use App\Dev\Services\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
 use App\Dev\Helpers\CommonHelper;
 use Validator;
-
+use Illuminate\Support\Facades\Route;
 
 class DevController extends Controller
 {
@@ -115,7 +115,9 @@ class DevController extends Controller
     public function aclManangement()
     {
         $dataAcl = $this->devService->getRoleInfoFromDB();
-        return view("dev/acl", compact('dataAcl'));
+        $roleList =  $this->devService->getRoleList();
+        $moduleList =$this->devService->getModuleList();
+        return view("dev/acl", compact(['dataAcl','roleList','moduleList']));
     }
 
     public function updateAclActive(Request $request)
@@ -127,9 +129,17 @@ class DevController extends Controller
             $isActive = 1;
         }
         $this->devService->updateActiveAcl($roleMapId, $isActive);
-        return null;
+        return CommonHelper::convertVaidateErrorToCommonStruct(array());
     }
-
+    public function updateAclActiveAll(Request $request){
+        $active = $request->input('active');
+        $isActive = 0;
+        if (isset($active) && strtolower($active) == 'true') {
+            $isActive = 1;
+        }
+        $this->devService->updateActiveAclAll( $isActive);
+        return CommonHelper::convertVaidateErrorToCommonStruct(array());
+    }
     public function updateTranslate(Request $request)
     {
         $id = $request->input('id');
@@ -178,7 +188,14 @@ class DevController extends Controller
     }
     public function test()
     {
-        echo 'test';
+        echo '<pre>';
+        $listRouter = Route:: getRoutes()->getRoutes();
+        foreach ($listRouter as $route) {
+            $action = $route->getAction();
+
+            print_r($action['middleware']);
+
+        }
 
     }
 

@@ -14,6 +14,10 @@
             display: none;
         }
 
+        label.switch  {
+            margin-bottom: -6px !important;
+        }
+
         /* The slider */
         .slider {
             position: absolute;
@@ -82,7 +86,58 @@
 
                 </div>
                 <div class="card-body form-group">
-                    <table class="table-bordered table table-hover w-100">
+                    <fieldset class="border">
+                        <legend>Filter:</legend>
+                        <div class="col-md-12 filter">
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-2 form-title">Role</div>
+                                <div class="col-md-4">
+                                    <select id="cb-role" class="form-control">
+                                        <option value="">---</option>
+                                        <?php if(!empty($roleList)){?>
+                                        <?php foreach ($roleList as $roleItem){?>
+                                        <option
+                                            value="<?php echo $roleItem->name;?>"><?php echo $roleItem->name?></option>
+                                        <?php   }
+                                        }?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 form-title">Module</div>
+                                <div class="col-md-4">
+                                    <select id="cb-module" class="lang form-control">
+                                        <option value="">---</option>
+                                        <?php if(!empty($moduleList)){?>
+                                        <?php foreach ($moduleList as $moduleItem){?>
+                                        <option
+                                            value="<?php echo $moduleItem->module_code;?>"><?php echo $moduleItem->module_code?></option>
+                                        <?php   }
+                                        }?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-2 form-title">Controller</div>
+                                <div class="col-md-4">
+                                    <input type="text" id="text-controller" class="form-control"/>
+                                </div>
+                                <div class="col-md-2 form-title">Action</div>
+                                <div class="col-md-4">
+                                    <input type="text" id="text-action" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </fieldset>
+                    <div class="function text-right">
+                        <label>Active all : </label>
+                        <label class="switch">
+                            <input type="checkbox" class="change-active-all">
+                            <span class="slider round">
+                            </span>
+                        </label>
+                    </div>
+                    <table id="acl-table" class="table-bordered table table-hover w-100">
                         <thead>
                         <tr>
                             <th>No</th>
@@ -133,6 +188,36 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
+            var table = $('#acl-table').DataTable(
+                {
+                    scrollY:        '50vh',
+                    scrollCollapse: true,
+                    fixedHeader: true,
+                    bJQueryUI: true,
+                    info: false,
+                    paging: false,
+                    dom: 't',
+                    searching: true,
+                    "columnDefs": [{
+                        "targets": 5,
+                        "orderable": false
+                    }]
+                }
+            );
+
+            $('#cb-role').on('change', function () {
+                table.column(1).search(this.value).draw();
+            });
+            $('#cb-module').on('change', function () {
+                table.column(2).search(this.value).draw();
+            });
+            $('#text-controller').on('change', function () {
+                table.column(3).search(this.value).draw();
+            });
+            $('#text-action').on('change', function () {
+                table.column(4).search(this.value).draw();
+            });
+
             $(document).on('change', '.change-active', function () {
                 var data = {
                     active: $(this).prop('checked'),
@@ -148,6 +233,35 @@
                     }
                 });
             });
+            $(document).on('change', '.change-active-all', function () {
+                var checked =  $(this).prop('checked');
+                var data = {
+                    active: checked
+                };
+                $.ajax({
+                    data: data,
+                    type: 'Post',
+                    dataType: 'json',
+                    url: "<?php echo @route('updateAclActiveAll')?>",
+                    success: function (result) {
+                        $('#cb-role').val('');
+                        $('#cb-module').val('');
+                        $('#text-controller').val('');
+                        $('#text-action').val('');
+                        table.column(1).search('').draw();
+                        if(checked==true){
+                            $('#acl-table .change-active').each(function(){
+                                $(this).prop('checked',true);
+                            });
+                        }else{
+                            $('#acl-table  .change-active').each(function(){
+                                $(this).prop('checked',false);
+                            });
+                        }
+                    }
+                });
+            });
+
             $(document).on('click', '#generation', function () {
                 $.ajax({
                     type: 'Post',
@@ -162,8 +276,8 @@
                     }
                 });
             });
-
         });
+
 
     </script>
 
