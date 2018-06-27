@@ -37,7 +37,7 @@ class DevService extends BaseService implements DevServiceInterface
     {
         $resuiltArr = [];
         $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
-        if ($lang->data==\SDBStatusCode::OK) {
+        if ($lang->status==\SDBStatusCode::OK) {
 
             foreach ($lang->data as $item) {
                 $resuiltArr[$item->code] = array();
@@ -46,8 +46,8 @@ class DevService extends BaseService implements DevServiceInterface
 
             if (!empty($resuiltArr)) {
                 foreach ($resuiltArr as $itemKey => $itemValue) {
-                    if (!empty($rules)) {
-                        foreach ($rules as $ruleItem) {
+                    if ($rules->status==\SDBStatusCode::OK) {
+                        foreach ($rules->data as $ruleItem) {
                             if ($itemKey == $ruleItem->lang_code) {
                                 if ($ruleItem->type_code == '') {
                                     $resuiltArr[$itemKey][$ruleItem->code] = $ruleItem->text;

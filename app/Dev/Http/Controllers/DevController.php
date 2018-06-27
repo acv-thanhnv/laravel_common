@@ -189,13 +189,9 @@ class DevController extends Controller
     public function test()
     {
         echo '<pre>';
-        $listRouter = Route:: getRoutes()->getRoutes();
-        foreach ($listRouter as $route) {
-            $action = $route->getAction();
+       // $this->devService->generationTranslateScript('validation','validation');
 
-            print_r($action['middleware']);
 
-        }
 
     }
 
