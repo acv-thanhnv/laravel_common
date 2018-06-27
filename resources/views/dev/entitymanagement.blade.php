@@ -44,7 +44,6 @@
                                 <div class="col-md-4">
                                     <input type="text" id="sp-name" class="form-control"/>
                                 </div>
-
                             </div>
                         </div>
 
