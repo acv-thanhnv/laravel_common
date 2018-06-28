@@ -6,7 +6,7 @@
  * Time: 10:23 AM
  */
 namespace App\Dev\Services\Interfaces;
-use App\Dao\DataResultCollection;
+use App\Core\Entities\DataResultCollection;
 
 interface DevServiceInterface
 {
@@ -29,8 +29,11 @@ interface DevServiceInterface
     public function getNewTransComboList();
 
     public function updateActiveAcl($roleMapId,$isActive);
+    public function updateActiveAclAll($isActive);
     public function updateTranslateText($id,$transText);
     function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans);
     public function generateEntityClass();
     public function generateSpecEntityClass($spName);
+    public function getRoleList();
+    public function getModuleList();
 }

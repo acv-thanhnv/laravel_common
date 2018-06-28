@@ -15,8 +15,7 @@
 /**
  * Web module
  */
-Route::group(['middleware' => ['auth','acl']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/some', 'SomeController@index')->name('some');
-});
+
 

@@ -1,8 +1,12 @@
 <?php
 
 return [
-    'SYSTEM_ADMIN_ROLE_VALUE'=>1,
-    'DELIMITER' => '|#$%-|',
+    /**
+     * Developer config
+     */
+    'SYSTEM_ADMIN_ROLE_VALUE'=>env('SYSTEM_ADMIN_ROLE_VALUE', 1),//user to set default role when init project
+    'PUBLIC_ROLE_VALUE'=>env('PUBLIC_ROLE_VALUE', 0),//user to set default role when init project
+    'DEV_MODE'=>env('DEV_MODE', false),//DEV_MODE allow active Module Dev
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -179,7 +183,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,

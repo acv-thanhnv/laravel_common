@@ -8,12 +8,12 @@
 
 namespace App\Dev\Services\Production;
 
-use App\Dao\SDB;
+use App\Core\Dao\SDB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use App\Dev\Services\Interfaces\DevServiceInterface;
-use App\Dao\DataResultCollection;
+use App\Core\Entities\DataResultCollection;
 
 class DevService extends BaseService implements DevServiceInterface
 {
@@ -37,17 +37,17 @@ class DevService extends BaseService implements DevServiceInterface
     {
         $resuiltArr = [];
         $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
-        if (!empty($lang)) {
+        if ($lang->status==\SDBStatusCode::OK) {
 
-            foreach ($lang as $item) {
+            foreach ($lang->data as $item) {
                 $resuiltArr[$item->code] = array();
             }
             $rules = SDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, ''));
 
             if (!empty($resuiltArr)) {
                 foreach ($resuiltArr as $itemKey => $itemValue) {
-                    if (!empty($rules)) {
-                        foreach ($rules as $ruleItem) {
+                    if ($rules->status==\SDBStatusCode::OK) {
+                        foreach ($rules->data as $ruleItem) {
                             if ($itemKey == $ruleItem->lang_code) {
                                 if ($ruleItem->type_code == '') {
                                     $resuiltArr[$itemKey][$ruleItem->code] = $ruleItem->text;
@@ -153,8 +153,8 @@ class DevService extends BaseService implements DevServiceInterface
     public function generationTranslateFileAndScript()
     {
         $transTypeList = SDB::execSPsToDataResultCollection("DEV_GET_TRANSLATION_TYPE_LST");
-        if (!empty($transTypeList)) {
-            foreach ($transTypeList as $item) {
+        if ($transTypeList->status==\SDBStatusCode::OK) {
+            foreach ($transTypeList->data as $item) {
                 $this->generationTranslateScript($item->code, $item->code);
                 $this->generationTranslateFile($item->code, $item->code);
             }
@@ -259,28 +259,39 @@ class DevService extends BaseService implements DevServiceInterface
     {
         $data = $this->getListScreen();
         $systemAdminRole = Config::get('app.SYSTEM_ADMIN_ROLE_VALUE');
-        $roleList = SDB::execSPsToDataResultCollection('DEV_GET_ROLES_LST');
+        $roleList = $this->getRoleList();
+        //Insert sys screen data
         SDB::table('sys_screens')->truncate();
         SDB::table('sys_screens')->insert($data);
-        SDB::table('sys_role_map_screen')->truncate();
 
+        //Insert dev module data
+        $this->importModuleListToDB();
+
+
+        //Mapping role with screen
+        SDB::table('sys_role_map_screen')->truncate();
         $id = 0;
         $dataRolesMapping = array();
-        foreach ($roleList as $role) {
-
-            foreach ($data as $item) {
-                $id++;
-                $isActive = 0;
-                if ($role->role_value == $systemAdminRole) {
-                    $isActive = 1;
+        if(!empty($roleList)){
+            foreach ($roleList as $role) {
+                if(!empty($data)){
+                    foreach ($data as $item) {
+                        $id++;
+                        $isActive = 0;
+                        if ($role->role_value == $systemAdminRole) {
+                            $isActive = 1;
+                        }
+                        $dataRolesMapping[] = array(
+                            'id' => $id,
+                            'role_value' => $role->role_value,
+                            'screen_id' => $item['id'],
+                            'is_active' => $isActive
+                        );
+                    }
                 }
-                $dataRolesMapping[] = array(
-                    'id' => $id,
-                    'role_value' => $role->role_value,
-                    'screen_id' => $item['id'],
-                    'is_active' => $isActive
-                );
+
             }
+
         }
 
         SDB::table('sys_role_map_screen')->insert($dataRolesMapping);
@@ -360,7 +371,10 @@ class DevService extends BaseService implements DevServiceInterface
     {
         SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
     }
-
+    public function updateActiveAclAll($isActive)
+    {
+        SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ALL_ACT", array($isActive));
+    }
     public function updateTranslateText($id, $transText)
     {
         SDB::execSPsToDataResultCollection("DEV_TRANSLATE_UPDATE_TEXT_ACT", array($id, $transText));
@@ -371,7 +385,6 @@ class DevService extends BaseService implements DevServiceInterface
         return SDB::execSPsToDataResultCollection("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));
     }
     public function generateEntityClass(){
-        echo '<pre>';
         $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
         if($spsList->status==\SDBStatusCode::OK){
             foreach ($spsList->data as $row){
@@ -386,6 +399,14 @@ class DevService extends BaseService implements DevServiceInterface
         $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
         return $spsList;
     }
+    public function getRoleList(){
+        $roleList = SDB::execSPs('DEV_GET_ROLES_LST');
+        return $roleList;
+    }
+    public function getModuleList(){
+        $moduleList = SDB::execSPs('DEV_GET_MODULES_LST');
+        return $moduleList;
+    }
     /**
      * @return array
      */
@@ -398,25 +419,59 @@ class DevService extends BaseService implements DevServiceInterface
         foreach ($listRouter as $route) {
             $action = $route->getAction();
             if (array_key_exists('controller', $action)) {
-                $_module = strtolower(trim(str_replace('App\Http\Controllers', '', $action['namespace']), '\\'));
+                $_module = strtolower(trim(str_replace('App\\', '', $action['namespace']), '\\'));
                 $_module =  explode("\\",$_module)[0];
-                if ($_module != 'dev') {
-                    $id++;
-                    $_action = explode('@', $action['controller']);
+                $id++;
+                $_action = explode('@', $action['controller']);
 
-                    $_namespaces_chunks = explode('\\', $_action[0]);
-                    $controllers[$i]['id'] = $id;
-                    $controllers[$i]['module'] = $_module;
-                    $controllers[$i]['controller'] = strtolower(end($_namespaces_chunks));
-                    $controllers[$i]['action'] = strtolower(end($_action));
-                }
+                $_namespaces_chunks = explode('\\', $_action[0]);
+                $controllers[$i]['id'] = $id;
+                $controllers[$i]['module'] = $_module;
+                $controllers[$i]['controller'] = strtolower(end($_namespaces_chunks));
+                $controllers[$i]['action'] = strtolower(end($_action));
+
 
             }
             $i++;
         }
         return ($controllers);
     }
-
+    protected function getListModulesFromProjectStruct(){
+        $moduleList = [];
+        $i = 0;
+        $id = 0;
+        $listRouter = Route:: getRoutes()->getRoutes();
+        foreach ($listRouter as $route) {
+            $action = $route->getAction();
+            if (array_key_exists('controller', $action)) {
+                $_module = strtolower(trim(str_replace('App\\', '', $action['namespace']), '\\'));
+                $_module =  explode("\\",$_module)[0];
+                $moduleList[]= $_module;
+            }
+            $i++;
+        }
+        return (array_unique($moduleList));
+    }
+    protected function importModuleListToDB(){
+        $moduleSkipAcl = ['dev'];
+        SDB::table(('dev_modules'))->truncate();
+        $dataModule = [];
+        $dataModuleList =  $this->getListModulesFromProjectStruct();
+        if(!empty($dataModuleList)){
+            $i = 0;
+            foreach ($dataModuleList as $itemScreen){
+                $i++;
+                $dataModule[] = array(
+                    'id'=>$i,
+                    'module_code'=>$itemScreen,
+                    'module_name'=>$itemScreen,
+                    'order_value'=>$i,
+                    'is_skip_acl'=>(in_array($itemScreen,$moduleSkipAcl)?1:0),
+                );
+            }
+        }
+        SDB::table('dev_modules')->insert($dataModule);
+    }
     /**
      * @return array|mixed
      */

@@ -2,11 +2,11 @@
 /**
  * @author thanhnv
  */
-namespace App\Dao;
+namespace App\Core\Dao;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use App\Dao\DataResultCollection;
-
+use App\Core\Entities\DataResultCollection;
+use Illuminate\Support\Facades\Log;
 /**
  * Class SDB
  * @package App\Dao
@@ -18,7 +18,9 @@ class SDB extends DB
     public const _defaultValue = [
         'varchar'=>'',
         'int'=>0,
-        'datetime'=>'2018-01-01 00:00'
+        'datetime'=>'2018-01-01 00:00',
+        'tinyint'=>0,
+        'json'=>'{}'
     ];
     /**
      * @param $procName
@@ -53,10 +55,8 @@ class SDB extends DB
             do {
                 try {
                     $results[] = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-
                 } catch (\Exception $ex) {
-
+                    //Next, don't exception handler here
                 }
             } while ($stmt->nextRowset());
             if (isset($results[0]))  $dataResult->data = $results[0];
@@ -68,14 +68,12 @@ class SDB extends DB
         }catch (\Exception $exception){
             $dataResult->status =\SDBStatusCode::Excep;
             $dataResult->message = $exception->getMessage();
-            /*$results =  array(
-                (object) [
-                    'code'=>Config::get('constants.exception_error_code'),
-                    'data_error'=>array('SDB_exception'=>$exception->getMessage())
-                ]
-            );*/
-            // if debug throw
-            //if product : logfile
+            //Logging
+            if(env('APP_DEBUG')==true){
+                abort($exception->getMessage());
+            }else{
+                Log::alert($exception->getMessage());
+            }
         }
         $dataResult->status =\SDBStatusCode::OK;
         $dataResult->message=null;
@@ -83,7 +81,6 @@ class SDB extends DB
     }
     public static function generatetEntityClass($procName)
     {
-        $dataStruct = '';
         $meta = [];
         SDB::beginTransaction();
         $paramInfor = SDB::execSPsToDataResultCollection('DEV_GET_PARAM_OF_SPS_LST',array($procName));
@@ -122,7 +119,12 @@ class SDB extends DB
             }
             if (!$exec) return $pdo->errorInfo();
         }catch (\Exception $exception){
-            //exception here.....
+            //Logging
+            if(env('APP_DEBUG')==true){
+                abort($exception->getMessage());
+            }else{
+                Log::error($exception->getMessage());
+            }
         }
         SDB::rollBack();
         $entitiesFolderName = self::_entitiesFolderName;

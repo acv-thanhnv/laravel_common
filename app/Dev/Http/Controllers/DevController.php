@@ -4,15 +4,13 @@
  */
 
 namespace App\Dev\Http\Controllers;
-
-use App\Dao\SDB;
-use App\Http\Controllers\Controller;
 use App\Dev\Rules\UpperCaseRule;
 use App\Dev\Services\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
 use App\Dev\Helpers\CommonHelper;
+use Illuminate\Support\Facades\Log;
 use Validator;
-
+use Illuminate\Support\Facades\Route;
 
 class DevController extends Controller
 {
@@ -118,7 +116,9 @@ class DevController extends Controller
     public function aclManangement()
     {
         $dataAcl = $this->devService->getRoleInfoFromDB();
-        return view("dev/acl", compact('dataAcl'));
+        $roleList =  $this->devService->getRoleList();
+        $moduleList =$this->devService->getModuleList();
+        return view("dev/acl", compact(['dataAcl','roleList','moduleList']));
     }
 
     public function updateAclActive(Request $request)
@@ -130,9 +130,17 @@ class DevController extends Controller
             $isActive = 1;
         }
         $this->devService->updateActiveAcl($roleMapId, $isActive);
-        return null;
+        return CommonHelper::convertVaidateErrorToCommonStruct(array());
     }
-
+    public function updateAclActiveAll(Request $request){
+        $active = $request->input('active');
+        $isActive = 0;
+        if (isset($active) && strtolower($active) == 'true') {
+            $isActive = 1;
+        }
+        $this->devService->updateActiveAclAll( $isActive);
+        return CommonHelper::convertVaidateErrorToCommonStruct(array());
+    }
     public function updateTranslate(Request $request)
     {
         $id = $request->input('id');
@@ -173,11 +181,18 @@ class DevController extends Controller
         $spName = $request->input('name');
         $this->devService->generateSpecEntityClass($spName);
     }
+    public function doc(){
+        return view("dev/document");
+    }
     public function userAcl(){
         return view("dev/useracl");
     }
     public function test()
     {
+        Log::debug('test');
+        echo '<pre>';
+       // $this->devService->generationTranslateScript('validation','validation');
+
 
 
     }

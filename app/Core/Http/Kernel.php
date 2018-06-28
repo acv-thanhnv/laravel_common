@@ -18,7 +18,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Core\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \App\Core\Http\Middleware\TrustProxies::class,
+        \App\Core\Http\Middleware\TrustProxies::class
+
     ];
 
     /**
@@ -35,13 +36,27 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Core\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Core\Http\Middleware\Acl::class,
         ],
         'api' => [
             'throttle:60,1',
             'bindings',
+            \App\Core\Http\Middleware\Acl::class,
         ],
         'dev' => [
-        ]
+
+        ],
+        'auth_group' => [
+            \App\Core\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Core\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Core\Http\Middleware\Acl::class,//module auth don't register acl check
+        ],
+        'public_group'=>[]
     ];
 
     /**

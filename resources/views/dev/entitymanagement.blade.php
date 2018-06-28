@@ -26,7 +26,10 @@
     }
     .text-warning{
         color: orange;
-    }
+    }legend{
+         font-size: 16px !important;
+     }
+
 </style>
 @section('content')
         <div class="row justify-content-center">
@@ -41,7 +44,6 @@
                                 <div class="col-md-4">
                                     <input type="text" id="sp-name" class="form-control"/>
                                 </div>
-
                             </div>
                         </div>
 

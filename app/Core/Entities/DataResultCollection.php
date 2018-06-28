@@ -6,7 +6,7 @@
  * Time: 9:18 AM
  */
 
-namespace App\Dao;
+namespace App\Core\Entities;
 
 
 class DataResultCollection
@@ -15,7 +15,7 @@ class DataResultCollection
     public $status;
     public $message;
     public $errorCode = [];
-
+    
 
     public function first()
     {
