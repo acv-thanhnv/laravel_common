@@ -21,4 +21,5 @@ Route::get('password/reset/{token}', 'ResetPasswordController@showResetForm')->n
 Route::post('password/reset', 'ResetPasswordController@reset');
 
 // Registration Routes...
-$this->get('register', 'RegisterController@showRegistrationForm')->name('register');
+Route::get('register', 'RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'RegisterController@register')->name('register.create');

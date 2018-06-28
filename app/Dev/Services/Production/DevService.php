@@ -267,7 +267,6 @@ class DevService extends BaseService implements DevServiceInterface
         //Insert dev module data
         $this->importModuleListToDB();
 
-
         //Mapping role with screen
         SDB::table('sys_role_map_screen')->truncate();
         $id = 0;
@@ -452,6 +451,10 @@ class DevService extends BaseService implements DevServiceInterface
         }
         return (array_unique($moduleList));
     }
+
+    /**
+     * read project struct to generation module list to Database
+     */
     protected function importModuleListToDB(){
         $moduleSkipAcl = ['dev'];
         SDB::table(('dev_modules'))->truncate();
@@ -483,7 +486,12 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function test()
     {
-        echo 'devservice';
+        echo '<pre>';
+
+        $data = $this->getListScreen();
+        print_r(json_encode($data));
+        $a = SDB::execSPs('DEV_IMPORT_AND_MERGER_ROLE_ACT',array(json_encode($data)));
+        print_r($a);
     }
 }
 

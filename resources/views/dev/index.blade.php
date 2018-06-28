@@ -39,6 +39,8 @@
 
                         <div class="col-md-12 table-bordered">
                             <div class="col-md-10">
+                                <b>Excute all:</b><br>
+                                - Generate all of EntityClass for Dev<br>
                                 - Generation Role Data, insert to DB: get all screen -> insert screen to DB, update DB to set active all for administrator role initialization<br>
                                 - Generation Acl config file : .\config\acl.php<br>
                                 - Generation translate file :  .\resources\lang\.* <br>

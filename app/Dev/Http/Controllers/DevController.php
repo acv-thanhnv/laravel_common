@@ -4,6 +4,7 @@
  */
 
 namespace App\Dev\Http\Controllers;
+use App\Core\Dao\SDB;
 use App\Dev\Rules\UpperCaseRule;
 use App\Dev\Services\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
@@ -88,6 +89,7 @@ class DevController extends Controller
 
     public function initProject()
     {
+        $this->devService->generateEntityClass();
         $this->devService->generationRoleDataToDB();
         $this->devService->generationAclFile();
         //generationTranslate validation
@@ -189,7 +191,8 @@ class DevController extends Controller
     }
     public function test()
     {
-        Log::debug('test');
+        $this->devService->test();
+
         echo '<pre>';
        // $this->devService->generationTranslateScript('validation','validation');
 

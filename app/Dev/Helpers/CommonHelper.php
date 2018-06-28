@@ -22,6 +22,7 @@ class CommonHelper
             'status'=>array(),
             'data'=>array()
         );
+        $count= 0;
         if(isset($dataArray) && is_array($dataArray))
             $count = count($dataArray);
         if($count>=1){

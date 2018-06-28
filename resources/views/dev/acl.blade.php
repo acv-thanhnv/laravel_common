@@ -229,7 +229,6 @@
                     dataType: 'json',
                     url: "<?php echo @route('updateAclActive')?>",
                     success: function (result) {
-                        alert('OK');
                     }
                 });
             });
