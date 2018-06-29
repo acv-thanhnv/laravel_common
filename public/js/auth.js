@@ -1,3 +1,3 @@
 //This is dev automatic generate 
  var _validateMessage = 
-{"jp":{"failed":"These credentials do not match our records.","throttle":"Too many login attempts. Please try again in :seconds seconds."},"en":{"failed":"These credentials do not match our records.","throttle":"Too many login attempts. Please try again in :seconds seconds."},"fr":{"failed":"These credentials do not match our records.","throttle":"Too many login attempts. Please try again in :seconds seconds."}};
+{"jp":[],"en":{"failed":"These credentials do not match our records.","throttle":"Too many login attempts. Please try again in :seconds seconds."},"fr":[]};

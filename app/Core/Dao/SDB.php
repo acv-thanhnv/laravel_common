@@ -6,7 +6,7 @@ namespace App\Core\Dao;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use App\Core\Entities\DataResultCollection;
-use Illuminate\Support\Facades\Log;
+use App\Core\Helpers\CommonHelper;
 /**
  * Class SDB
  * @package App\Dao
@@ -69,11 +69,7 @@ class SDB extends DB
             $dataResult->status =\SDBStatusCode::Excep;
             $dataResult->message = $exception->getMessage();
             //Logging
-            if(env('APP_DEBUG')==true){
-                abort($exception->getMessage());
-            }else{
-                Log::alert($exception->getMessage());
-            }
+            CommonHelper::CommonLog($exception->getMessage());
         }
         $dataResult->status =\SDBStatusCode::OK;
         $dataResult->message=null;
@@ -113,18 +109,17 @@ class SDB extends DB
                 }
             }
             $exec = $stmt->execute();
-            foreach(range(0, $stmt->columnCount() - 1) as $column_index)
-            {
-                $meta[] = $stmt->getColumnMeta($column_index);
+            if($stmt->columnCount()>0){
+                foreach(range(0, $stmt->columnCount() - 1) as $column_index)
+                {
+                    $meta[] = $stmt->getColumnMeta($column_index);
+                }
             }
+
             if (!$exec) return $pdo->errorInfo();
         }catch (\Exception $exception){
             //Logging
-            if(env('APP_DEBUG')==true){
-                abort($exception->getMessage());
-            }else{
-                Log::error($exception->getMessage());
-            }
+            CommonHelper::CommonLog($exception->getMessage());
         }
         SDB::rollBack();
         $entitiesFolderName = self::_entitiesFolderName;
@@ -160,6 +155,11 @@ class SDB extends DB
             //Write content file
             fwrite($fh, $contentFile);
             fclose($fh);
+        }else{
+            $fileTranslate = $folderPath . '/' . $procName . '.php';
+            if (file_exists($fileTranslate)) {
+                unlink($fileTranslate);
+            }
         }
         return $meta;
     }
@@ -208,6 +208,7 @@ class SDB extends DB
                     'data_error'=>array('SDB_exception'=>$exception->getMessage())
                 ]
             );
+            CommonHelper::CommonLog($exception->getMessage());
         }
         return $results;
     }

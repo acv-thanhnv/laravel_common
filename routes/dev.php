@@ -24,6 +24,7 @@ Route::post('/dev/updateAclActive', 'DevController@updateAclActive')->name('upda
 Route::post('/dev/updateAclActiveAll', 'DevController@updateAclActiveAll')->name('updateAclActiveAll');
 
 Route::post('/dev/generationAclFile', 'DevController@generationAclFile')->name('generationAclFile');
+Route::post('/dev/refreshAclDB', 'DevController@refreshAclDB')->name('refreshAclInDB');
 Route::get('/dev/userAcl', 'DevController@userAcl')->name('userAcl');
 
 Route::post('/dev/updateTranslate', 'DevController@updateTranslate')->name('updateTranslate');

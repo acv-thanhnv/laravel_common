@@ -79,7 +79,7 @@ class DevController extends Controller
 
     public function importScreensList()
     {
-        $this->devService->generationRoleDataToDB();
+        $this->devService->initRoleDataToDB();
     }
 
     public function importTranslateToDB()
@@ -90,12 +90,14 @@ class DevController extends Controller
     public function initProject()
     {
         $this->devService->generateEntityClass();
-        $this->devService->generationRoleDataToDB();
+        $this->devService->initRoleDataToDB();
         $this->devService->generationAclFile();
         //generationTranslate validation
         $this->devService->generationTranslateFileAndScript();
     }
-
+    public function refreshAclDB(){
+        $this->devService->generationRoleDataToDB();
+    }
 
     public function readAclConfig()
     {
@@ -195,9 +197,6 @@ class DevController extends Controller
 
         echo '<pre>';
        // $this->devService->generationTranslateScript('validation','validation');
-
-
-
     }
 
 }

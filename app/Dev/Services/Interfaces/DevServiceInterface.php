@@ -23,6 +23,7 @@ interface DevServiceInterface
     public function getRoleMapArray();
     public function generationAclFile();
     public function getConfigDataFromFile($name);
+    public function initRoleDataToDB();
     public function generationRoleDataToDB();
     public function generationTransDataToDB();
 

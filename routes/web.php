@@ -17,5 +17,6 @@
  */
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/some', 'SomeController@index')->name('some');
+    Route::get('/blog', 'BlogController@index')->name('blog');
 
 

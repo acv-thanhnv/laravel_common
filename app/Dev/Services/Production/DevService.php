@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use App\Dev\Services\Interfaces\DevServiceInterface;
 use App\Core\Entities\DataResultCollection;
+use Mockery\CountValidator\Exception;
 
 class DevService extends BaseService implements DevServiceInterface
 {
@@ -252,11 +253,11 @@ class DevService extends BaseService implements DevServiceInterface
     }
 
     /**
-     * @return array
-     * generation screens list, insert to database and innitization system administrator role.
+     * innitization role in database
+     * @return bool
+     *
      */
-    public function generationRoleDataToDB()
-    {
+    public function initRoleDataToDB(){
         $data = $this->getListScreen();
         $systemAdminRole = Config::get('app.SYSTEM_ADMIN_ROLE_VALUE');
         $roleList = $this->getRoleList();
@@ -294,7 +295,20 @@ class DevService extends BaseService implements DevServiceInterface
         }
 
         SDB::table('sys_role_map_screen')->insert($dataRolesMapping);
-        return $data;
+        return true;
+    }
+
+    /**
+     * @return array
+     * generation screens list, insert role map screen and merger role to database.
+     */
+    public function generationRoleDataToDB()
+    {
+        //Insert dev module data
+        $this->importModuleListToDB();
+        $data = $this->getListScreen();
+        SDB::execSPs('DEV_IMPORT_AND_MERGER_ROLE_ACT',array(json_encode($data)));
+        return true;
     }
 
 
@@ -384,11 +398,15 @@ class DevService extends BaseService implements DevServiceInterface
         return SDB::execSPsToDataResultCollection("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));
     }
     public function generateEntityClass(){
-        $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
-        if($spsList->status==\SDBStatusCode::OK){
-            foreach ($spsList->data as $row){
-                SDB::generatetEntityClass($row->Name);
+        try{
+            $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
+            if($spsList->status==\SDBStatusCode::OK){
+                foreach ($spsList->data as $row){
+                    SDB::generatetEntityClass($row->Name);
+                }
             }
+        }catch (Exception $e){
+            CommonHelper::CommonLog($e->getMessage());
         }
     }
     public function generateSpecEntityClass($spName){
@@ -486,12 +504,7 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function test()
     {
-        echo '<pre>';
-
-        $data = $this->getListScreen();
-        print_r(json_encode($data));
-        $a = SDB::execSPs('DEV_IMPORT_AND_MERGER_ROLE_ACT',array(json_encode($data)));
-        print_r($a);
+       echo 'dev.test';
     }
 }
 
