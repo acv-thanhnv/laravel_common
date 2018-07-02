@@ -181,7 +181,7 @@ class DevController extends Controller
     {
         $module = "Dev";
         $spName = $request->input('name');
-        $this->devService->generateSpecEntityClass($spName,$module);
+        $this->devService->generateSpecEntityClass($spName);
     }
     public function doc(){
         return view("dev/document");

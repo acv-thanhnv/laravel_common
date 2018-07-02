@@ -14,13 +14,6 @@ use App\Core\Helpers\CommonHelper;
  */
 class SDB extends DB
 {
-    public const _defaultValue = [
-        'varchar'=>'',
-        'int'=>0,
-        'datetime'=>'2018-01-01 00:00',
-        'tinyint'=>0,
-        'json'=>'{}'
-    ];
     /**
      * @param $procName
      * @param null $parameters
@@ -73,95 +66,6 @@ class SDB extends DB
         $dataResult->status =\SDBStatusCode::OK;
         $dataResult->message=null;
         return $dataResult;
-    }
-    public static function generatetEntityClass($procName,$module)
-    {
-        $meta = [];
-        SDB::beginTransaction();
-        $paramInfor = SDB::execSPsToDataResultCollection('DEV_GET_PARAM_OF_SPS_LST',array($procName));
-        $param = array();
-        if($paramInfor->status !== \SDBStatusCode::DataNull){
-            foreach ($paramInfor->data as $p){
-                $pval = '';
-                if(isset(self::_defaultValue[$p->DATA_TYPE])){
-                    $pval = self::_defaultValue[$p->DATA_TYPE];
-                }
-                $param[]=$pval;
-            }
-        }
-        try{
-            $parameters = $param;
-            $syntax = '';
-            if(isset( $parameters) && is_array($parameters)){
-                for ($i = 0; $i < count($parameters); $i++) {
-                    $syntax .= (!empty($syntax) ? ',' : '') . '?';
-                }
-            }
-            $syntax = 'CALL ' . $procName . '(' . $syntax . ');';
-
-            $pdo = parent::connection()->getPdo();
-            $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
-            $stmt = $pdo->prepare($syntax,[\PDO::ATTR_CURSOR=>\PDO::CURSOR_SCROLL]);
-            if(isset( $parameters) && is_array($parameters)) {
-                for ($i = 0; $i < count($parameters); $i++) {
-                    $stmt->bindValue((1 + $i), $parameters[$i]);
-                }
-            }
-            $exec = $stmt->execute();
-            if($stmt->columnCount()>0){
-                foreach(range(0, $stmt->columnCount() - 1) as $column_index)
-                {
-                    $meta[] = $stmt->getColumnMeta($column_index);
-                }
-            }
-
-            if (!$exec) return $pdo->errorInfo();
-        }catch (\Exception $exception){
-            //Logging
-            CommonHelper::CommonLog($exception->getMessage());
-        }
-        SDB::rollBack();
-        $entitiesFolderName = "\\".$module."\\Entities";
-        $folderPath = base_path() .'/app/'. $module.'/Entities';
-        if(!empty($meta)){
-            $contentFile = "<?php \n";
-            $contentFile .= "//This is dev automatic generate \n ";
-            $contentFile .="namespace App".$entitiesFolderName."; \n";
-            $contentFile.="use App\Core\Entities\Entity; \n";
-            if (!is_dir($folderPath)) {
-                mkdir($folderPath);
-            }
-
-            $classEntityName = $procName;
-            $fileTranslate = $folderPath . '/' . $procName. '.php';
-
-            //Create file validate if not existed
-            if (file_exists($fileTranslate)) {
-                $fh = fopen($fileTranslate, 'w');
-            } else {
-                $fh = fopen($fileTranslate, 'w');
-            }
-
-            $contentFile .="class ".$classEntityName." extends Entity{\n";
-            foreach ($meta as $propVal ){
-                $contentFile.="\tpublic $".str_replace(" ","_", $propVal['name']).";\n";
-            }
-            $contentFile = $contentFile."\tpublic  function __construct(\$object){\n";
-            $contentFile = $contentFile."\t\t parent::__construct(\$object);\n";
-            $contentFile = $contentFile."\t}\n";
-
-            $contentFile .="} \n";
-
-            //Write content file
-            fwrite($fh, $contentFile);
-            fclose($fh);
-        }else{
-            $fileTranslate = $folderPath . '/' . $procName . '.php';
-            if (file_exists($fileTranslate)) {
-                unlink($fileTranslate);
-            }
-        }
-        return $meta;
     }
 
     /**

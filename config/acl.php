@@ -2,15 +2,15 @@
 //This is dev automatic generate 
  return [
 	'0'=>[
-		'auth\logincontroller\showloginform'=>'1',
-		'auth\logincontroller\login'=>'1',
-		'auth\logincontroller\logout'=>'1',
-		'auth\forgotpasswordcontroller\showlinkrequestform'=>'1',
-		'auth\forgotpasswordcontroller\sendresetlinkemail'=>'1',
+		'auth\logincontroller\showloginform'=>'0',
+		'auth\logincontroller\login'=>'0',
+		'auth\logincontroller\logout'=>'0',
+		'auth\forgotpasswordcontroller\showlinkrequestform'=>'0',
+		'auth\forgotpasswordcontroller\sendresetlinkemail'=>'0',
 		'auth\resetpasswordcontroller\showresetform'=>'0',
 		'auth\resetpasswordcontroller\reset'=>'0',
-		'auth\registercontroller\showregistrationform'=>'1',
-		'auth\registercontroller\register'=>'1',
+		'auth\registercontroller\showregistrationform'=>'0',
+		'auth\registercontroller\register'=>'0',
 		'acl\aclcontroller\index'=>'0',
 		'api\somecontroller\index'=>'0',
 		'web\homecontroller\index'=>'0',
