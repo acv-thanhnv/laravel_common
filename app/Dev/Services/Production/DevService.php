@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use App\Dev\Services\Interfaces\DevServiceInterface;
-use App\Core\Entities\DataResultCollection;
+use App\Dev\Entities\DataResultCollection;
 use Mockery\CountValidator\Exception;
 
 class DevService extends BaseService implements DevServiceInterface

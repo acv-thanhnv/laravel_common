@@ -6,7 +6,7 @@
  * Time: 10:23 AM
  */
 namespace App\Dev\Services\Interfaces;
-use App\Core\Entities\DataResultCollection;
+use App\Dev\Entities\DataResultCollection;
 
 interface DevServiceInterface
 {
