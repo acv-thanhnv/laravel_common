@@ -219,7 +219,7 @@ class DevService extends BaseService implements DevServiceInterface
     public function generationAclFile()
     {
         $roleMapScreen = $this->getRoleMapArray();
-        $fileName = 'acl';//fixed, warning: Must not dupplicate other config file, which existed.
+        $fileName = 'acl';//fixed, warning: Must not dupplicate with other config file, which existed.
         $fileAcl = base_path() . '/config/' . $fileName . '.php';
 
         //Create file validate if not existed
