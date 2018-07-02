@@ -2,11 +2,10 @@
 /**
  * @author thanhnv
  */
-namespace App\Core\Dao;
-use Illuminate\Support\Facades\Config;
+namespace App\Dev\Dao;
+use App\Dev\Entities\DataResultCollection;
 use Illuminate\Support\Facades\DB;
-use App\Core\Entities\DataResultCollection;
-use App\Core\Helpers\CommonHelper;
+use App\Dev\Helpers\CommonHelper;
 /**
  * Class SDB
  * @package App\Dao
@@ -21,12 +20,11 @@ class SDB extends DB
         'tinyint'=>0,
         'json'=>'{}'
     ];
-    /**
-     * @param $procName
-     * @param null $parameters
-     * @param bool $isExecute
-     * @return \Illuminate\Support\Collection|mixed
-     */
+    /* @param $procName
+    * @param null $parameters
+    * @param bool $isExecute
+    * @return \Illuminate\Support\Collection|mixed
+    */
     public static function execSPsToDataResultCollection($procName, $parameters = null, $isExecute = false):DataResultCollection
     {
         $results =  new \ArrayObject();
@@ -74,14 +72,20 @@ class SDB extends DB
         $dataResult->message=null;
         return $dataResult;
     }
+
+    /**
+     * @param $procName
+     * @param $module
+     * @return array
+     */
     public static function generatetEntityClass($procName,$module)
     {
         $meta = [];
         SDB::beginTransaction();
-        $paramInfor = SDB::execSPsToDataResultCollection('DEV_GET_PARAM_OF_SPS_LST',array($procName));
+        $paramInfor = SDB::execSPs('DEV_GET_PARAM_OF_SPS_LST',array($procName));
         $param = array();
-        if($paramInfor->status !== \SDBStatusCode::DataNull){
-            foreach ($paramInfor->data as $p){
+        if(!empty($paramInfor)){
+            foreach ($paramInfor as $p){
                 $pval = '';
                 if(isset(self::_defaultValue[$p->DATA_TYPE])){
                     $pval = self::_defaultValue[$p->DATA_TYPE];
@@ -131,7 +135,10 @@ class SDB extends DB
             if (!is_dir($folderPath)) {
                 mkdir($folderPath);
             }
-
+            $folderPath  .='/Single';
+            if (!is_dir($folderPath)) {
+                mkdir($folderPath);
+            }
             $classEntityName = $procName;
             $fileTranslate = $folderPath . '/' . $procName. '.php';
 

@@ -6,28 +6,15 @@
  * Time: 10:28 AM
  */
 
-namespace App\Dev\Services\Production;
+namespace App\Acl\Services\Production;
 
-use App\Dev\Dao\SDB;
+use App\Core\Dao\SDB;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
-use App\Dev\Services\Interfaces\DevServiceInterface;
-use App\Core\Entities\DataResultCollection;
-use Mockery\CountValidator\Exception;
+use App\Acl\Services\Interfaces\AclServiceInterface;
 
-class DevService extends BaseService implements DevServiceInterface
+class AclService extends BaseService implements AclServiceInterface
 {
-    public function getLanguageCodeList():DataResultCollection
-    {
-        $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
-        return $lang;
-    }
-
-    public function getTranslateList($translateType, $lang):DataResultCollection
-    {
-        return SDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, $lang));
-    }
 
     /**
      * @param $translateType
@@ -65,10 +52,7 @@ class DevService extends BaseService implements DevServiceInterface
         return $resuiltArr;
     }
 
-    public function getCategoryWithLevelList():DataResultCollection
-    {
-        return SDB::execSPsToDataResultCollection('GET_CATEGORY_WITH_LEVEL_LIST');
-    }
+
 
     public function getRoleInfoFromDB()
     {
@@ -252,51 +236,6 @@ class DevService extends BaseService implements DevServiceInterface
         return $resultArray;
     }
 
-    /**
-     * innitization role in database
-     * @return bool
-     *
-     */
-    public function initRoleDataToDB(){
-        $data = $this->getListScreen();
-        $systemAdminRole = Config::get('app.SYSTEM_ADMIN_ROLE_VALUE');
-        $roleList = $this->getRoleList();
-        //Insert sys screen data
-        SDB::table('sys_screens')->truncate();
-        SDB::table('sys_screens')->insert($data);
-
-        //Insert dev module data
-        $this->importModuleListToDB();
-
-        //Mapping role with screen
-        SDB::table('sys_role_map_screen')->truncate();
-        $id = 0;
-        $dataRolesMapping = array();
-        if(!empty($roleList)){
-            foreach ($roleList as $role) {
-                if(!empty($data)){
-                    foreach ($data as $item) {
-                        $id++;
-                        $isActive = 0;
-                        if ($role->role_value == $systemAdminRole) {
-                            $isActive = 1;
-                        }
-                        $dataRolesMapping[] = array(
-                            'id' => $id,
-                            'role_value' => $role->role_value,
-                            'screen_id' => $item['id'],
-                            'is_active' => $isActive
-                        );
-                    }
-                }
-
-            }
-
-        }
-
-        SDB::table('sys_role_map_screen')->insert($dataRolesMapping);
-        return true;
-    }
 
     /**
      * @return array
@@ -312,74 +251,6 @@ class DevService extends BaseService implements DevServiceInterface
     }
 
 
-    /**
-     * @return array
-     * generation screens list, insert to database and innitization system administrator role.
-     */
-    public function generationTransDataToDB()
-    {
-        $dir = base_path() . '/resources/lang';
-        $langList = array_diff(scandir($dir), array('..', '.'));
-        $id = 0;
-        SDB::execSPsToDataResultCollection('DEV_BACKUP_TRANSLATE_ACT');
-        SDB::table('dev_translation')->truncate();
-        if (!empty($langList)) {
-            foreach ($langList as $lang) {
-                $dir = base_path() . '/resources/lang/' . $lang;
-                $typeTranslateList = array_diff(scandir($dir), array('..', '.'));
-                Lang::setLocale($lang);
-                if (!empty($typeTranslateList)) {
-                    foreach ($typeTranslateList as $translateFileName) {
-                        $typeTranslate = str_replace('.php', '', $translateFileName);
-                        $tran = Lang::get($typeTranslate);
-                        $dataTrans = array();
-                        if (is_array($tran)&&!empty($tran)) {
-                            foreach ($tran as $tranItemKey => $tranItemValue) {
-                                if (!is_array($tranItemValue)) {
-                                    $id++;
-                                    $dataTrans[] = array(
-                                        'id' => $id,
-                                        'lang_code' => strtolower($lang),
-                                        'input_type' => '',
-                                        'code' => $tranItemKey,
-                                        'text' => $tranItemValue,
-                                        'translate_type' => $typeTranslate,
-                                        'created_at' => now(),
-                                        'is_deleted' => 0
-                                    );
-                                } else {
-                                    if (is_array($tranItemValue) && !empty($tranItemValue)) {
-                                        foreach ($tranItemValue as $inputTypeKey => $inputValueMss) {
-                                            if (!is_array($inputValueMss)) {
-                                                $id++;
-                                                $dataTrans[] = array(
-                                                    'id' => $id,
-                                                    'lang_code' => strtolower($lang),
-                                                    'input_type' => $inputTypeKey,
-                                                    'code' => $tranItemKey,
-                                                    'text' => $inputValueMss,
-                                                    'translate_type_code' => $typeTranslate,
-                                                    'created_at' => now(),
-                                                    'is_deleted' => 0
-                                                );
-                                            }
-
-                                        }
-                                    }
-
-                                }
-
-                            }
-                        }
-                        if (!empty($dataTrans)) {
-                            SDB::table('dev_translation')->insert($dataTrans);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public function updateActiveAcl($roleMapId, $isActive)
     {
         SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
@@ -388,35 +259,7 @@ class DevService extends BaseService implements DevServiceInterface
     {
         SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ALL_ACT", array($isActive));
     }
-    public function updateTranslateText($id, $transText)
-    {
-        SDB::execSPsToDataResultCollection("DEV_TRANSLATE_UPDATE_TEXT_ACT", array($id, $transText));
-    }
 
-    public function insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans)
-    {
-        return SDB::execSPsToDataResultCollection("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));
-    }
-    public function generateEntityClass(){
-        $moduleName = 'Dev';
-        try{
-            $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
-            if($spsList->status==\SDBStatusCode::OK){
-                foreach ($spsList->data as $row){
-                    SDB::generatetEntityClass($row->Name,$moduleName);
-                }
-            }
-        }catch (Exception $e){
-            CommonHelper::CommonLog($e->getMessage());
-        }
-    }
-    public function generateSpecEntityClass($spName,$moduleName){
-        SDB::generatetEntityClass($spName,$moduleName);
-    }
-    public function getAllSPList():DataResultCollection{
-        $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
-        return $spsList;
-    }
     public function getRoleList(){
         $roleList = SDB::execSPs('DEV_GET_ROLES_LST');
         return $roleList;
@@ -494,18 +337,10 @@ class DevService extends BaseService implements DevServiceInterface
         }
         SDB::table('dev_modules')->insert($dataModule);
     }
-    /**
-     * @return array|mixed
-     */
-    protected function getCatagoryList()
-    {
-        $categoryData = SDB::execSPsToDataResultCollection('GET_CATEGORY_LST');
-        return $categoryData;
-    }
 
     public function test()
     {
-       echo 'dev.test';
+       echo 'acl.test';
     }
 }
 

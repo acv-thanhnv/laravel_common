@@ -34,7 +34,7 @@ interface DevServiceInterface
     public function updateTranslateText($id,$transText);
     function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans);
     public function generateEntityClass();
-    public function generateSpecEntityClass($spName);
+    public function generateSpecEntityClass($spName,$moduleName);
     public function getRoleList();
     public function getModuleList();
 }

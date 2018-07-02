@@ -4,14 +4,11 @@
  */
 
 namespace App\Dev\Http\Controllers;
-use App\Core\Dao\SDB;
 use App\Dev\Rules\UpperCaseRule;
 use App\Dev\Services\Interfaces\DevServiceInterface;
 use Illuminate\Http\Request;
 use App\Dev\Helpers\CommonHelper;
-use Illuminate\Support\Facades\Log;
 use Validator;
-use Illuminate\Support\Facades\Route;
 
 class DevController extends Controller
 {
@@ -182,8 +179,9 @@ class DevController extends Controller
     }
     public function generateOneEntity(Request $request)
     {
+        $module = "Dev";
         $spName = $request->input('name');
-        $this->devService->generateSpecEntityClass($spName);
+        $this->devService->generateSpecEntityClass($spName,$module);
     }
     public function doc(){
         return view("dev/document");

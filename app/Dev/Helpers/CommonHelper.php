@@ -48,4 +48,12 @@ class CommonHelper
 
         return $result;
     }
+    public static function CommonLog($message){
+        //Logging
+        if(env('APP_DEBUG')==true){
+            abort($message);
+        }else{
+            Log::error($message);
+        }
+    }
 }
