@@ -14,7 +14,6 @@ interface AclServiceInterface
     public function getRoleMapArray();
     public function generationAclFile();
     public function getConfigDataFromFile($name);
-    public function generationRoleDataToDB();
 
     public function updateActiveAcl($roleMapId,$isActive);
     public function updateActiveAclAll($isActive);

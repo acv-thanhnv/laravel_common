@@ -130,10 +130,6 @@
                     </fieldset>
                     <div class="col-md-12 padding-left-0">
                         <div class="function pull-left padding-left-0 col-md-6">
-                            <button id="refresh" class="btn btn-primary">Synchronously <span
-                                        class="glyphicon glyphicon-refresh"></span></button>
-                            <button id="generation" class="btn btn-primary">Generate to config file <span
-                                        class="glyphicon glyphicon-file"></span></button>
 
                         </div>
                         <div class="function text-right col-md-6">

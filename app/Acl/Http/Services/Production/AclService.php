@@ -16,139 +16,9 @@ use App\Acl\Services\Interfaces\AclServiceInterface;
 class AclService extends BaseService implements AclServiceInterface
 {
 
-    /**
-     * @param $translateType
-     * @return array
-     * HELPER: Get data translated text by type ( validation, auth, label...)
-     */
-    public function getTranslateMessageArray($translateType = '')
-    {
-        $resuiltArr = [];
-        $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
-        if ($lang->status==\SDBStatusCode::OK) {
-
-            foreach ($lang->data as $item) {
-                $resuiltArr[$item->code] = array();
-            }
-            $rules = SDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, ''));
-
-            if (!empty($resuiltArr)) {
-                foreach ($resuiltArr as $itemKey => $itemValue) {
-                    if ($rules->status==\SDBStatusCode::OK) {
-                        foreach ($rules->data as $ruleItem) {
-                            if ($itemKey == $ruleItem->lang_code) {
-                                if ($ruleItem->type_code == '') {
-                                    $resuiltArr[$itemKey][$ruleItem->code] = $ruleItem->text;
-                                } else {
-                                    $resuiltArr[$itemKey][$ruleItem->code][$ruleItem->type_code] = $ruleItem->text;
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-        return $resuiltArr;
-    }
-
-
-
     public function getRoleInfoFromDB()
     {
-        return SDB::execSPs('DEV_GET_ROLES_MAP_ACTION_LST');
-    }
-
-    /**
-     * @param $validateArray
-     * @param $fileName
-     * HELPER: Generation Config File contain text translated.
-     */
-    public function generationTranslateFile($translateType, $fileName)
-    {
-        $validateArray = $this->getTranslateMessageArray($translateType);
-        $folderLangPath = base_path() . '/resources/lang/';
-        foreach ($validateArray as $langCode => $langGroupContent) {
-            $langFolder = strtolower($folderLangPath . $langCode);
-            if (!is_dir($langFolder)) {
-                mkdir($langFolder);
-            }
-            $fileTranslate = $langFolder . '/' . $fileName . '.php';
-
-            //Create file validate if not existed
-            if (file_exists($fileTranslate)) {
-                $fh = fopen($fileTranslate, 'w');
-            } else {
-                $fh = fopen($fileTranslate, 'w');
-            }
-            $contentFile = "<?php \n";
-            $contentFile .= "//This is dev automatic generate \n ";
-            //Generate content file
-            if (!empty($langGroupContent)) {
-                $contentFile .= "return [\n";
-                if (!empty($langGroupContent)) {
-                    foreach ($langGroupContent as $keycode => $value) {
-                        if (!is_array($value)) {
-                            $contentFile .= "\t" . '"' . $keycode . '"=>"' . $value . '"' . ",\n";
-                        } else {
-                            $contentFile .= "\t'" . $keycode . "'=>[\n";
-
-                            if (!empty($value)) {
-                                foreach ($value as $inputType => $text) {
-                                    $contentFile .= "\t\t" . '"' . $inputType . '"=>"' . $text . '"' . ",\n";
-                                }
-                            }
-                            $contentFile .= "\t],\n";
-                        }
-                    }
-                }
-                $contentFile .= '];';
-            }
-            //Write content file
-            fwrite($fh, $contentFile);
-            fclose($fh);
-        }
-    }
-
-    /**
-     * @param $validateArray
-     * @param $fileName
-     * HELPER: Generation Javascript File contain text translated.
-     */
-    public function generationTranslateScript($translateType, $fileName)
-    {
-        $validateArray = $this->getTranslateMessageArray($translateType);
-        $folderLangPath = base_path() . '/public/js/' . $fileName . '.js';
-        //Create file validate if not existed
-        if (file_exists($folderLangPath)) {
-            $fh = fopen($folderLangPath, 'w');
-        } else {
-            $fh = fopen($folderLangPath, 'w');
-        }
-        $contentFile = "//This is dev automatic generate \n ";
-        $contentFile .= "var _validateMessage = \n";
-        $txt = json_encode($validateArray);
-        $contentFile .= $txt . ';';
-        //Write content file
-        fwrite($fh, $contentFile);
-        fclose($fh);
-
-    }
-
-    public function generationTranslateFileAndScript()
-    {
-        $transTypeList = SDB::execSPsToDataResultCollection("DEV_GET_TRANSLATION_TYPE_LST");
-        if ($transTypeList->status==\SDBStatusCode::OK) {
-            foreach ($transTypeList->data as $item) {
-                $this->generationTranslateScript($item->code, $item->code);
-                $this->generationTranslateFile($item->code, $item->code);
-            }
-        }
-    }
-
-    public function getNewTransComboList()
-    {
-        return SDB::execSPs('DEV_ADD_TRANSLATE_COMBO_LST');
+        return SDB::execSPs('ACL_GET_ROLES_MAP_ACTION_LST');
     }
 
     /**
@@ -158,7 +28,7 @@ class AclService extends BaseService implements AclServiceInterface
     public function getRoleMapArray()
     {
         $resultArr = [];
-        $roleInfo = SDB::execSPs('DEV_GET_ROLES_MAP_ACTION_LST');
+        $roleInfo = SDB::execSPs('ACL_GET_ROLES_MAP_ACTION_LST');
         if (!empty($roleInfo)) {
             $roles = $roleInfo[0];
             $roleMap = $roleInfo[1];
@@ -237,35 +107,21 @@ class AclService extends BaseService implements AclServiceInterface
     }
 
 
-    /**
-     * @return array
-     * generation screens list, insert role map screen and merger role to database.
-     */
-    public function generationRoleDataToDB()
-    {
-        //Insert dev module data
-        $this->importModuleListToDB();
-        $data = $this->getListScreen();
-        SDB::execSPs('DEV_IMPORT_AND_MERGER_ROLE_ACT',array(json_encode($data)));
-        return true;
-    }
-
-
     public function updateActiveAcl($roleMapId, $isActive)
     {
-        SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
+        SDB::execSPsToDataResultCollection("ACL_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
     }
     public function updateActiveAclAll($isActive)
     {
-        SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ALL_ACT", array($isActive));
+        SDB::execSPsToDataResultCollection("ACL_ROLE_UPDATE_ACTIVE_ALL_ACT", array($isActive));
     }
 
     public function getRoleList(){
-        $roleList = SDB::execSPs('DEV_GET_ROLES_LST');
+        $roleList = SDB::execSPs('ACL_GET_ROLES_LST');
         return $roleList;
     }
     public function getModuleList(){
-        $moduleList = SDB::execSPs('DEV_GET_MODULES_LST');
+        $moduleList = SDB::execSPs('ACL_GET_MODULES_LST');
         return $moduleList;
     }
     /**

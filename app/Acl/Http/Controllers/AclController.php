@@ -50,7 +50,7 @@ class AclController extends Controller
         return CommonHelper::convertVaidateErrorToCommonStruct(array());
     }
     public function userAcl(){
-        return view("dev/useracl");
+        return view("acl/useracl");
     }
     public function test()
     {

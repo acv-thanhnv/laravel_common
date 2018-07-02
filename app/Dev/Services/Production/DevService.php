@@ -67,7 +67,7 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function getCategoryWithLevelList():DataResultCollection
     {
-        return SDB::execSPsToDataResultCollection('GET_CATEGORY_WITH_LEVEL_LIST');
+        return SDB::execSPsToDataResultCollection('DEV_GET_CATEGORY_WITH_LEVEL_LIST');
     }
 
     public function getRoleInfoFromDB()
@@ -499,7 +499,7 @@ class DevService extends BaseService implements DevServiceInterface
      */
     protected function getCatagoryList()
     {
-        $categoryData = SDB::execSPsToDataResultCollection('GET_CATEGORY_LST');
+        $categoryData = SDB::execSPsToDataResultCollection('DEV_GET_CATEGORY_LST');
         return $categoryData;
     }
 
