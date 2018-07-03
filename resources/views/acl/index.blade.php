@@ -1,4 +1,4 @@
-@extends('layouts.dev')
+@extends('layouts.app')
 @section('content')
     <style>
         /* The switch - the box around the slider */
