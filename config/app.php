@@ -1,6 +1,6 @@
 <?php
 
-return [
+$appConfig = [
     /**
      * Developer config
      */
@@ -164,11 +164,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Core\Providers\EventServiceProvider::class,
         App\Core\Providers\RouteServiceProvider::class,
-        /**
-         * Dev module provider...
-         * @author thanhnv
-         */
-        App\Dev\Providers\DevServiceProvider::class,
+
         /**
          * Acl module provider...
          * @author thanhnv
@@ -225,3 +221,7 @@ return [
     ],
 
 ];
+if(class_exists (App\Dev\Providers\DevServiceProvider::class) && ! in_array(App\Dev\Providers\DevServiceProvider::class,$appConfig["providers"])){
+    $appConfig["providers"][]=App\Dev\Providers\DevServiceProvider::class;
+}
+return $appConfig;
