@@ -12,6 +12,7 @@ class CommonHelper
     public static function CommonLog($message){
         //Logging
         if(env('APP_DEBUG')==true){
+           die($message);
             abort($message);
         }else{
             Log::error($message);

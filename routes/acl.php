@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Acl Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -17,4 +17,5 @@
  */
     Route::get('/acl', 'AclController@index')->name('acl_index');
 
-
+    Route::post('/acl/updateAclActive', 'AclController@updateAclActive')->name('acl_updateAclActive');
+    Route::post('/acl/updateAclActiveAll', 'AclController@updateAclActiveAll')->name('acl_updateAclActiveAll');

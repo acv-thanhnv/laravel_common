@@ -58,6 +58,7 @@ class SDB extends DB
                 $dataResult->status = \SDBStatusCode::DataNull;
             }
         }catch (\Exception $exception){
+            echo $exception->getMessage();die;
             $dataResult->status =\SDBStatusCode::Excep;
             $dataResult->message = $exception->getMessage();
             //Logging

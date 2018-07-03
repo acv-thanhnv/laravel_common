@@ -229,10 +229,13 @@
                     role_map_id: $(this).data('role_map_id')
                 };
                 $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     data: data,
                     type: 'Post',
                     dataType: 'json',
-                    url: "<?php echo @route('updateAclActive')?>",
+                    url: "<?php echo @route('acl_updateAclActive')?>",
                     success: function (result) {
                     }
                 });
@@ -243,10 +246,13 @@
                     active: checked
                 };
                 $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     data: data,
                     type: 'Post',
                     dataType: 'json',
-                    url: "<?php echo @route('updateAclActiveAll')?>",
+                    url: "<?php echo @route('acl_updateAclActiveAll')?>",
                     success: function (result) {
                         $('#cb-role').val('');
                         $('#cb-module').val('');
@@ -266,39 +272,7 @@
                 });
             });
 
-            $(document).on('click', '#generation', function () {
-                $.ajax({
-                    type: 'Post',
-                    url: "<?php echo @route('generationAclFile')?>",
-                    success: function (result) {
-                        $.alert(
-                            {
-                                title: 'Alert!',
-                                content: 'Gennerated!',
-                            }
-                        );
-                    }
-                });
-            });
-            $(document).on('click', '#refresh', function () {
-                $.ajax({
-                    type: 'Post',
-                    url: "<?php echo @route('refreshAclInDB')?>",
-                    success: function (result) {
-                        $.alert(
-                                {
-                                    title: 'Alert!',
-                                    content: 'Synchronized!',
-                                    buttons: {
-                                        ok: function(){
-                                            location.reload();
-                                        }
-                                    }
-                                }
-                        );
-                    }
-                });
-            });
+
         });
 
 

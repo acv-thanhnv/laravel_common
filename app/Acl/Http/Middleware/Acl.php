@@ -27,7 +27,6 @@ class Acl
             $roleId = Auth::user()->role_value;
         }
         $curentActionInfo = Route::getCurrentRoute()->getAction();
-        Log::debug($curentActionInfo);
         $module = strtolower(trim(str_replace('App\\', '', $curentActionInfo['namespace']), '\\'));
         $module =  explode("\\",$module)[0];
         $_action =isset($curentActionInfo['controller'])? explode('@', $curentActionInfo['controller']):array();

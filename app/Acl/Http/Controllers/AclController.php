@@ -37,8 +37,9 @@ class AclController extends Controller
         if (isset($active) && strtolower($active) == 'true') {
             $isActive = 1;
         }
-        $this->service->updateActiveAcl($roleMapId, $isActive);
-        return CommonHelper::convertVaidateErrorToCommonStruct(array());
+        $result = $this->service->updateActiveAcl($roleMapId, $isActive);
+        print_r($result);die();
+        return CommonHelper::convertVaidateErrorToCommonStruct($result->data);
     }
     public function updateAclActiveAll(Request $request){
         $active = $request->input('active');
