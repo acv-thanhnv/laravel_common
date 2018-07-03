@@ -97,9 +97,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapDevRoutes()
     {
-        Route::middleware('dev')
-            ->namespace('App\Dev\Http\Controllers')
-            ->group(base_path('routes/dev.php'));
+        if(file_exists (base_path('routes/dev.php'))){
+            Route::middleware('dev')
+                ->namespace('App\Dev\Http\Controllers')
+                ->group(base_path('routes/dev.php'));
+        }
     }
     /**
      * Define the "dev" routes for the application.
