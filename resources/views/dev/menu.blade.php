@@ -40,17 +40,17 @@
                         $prevLevel = 0;
                         $count = count($dataCategory);
                         for($i = 0;$i < $count ; $i++){
-                        if($dataCategory[$i]->level == $prevLevel){?>
-                        <li data-level="<?php echo $dataCategory[$i]->level; ?>"><?php echo $dataCategory[$i]->name; ?></li>
-                        <?php }else if($dataCategory[$i]->level > $prevLevel){?>
+                        if($dataCategory[$i]->level_value == $prevLevel){?>
+                        <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><?php echo $dataCategory[$i]->name; ?></li>
+                        <?php }else if($dataCategory[$i]->level_value > $prevLevel){?>
                         <ul>
-                            <li data-level="<?php echo $dataCategory[$i]->level; ?>"><?php echo $dataCategory[$i]->name; ?></li>
+                            <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><?php echo $dataCategory[$i]->name; ?></li>
                             <?php }else{?>
                         </ul>
-                        <li data-level="<?php echo $dataCategory[$i]->level; ?>"><?php echo $dataCategory[$i]->name; ?></li>
+                        <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><?php echo $dataCategory[$i]->name; ?></li>
                         <?php }?>
                         <?php
-                        $prevLevel = $dataCategory[$i]->level;
+                        $prevLevel = $dataCategory[$i]->level_value;
                         }
                         ?>
                     </ul>
@@ -64,7 +64,7 @@
                         $count = count($dataCategory);
                         for($i = 0;$i < $count ; $i++){?>
                         <li class="list-group-item node-treeview6" >
-                        <?php for($j = 1;$j <= $dataCategory[$i]->level;$j++){ ?>
+                        <?php for($j = 1;$j <= $dataCategory[$i]->level_value;$j++){ ?>
                         <span class="indent"></span>
                         <?php } ?>
                             <span class="icon glyphicon"></span>

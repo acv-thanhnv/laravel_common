@@ -158,7 +158,7 @@ class DEVDB extends DB
             if (!$exec) return $pdo->errorInfo();
         } catch (\Exception $exception) {
             //Logging
-            CommonHelper::CommonLog(print_r($exception,true));
+            CommonHelper::CommonLog($exception->getMessage());
         }
         self::createFile($meta,$tableName,$module);
         return $meta;

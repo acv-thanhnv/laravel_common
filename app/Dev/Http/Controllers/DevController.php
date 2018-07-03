@@ -179,7 +179,6 @@ class DevController extends Controller
     }
     public function generateOneEntity(Request $request)
     {
-        $module = "Dev";
         $spName = $request->input('name');
         $this->devService->generateSpecEntityClass($spName);
     }
