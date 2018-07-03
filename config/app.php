@@ -1,6 +1,6 @@
 <?php
 
-$appConfig = [
+return [
     /**
      * Developer config
      */
@@ -153,10 +153,6 @@ $appConfig = [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
-         * Package Services Providers...
-         */
-
-        /*
          * Application Services Providers...
          */
         App\Core\Providers\AppServiceProvider::class,
@@ -166,10 +162,10 @@ $appConfig = [
         App\Core\Providers\RouteServiceProvider::class,
 
         /**
-         * Acl module provider...
-         * @author thanhnv
+         * custom Provider
          */
-        App\Acl\Providers\AclServiceProvider::class,
+        App\Dev\Providers\DevServiceProvider::class,
+        App\Acl\Providers\AclServiceProvider::class
     ],
 
     /*
@@ -221,7 +217,3 @@ $appConfig = [
     ],
 
 ];
-if(class_exists (App\Dev\Providers\DevServiceProvider::class) && ! in_array(App\Dev\Providers\DevServiceProvider::class,$appConfig["providers"])){
-    $appConfig["providers"][]=App\Dev\Providers\DevServiceProvider::class;
-}
-return $appConfig;
