@@ -156,7 +156,6 @@ return [
          * Application Services Providers...
          */
         App\Core\Providers\AppServiceProvider::class,
-        App\Auth\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Core\Providers\EventServiceProvider::class,
 
@@ -171,6 +170,11 @@ return [
         App\Dev\Providers\RouteServiceProvider::class,
 
         /**
+         * Auth
+         */
+        App\Auth\Providers\AuthServiceProvider::class,
+        App\Auth\Providers\RouteServiceProvider::class,
+        /**
          * Acl
          */
         App\Acl\Providers\AclServiceProvider::class,
@@ -179,7 +183,11 @@ return [
         /**
          * API
          */
-        App\Api\Providers\RouteServiceProvider::class
+        App\Api\Providers\RouteServiceProvider::class,
+         /**
+          * Web
+          */
+        App\Web\Providers\RouteServiceProvider::class
     ],
 
     /*
