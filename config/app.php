@@ -159,13 +159,27 @@ return [
         App\Auth\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Core\Providers\EventServiceProvider::class,
-        App\Core\Providers\RouteServiceProvider::class,
+
 
         /**
          * custom Provider
          */
+        /**
+         * DEV module
+         */
         App\Dev\Providers\DevServiceProvider::class,
-        App\Acl\Providers\AclServiceProvider::class
+        App\Dev\Providers\RouteServiceProvider::class,
+
+        /**
+         * Acl
+         */
+        App\Acl\Providers\AclServiceProvider::class,
+        App\Acl\Providers\RouteServiceProvider::class,
+
+        /**
+         * API
+         */
+        App\Api\Providers\RouteServiceProvider::class
     ],
 
     /*
