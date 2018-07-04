@@ -2,7 +2,7 @@
 
 namespace App\Auth\Http\Controllers;
 
-use App\Auth\User;
+use App\Auth\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -68,17 +68,13 @@ class LoginController extends Controller
             $this->fireLockoutEvent($request);
             return $this->sendLockoutResponse($request);
         }
-        // Customization: Validate if client status is active (1)
         if ($this->attemptLogin($request)) {
-            return $this->sendLoginResponse($request);
+            $response  = $request;
+            $response['login_token'] =$this->generateTokenLogin();
+            return $this->sendLoginResponse($response);
         }
-        // Customization: Validate if client status is active (1)
         $email = $request->get($this->username());
-        // Customization: It's assumed that email field should be an unique field
         $client = User::where($this->username(), $email)->first();
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
         // Customization: If client status is inactive (0) return failed_status error.
         if ($client->is_active === 0) {
@@ -128,6 +124,10 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         return redirect(route('home'));
+    }
+    protected function generateTokenLogin(){
+        $token_code = makeRandomTokenKey();
+        return $token_code;
     }
 
 }
