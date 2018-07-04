@@ -12,14 +12,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your Api!
 |
 */
+Route::get('/some', 'SomeController@index')->name('testindex');
+Route::get('/api/blog', 'BlogController@index')->name('api.blog');
+//Route::get('/api/login', 'LoginController@showLoginForm')->name('login');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-/**
- * Api
- */
-Route::group(['namespace' => 'Api','middleware' => ['acl']], function () {
-    //Router config here...
-    Route::get('/some', 'SomeController@index')->name('testindex');
-});

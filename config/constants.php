@@ -15,3 +15,7 @@ return [
     'exception_error_code'=>-9999,
     'success_code'=>0
 ];
+
+class ApiConst{
+    const ApiLoginTokenName='api_login_token';
+}

@@ -48,9 +48,11 @@ class Kernel extends HttpKernel
             \App\Acl\Http\Middleware\Acl::class,
         ],
         'api' => [
+          //  'throttle:60,1',
+         //   'bindings',
+          //  \App\Api\Http\Middleware\Authenication::class
             'throttle:60,1',
             'bindings',
-            \App\Acl\Http\Middleware\Acl::class,
         ],
         'dev' => [
             //Not use middleware, pass all filter

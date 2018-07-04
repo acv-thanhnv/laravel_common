@@ -69,9 +69,7 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
         if ($this->attemptLogin($request)) {
-            $response  = $request;
-            $response['login_token'] =$this->generateTokenLogin();
-            return $this->sendLoginResponse($response);
+            return $this->sendLoginResponse($request);
         }
         $email = $request->get($this->username());
         $client = User::where($this->username(), $email)->first();
@@ -81,15 +79,6 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request, 'auth.not_active');
         }
         return $this->sendFailedLoginResponse($request);
-    }
-    public function authenticate(Request $request)
-    {
-        if (Auth::attempt($this->credentials)) {
-            // Authentication passed...
-            return redirect()->intended('dashboard');
-        }else{
-            return redirect()->intended('dev');
-        }
     }
     /**
      * Get the failed login response instance.
@@ -125,9 +114,4 @@ class LoginController extends Controller
 
         return redirect(route('home'));
     }
-    protected function generateTokenLogin(){
-        $token_code = makeRandomTokenKey();
-        return $token_code;
-    }
-
 }
