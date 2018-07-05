@@ -82,16 +82,16 @@
                         <li class="nav-item">
                             <a class="nav-link font-weight-bold" href="{{ route('translationManagement') }}">Translation</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link font-weight-bold" href="{{ route('menu') }}">Categories</a>
-                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link font-weight-bold" href="{{ route('aclManangement') }}">Acl - Roles</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link font-weight-bold" href="{{ route('userAcl') }}">User - Roles</a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold" href="{{ route('menu') }}">Categories</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link font-weight-bold" href="{{ route('doc') }}">Document</a>
                         </li>

@@ -93,7 +93,7 @@ class DevController extends Controller
         $this->devService->generationTranslateFileAndScript();
     }
     public function refreshAclDB(){
-        $this->devService->generationRoleDataToDB();
+       $this->devService->generationRoleDataToDB();
     }
 
     public function readAclConfig()

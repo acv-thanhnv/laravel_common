@@ -318,6 +318,7 @@ class DevService extends BaseService implements DevServiceInterface
         //Insert dev module data
         $this->importModuleListToDB();
         $data = $this->getListScreen();
+       ////echo json_encode($data);die;
         DEVDB::execSPs('DEV_IMPORT_AND_MERGER_ROLE_ACT',array(json_encode($data)));
         return true;
     }
