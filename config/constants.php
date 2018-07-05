@@ -7,8 +7,10 @@
  */
 class SDBStatusCode{
     const OK = '01';
-    const Excep = '05';
     const DataNull = '07';
+    const Excep = '05';
+    const ApiError = '09';
+    const WebError = '10';
 }
 return [
     'from_validate_error_code'=>-9998,

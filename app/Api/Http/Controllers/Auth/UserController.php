@@ -4,6 +4,8 @@ namespace App\Api\Http\Controllers\Auth;
 
 use App\Api\Http\Controllers\Controller;
 use App\Core\Dao\SDB;
+use App\Core\Helpers\CommonHelper;
+use App\Core\Entities\DataResultCollection;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -20,33 +22,37 @@ class UserController extends Controller
     public function register(Request $request){
         $user = $this->user->create([
             'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-            'updated_at'=>now(),
-            'created_at'=>now()
+            'password' => Hash::make($request->get('password'))
         ]);
 
-        return response()->json([
-            'status'=> 200,
-            'message'=> 'User created successfully',
-            'data'=>$user
-        ]);
+        $resultData =  new DataResultCollection();
+        $resultData->status=\SDBStatusCode::OK;
+        $resultData->data = $user;
+        $resultData->message = 'User created successfully';
+        return CommonHelper::JsonDataResult($resultData);
     }
 
     public function login(Request $request){
         $credentials = $request->only('email', 'password');
         $token = null;
+        $resultData =  new DataResultCollection();
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['invalid_email_or_password'], 422);
+                $resultData->status = \SDBStatusCode::ApiError;
+                $resultData->data = ['message'=>trans('invalid_email_or_password')];
+                return CommonHelper::JsonDataResult($resultData);
             }
         } catch (JWTAuthException $e) {
-            return response()->json(['failed_to_create_token'], 500);
+            $resultData->status = \SDBStatusCode::Excep;
+            $resultData->data = ['message'=>trans('false_to_create_token')];
         }
-        return response()->json(compact('token'));
+        $resultData->status=\SDBStatusCode::OK;
+        $resultData->data=array('token'=>$token);
+        return CommonHelper::JsonDataResult($resultData);
     }
 
     public function getUserInfo(Request $request){
-        $result =  SDB::execSPs('ACL_GET_MODULES_LST');
-        return response()->json(['result' => $result]);
+        $result =  SDB::execSPsToDataResultCollection('ACL_GET_MODULES_LST');
+        return CommonHelper::JsonDataResult($result);
     }
 }

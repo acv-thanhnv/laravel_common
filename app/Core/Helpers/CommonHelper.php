@@ -6,6 +6,7 @@ namespace App\Core\Helpers;
  * Date: 6/30/2018
  * Time: 2:05 AM
  */
+use App\Core\Entities\DataResultCollection;
 use Illuminate\Support\Facades\Log;
 class CommonHelper
 {
@@ -17,5 +18,8 @@ class CommonHelper
         }else{
             Log::error($message);
         }
+    }
+    public static function JsonDataResult(DataResultCollection $data){
+        return json_encode($data);
     }
 }
