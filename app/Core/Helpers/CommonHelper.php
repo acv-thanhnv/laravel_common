@@ -20,6 +20,7 @@ class CommonHelper
         }
     }
     public static function JsonDataResult(DataResultCollection $data){
-        return json_encode($data);
+        return response()->json($data);
     }
+
 }

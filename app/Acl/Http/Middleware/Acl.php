@@ -3,6 +3,8 @@
  * @author thanhnv
  */
 namespace App\Acl\Http\Middleware;
+use App\Core\Helpers\CommonHelper;
+use App\Core\Entities\DataResultCollection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
@@ -51,7 +53,10 @@ class Acl
         if($mod == 'Web'){
             return redirect('/');
         }else{
-            return response()->json(['error'=> trans('acl_not_access')]);
+            $result = new DataResultCollection();
+            $result->status = \SDBStatusCode::ACLNotPass;
+            $result->data=array('error'=> trans('acl_not_access'));
+            return CommonHelper::JsonDataResult($result);
         }
 
     }

@@ -11,6 +11,7 @@ class SDBStatusCode{
     const Excep = '05';
     const ApiError = '09';
     const WebError = '10';
+    const ACLNotPass = '11';
 }
 return [
     'from_validate_error_code'=>-9998,
