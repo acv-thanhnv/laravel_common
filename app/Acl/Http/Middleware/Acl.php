@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
+use JWTAuth;
 use Closure;
 
 class Acl
@@ -22,9 +23,18 @@ class Acl
     {
         $publicRole = Config::get('app.PUBLIC_ROLE_VALUE');
         $roleId = $publicRole;
-        $screenCode = '';
+        $mod = 'Web';
         if(Auth::check()){
             $roleId = Auth::user()->role_value;
+        }else if(isset($request->token)){
+            try{
+                $mod = 'Api';
+                $currentUser = JWTAuth::toUser($request->input('token'));
+                $roleId = $currentUser->role_value;
+
+            }catch (\Exception $e){
+                //don't handler
+            }
         }
         $curentActionInfo = Route::getCurrentRoute()->getAction();
         $module = strtolower(trim(str_replace('App\\', '', $curentActionInfo['namespace']), '\\'));
@@ -38,7 +48,12 @@ class Acl
         if ($this->hasAcl($roleId,$screenCode)==true ) {
             return $next($request);
         }
-        return redirect('/');
+        if($mod == 'Web'){
+            return redirect('/');
+        }else{
+            return response()->json(['error'=> trans('acl_not_access')]);
+        }
+
     }
 
     /**

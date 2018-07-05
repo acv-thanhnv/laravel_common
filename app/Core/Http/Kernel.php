@@ -50,9 +50,9 @@ class Kernel extends HttpKernel
         'api' => [
           //  'throttle:60,1',
          //   'bindings',
-          //  \App\Api\Http\Middleware\Authenication::class
             'throttle:60,1',
             'bindings',
+            "acl"
         ],
         'dev' => [
             //Not use middleware, pass all filter
@@ -89,5 +89,6 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'acl'=>\App\Acl\Http\Middleware\Acl::class,
+        'jwt.auth'=>\App\Api\Http\Middleware\VerifyJWTToken::class
     ];
 }

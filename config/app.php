@@ -158,7 +158,7 @@ return [
         App\Core\Providers\AppServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Core\Providers\EventServiceProvider::class,
-
+        App\Core\Providers\RouteServiceProvider::class,
 
         /**
          * custom Provider
@@ -184,6 +184,7 @@ return [
          * API
          */
         App\Api\Providers\RouteServiceProvider::class,
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
          /**
           * Web
           */
@@ -235,6 +236,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
 
     ],
 
