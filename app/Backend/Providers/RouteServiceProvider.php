@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Web\Providers;
+namespace App\Backend\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -15,7 +15,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'App\Web\Http\Controllers';
+    protected $namespace = 'App\Backend\Http\Controllers';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -49,9 +49,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::middleware('web')
+        Route::middleware('backend')
             ->namespace($this->namespace)
-            ->group(base_path('routes/web.php'));
+            ->group(base_path('routes/backend.php'));
     }
     /**
      * Define the "public" routes for the application.

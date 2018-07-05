@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Web\Http\Controllers;
+namespace App\Backend\Http\Controllers;
 use Illuminate\Support\Facades\Route;
 
 class BlogController extends Controller
 {
     public function index(){
 
-        echo 'web/blog/index';
+        echo 'Backend/blog/index';
     }
 }

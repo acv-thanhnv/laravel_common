@@ -3,7 +3,7 @@
  * @author thanhnv
  */
 namespace App\Acl\Http\Middleware;
-use App\Core\Helpers\CommonHelper;
+use App\Core\Helpers\ResponseHelper;
 use App\Core\Entities\DataResultCollection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -56,7 +56,7 @@ class Acl
             $result = new DataResultCollection();
             $result->status = \SDBStatusCode::ACLNotPass;
             $result->data=array('error'=> trans('acl_not_access'));
-            return CommonHelper::JsonDataResult($result);
+            return ResponseHelper::JsonDataResult($result);
         }
 
     }

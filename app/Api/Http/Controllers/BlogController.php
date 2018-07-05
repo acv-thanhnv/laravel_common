@@ -2,7 +2,7 @@
 
 namespace App\Api\Http\Controllers;
 use App\Core\Dao\SDB;
-use App\Core\Helpers\CommonHelper;
+use App\Core\Helpers\ResponseHelper;
 use Session;
 class BlogController extends Controller
 {
@@ -10,6 +10,6 @@ class BlogController extends Controller
 
         $listModule = SDB::execSPsToDataResultCollection('ACL_GET_MODULES_LST');
 
-        return CommonHelper::JsonDataResult($listModule);
+        return ResponseHelper::JsonDataResult($listModule);
     }
 }

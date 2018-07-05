@@ -41,4 +41,5 @@ Route::post('/dev/generateEntity', 'DevController@generateEntity')->name('genera
 Route::get('/dev/entityManagement', 'DevController@entityManagement')->name('entityManagement');
 Route::post('/dev/generateOneEntity', 'DevController@generateOneEntity')->name('generateOneEntity');
 
+
 Route::get('/dev/doc', 'DevController@doc')->name('doc');

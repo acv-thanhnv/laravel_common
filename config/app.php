@@ -186,9 +186,9 @@ return [
         App\Api\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
          /**
-          * Web
+          * Backend
           */
-        App\Web\Providers\RouteServiceProvider::class
+        App\Backend\Providers\RouteServiceProvider::class
     ],
 
     /*

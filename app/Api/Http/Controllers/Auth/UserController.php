@@ -4,7 +4,7 @@ namespace App\Api\Http\Controllers\Auth;
 
 use App\Api\Http\Controllers\Controller;
 use App\Core\Dao\SDB;
-use App\Core\Helpers\CommonHelper;
+use App\Core\Helpers\ResponseHelper;
 use App\Core\Entities\DataResultCollection;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +30,7 @@ class UserController extends Controller
         $resultData->status=\SDBStatusCode::OK;
         $resultData->data = $user;
         $resultData->message = 'User created successfully';
-        return CommonHelper::JsonDataResult($resultData);
+        return ResponseHelper::JsonDataResult($resultData);
     }
 
     public function login(Request $request){
@@ -41,7 +41,7 @@ class UserController extends Controller
             if (!$token = JWTAuth::attempt($credentials)) {
                 $resultData->status = \SDBStatusCode::ApiError;
                 $resultData->data = ['message'=>trans('invalid_email_or_password')];
-                return CommonHelper::JsonDataResult($resultData);
+                return ResponseHelper::JsonDataResult($resultData);
             }
         } catch (JWTAuthException $e) {
             $resultData->status = \SDBStatusCode::Excep;
@@ -49,11 +49,11 @@ class UserController extends Controller
         }
         $resultData->status=\SDBStatusCode::OK;
         $resultData->data=array('token'=>$token);
-        return CommonHelper::JsonDataResult($resultData);
+        return ResponseHelper::JsonDataResult($resultData);
     }
 
     public function getUserInfo(Request $request){
         $result =  SDB::execSPsToDataResultCollection('ACL_GET_MODULES_LST');
-        return CommonHelper::JsonDataResult($result);
+        return ResponseHelper::JsonDataResult($result);
     }
 }

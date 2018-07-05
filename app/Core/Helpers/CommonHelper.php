@@ -19,8 +19,5 @@ class CommonHelper
             Log::error($message);
         }
     }
-    public static function JsonDataResult(DataResultCollection $data){
-        return response()->json($data);
-    }
 
 }
