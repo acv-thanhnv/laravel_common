@@ -47444,11 +47444,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['dataUrl'],
+    props: ['dataUrl', 'prevLevel'],
     data: function data() {
-        return { itemSourceData: [{ 'id': 0, 'module_code': '---' }] };
+        return { itemSourceData: [{ 'id': 0, 'name': '---' }] };
     },
     mounted: function mounted() {
         var _this = this;
@@ -47471,15 +47476,23 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "select",
-    { staticStyle: { width: "200px" }, attrs: { name: "combox" } },
-    _vm._l(_vm.itemSourceData, function(item) {
-      return _c("option", { domProps: { value: item.id } }, [
-        _vm._v(_vm._s(item.module_code))
-      ])
-    })
-  )
+  return _c("div", { staticClass: "card-body form-group basic-menu" }, [
+    _c(
+      "ul",
+      { staticClass: "basic" },
+      _vm._l(_vm.itemSourceData, function(item, index) {
+        return _c("span", [
+          item.level_value === _vm.itemSourceData[index - 1].level_value
+            ? _c("li", [_vm._v(_vm._s(item.name))])
+            : _vm._e(),
+          _vm._v(" "),
+          item.level_value > _vm.itemSourceData[index - 1].level_value
+            ? _c("li", [_vm._v(_vm._s(item.name))])
+            : _vm._e()
+        ])
+      })
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

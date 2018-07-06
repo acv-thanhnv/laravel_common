@@ -28,10 +28,10 @@ class Acl
         $mod = 'Web';
         if(Auth::check()){
             $roleId = Auth::user()->role_value;
-        }else if(isset($request->token)){
+        }else if(isset($request[\ApiConst::ApiAccessTokenName])){
             try{
                 $mod = 'Api';
-                $currentUser = JWTAuth::toUser($request->input('token'));
+                $currentUser = JWTAuth::toUser($request->input(\ApiConst::ApiAccessTokenName));
                 $roleId = $currentUser->role_value;
 
             }catch (\Exception $e){

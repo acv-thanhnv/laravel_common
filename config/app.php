@@ -188,7 +188,11 @@ return [
          /**
           * Backend
           */
-        App\Backend\Providers\RouteServiceProvider::class
+        App\Backend\Providers\RouteServiceProvider::class,
+        /**
+         * FrontEnd
+         */
+        App\Frontend\Providers\RouteServiceProvider::class
     ],
 
     /*

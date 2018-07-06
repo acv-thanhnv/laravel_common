@@ -1,13 +1,18 @@
 <template>
-    <select name="combox" style="width: 200px;">
-        <option v-bind:value="item.id" v-for="item in itemSourceData">{{item.module_code}}</option>
-    </select>
+    <div class="card-body form-group basic-menu">
+        <ul class="basic">
+            <span v-for="(item,index) in itemSourceData">
+                    <li v-if="item.level_value === itemSourceData[index-1].level_value">{{item.name}}</li>
+                <li v-if="item.level_value > itemSourceData[index-1].level_value">{{item.name}}</li>
+            </span>
+        </ul>
+    </div>
 </template>
 <script>
     export default {
-        props: ['dataUrl'],
+        props: ['dataUrl','prevLevel'],
         data: function () {
-            return {itemSourceData: [{'id': 0, 'module_code': '---'}]}
+            return {itemSourceData: [{'id': 0, 'name': '---'}]}
         },
         mounted() {
             this.loading = true;

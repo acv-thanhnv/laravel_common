@@ -52,6 +52,7 @@ class UserController extends Controller
         return ResponseHelper::JsonDataResult($resultData);
     }
 
+    //test
     public function getUserInfo(Request $request){
         $result =  SDB::execSPsToDataResultCollection('ACL_GET_MODULES_LST');
         return ResponseHelper::JsonDataResult($result);
