@@ -18,5 +18,4 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/api/user-info', 'Auth\UserController@getUserInfo');
     Route::get('/api/blog', 'BlogController@index');
 });
-//Route::get('/api/login', 'LoginController@showLoginForm')->name('login');
 

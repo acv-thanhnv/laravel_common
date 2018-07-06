@@ -48,7 +48,7 @@ class UserController extends Controller
             $resultData->data = ['message'=>trans('false_to_create_token')];
         }
         $resultData->status=\SDBStatusCode::OK;
-        $resultData->data=array('token'=>$token);
+        $resultData->data=array(\ApiConst::ApiAccessTokenName=>$token);
         return ResponseHelper::JsonDataResult($resultData);
     }
 

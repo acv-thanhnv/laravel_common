@@ -20,5 +20,6 @@ return [
 ];
 
 class ApiConst{
-    const ApiLoginTokenName='api_login_token';
+    const ApiAccessTokenName='access_token';
+
 }

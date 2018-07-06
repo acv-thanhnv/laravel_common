@@ -6,9 +6,7 @@
  */
 
 require('./bootstrap');
-
 window.Vue = require('vue');
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -16,9 +14,26 @@ window.Vue = require('vue');
  */
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
-
+Vue.component('combo-component', require('./components/ComboboxComponent.vue'));
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    state: {
+        user: {
+            userName:'',
+            loggedInStatus: true,
+            authToken: ''
+        }
+    },
+    data:{
+        moduleList: [
+            { id: 0, text: 'Module1' },
+            { id: 1, text: 'Module2' },
+            { id: 2, text: 'Module3' }
+        ],
+        category:[
+            { id: 0, text: 'Cate1' },
+            { id: 1, text: 'Cate2' },
+            { id: 2, text: 'Cate3' }
+        ]
+    }
 });
-
-

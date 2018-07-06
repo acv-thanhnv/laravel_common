@@ -1,7 +1,15 @@
+<html>
+<head>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+<div id="content">
 
-<div id="app">
-
-            @yield('content')
+    @yield('content')
 
 </div>
+</body>
+</html>
+
 
