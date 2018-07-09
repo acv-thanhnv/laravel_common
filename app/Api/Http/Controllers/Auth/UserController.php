@@ -2,59 +2,93 @@
 
 namespace App\Api\Http\Controllers\Auth;
 
+use App\Api\Models\User;
 use App\Api\Http\Controllers\Controller;
 use App\Core\Dao\SDB;
-use App\Core\Helpers\ResponseHelper;
 use App\Core\Entities\DataResultCollection;
+use App\Core\Helpers\ResponseHelper;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Api\Models\User;
-use JWTAuth;
 class UserController extends Controller
 {
-    private $user;
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
+    */
 
-    public function __construct(User $user){
-        $this->user = $user;
+    use AuthenticatesUsers;
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/home';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
     }
-
-    public function register(Request $request){
-        $user = $this->user->create([
-            'name'=>$request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password'))
-        ]);
-
-        $resultData =  new DataResultCollection();
-        $resultData->status=\SDBStatusCode::OK;
-        $resultData->data = $user;
-        $resultData->message = 'User created successfully';
-        return ResponseHelper::JsonDataResult($resultData);
+    public function username()
+    {
+        return 'email';
     }
-
-    public function login(Request $request){
-        $credentials = $request->only('email', 'password');
-        $token = null;
-        $resultData =  new DataResultCollection();
-        try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                $resultData->status = \SDBStatusCode::ApiError;
-                $resultData->data = ['message'=>trans('invalid_email_or_password')];
-                return ResponseHelper::JsonDataResult($resultData);
-            }
-        } catch (JWTAuthException $e) {
-            $resultData->status = \SDBStatusCode::Excep;
-            $resultData->data = ['message'=>trans('false_to_create_token')];
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        $credentials = array('email' => $request->input('email'), 'password' => $request->input('password'), 'is_active' => 1);
+        return $credentials;
+    }
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     */
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+            return $this->sendLockoutResponse($request);
         }
-        $resultData->status=\SDBStatusCode::OK;
-        $resultData->data=array(\ApiConst::ApiAccessTokenName=>$token);
-        return ResponseHelper::JsonDataResult($resultData);
-    }
+        $email = $request->get($this->username());
+        $client = User::where($this->username(), $email)->first();
+        $response = new DataResultCollection();
+        if ($this->attemptLogin($request)) {
+            $user=Auth::user();
+            $token =  $user->createToken('')-> accessToken;
 
-    //test
-    public function getUserInfo(Request $request){
-        $result =  SDB::execSPsToDataResultCollection('ACL_GET_MODULES_LST');
-        return ResponseHelper::JsonDataResult($result);
+            $response->status = \SDBStatusCode::OK;
+            $response->data = array(\ApiConst::ApiAccessTokenName=> $token);
+            return ResponseHelper::JsonDataResult($response);
+        }
+        $this->incrementLoginAttempts($request);
+        // Customization: If client status is inactive (0) return failed_status error.
+        if ($client->is_active === 0) {
+            $response->status = \SDBStatusCode::ApiError;
+            $response->message= trans('auth.not_active');
+        }
+        return ResponseHelper::JsonDataResult($response);
+    }
+    public function getUserInfo(){
+        return json_encode(SDB::select('SELECT * FROM users'));
     }
 }

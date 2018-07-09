@@ -21,5 +21,5 @@ return [
 
 class ApiConst{
     const ApiAccessTokenName='access_token';
-
+    const ApiModuleName='api';
 }

@@ -191,6 +191,7 @@ class DEVDB extends DB
                 }
             }
             $exec = $stmt->execute();
+
             if (!$exec) return $pdo->errorInfo();
             if ($isExecute) return $exec;
             do {

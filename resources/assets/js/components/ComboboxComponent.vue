@@ -1,9 +1,8 @@
 <template>
     <div class="card-body form-group basic-menu">
         <ul class="basic">
-            <span v-for="(item,index) in itemSourceData">
-                    <li v-if="item.level_value === itemSourceData[index-1].level_value">{{item.name}}</li>
-                <li v-if="item.level_value > itemSourceData[index-1].level_value">{{item.name}}</li>
+            <span v-for="item in itemSourceData">
+                    <li>{{item.name}}</li>
             </span>
         </ul>
     </div>

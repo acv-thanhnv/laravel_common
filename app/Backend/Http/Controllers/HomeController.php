@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Backend\Http\Controllers;
+use App\Auth\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 class HomeController extends Controller
 {
     /**

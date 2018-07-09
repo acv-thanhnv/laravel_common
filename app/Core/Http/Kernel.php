@@ -45,14 +45,12 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Core\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Acl\Http\Middleware\Acl::class,
+           // \App\Acl\Http\Middleware\Acl::class,
         ],
         'api' => [
-          //  'throttle:60,1',
-         //   'bindings',
             'throttle:60,1',
             'bindings',
-            "acl"
+            "acl",
         ],
         'dev' => [
             //Not use middleware, pass all filter
@@ -88,7 +86,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Core\Http\Middleware\RedirectIfAuthenticated::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'acl'=>\App\Acl\Http\Middleware\Acl::class,
-        'jwt.auth'=>\App\Api\Http\Middleware\VerifyJWTToken::class
+        'acl'=>\App\Acl\Http\Middleware\Acl::class
     ];
 }

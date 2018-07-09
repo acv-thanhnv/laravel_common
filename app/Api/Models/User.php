@@ -4,18 +4,21 @@ namespace App\Api\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Http\Request;
+use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
+    protected $primaryKey = 'id';
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','role_value'
     ];
 
     /**
@@ -26,4 +29,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    public function details() {
+        return SDB::table('users_detail')->where(array('id',$this->getKey())) ;
+    }
 }

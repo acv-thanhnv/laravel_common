@@ -25,18 +25,8 @@ class Acl
     {
         $publicRole = Config::get('app.PUBLIC_ROLE_VALUE');
         $roleId = $publicRole;
-        $mod = 'Web';
         if(Auth::check()){
             $roleId = Auth::user()->role_value;
-        }else if(isset($request[\ApiConst::ApiAccessTokenName])){
-            try{
-                $mod = 'Api';
-                $currentUser = JWTAuth::toUser($request->input(\ApiConst::ApiAccessTokenName));
-                $roleId = $currentUser->role_value;
-
-            }catch (\Exception $e){
-                //don't handler
-            }
         }
         $curentActionInfo = Route::getCurrentRoute()->getAction();
         $module = strtolower(trim(str_replace('App\\', '', $curentActionInfo['namespace']), '\\'));
@@ -50,7 +40,7 @@ class Acl
         if ($this->hasAcl($roleId,$screenCode)==true ) {
             return $next($request);
         }
-        if($mod == 'Web'){
+        if($module!=\ApiConst::ApiModuleName){
             return redirect('/');
         }else{
             $result = new DataResultCollection();
