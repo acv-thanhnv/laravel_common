@@ -185,6 +185,9 @@ class DevController extends Controller
     public function doc(){
         return view("dev/document");
     }
+    public function log(){
+        return view("dev/log");
+    }
     public function userAcl(){
         return view("dev/useracl");
     }
