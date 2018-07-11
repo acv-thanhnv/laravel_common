@@ -131,7 +131,7 @@
         $(document).ready(function () {
             var table = $('#tbl-trans').DataTable(
                 {
-                    scrollY:        '50vh',
+                    scrollY:        '60vh',
                     scrollCollapse: true,
                     fixedHeader: true,
                     bJQueryUI: true,
@@ -158,7 +158,15 @@
             $('#trans-text-translated').on( 'change', function () {
                 table.column(5).search( this.value ).draw();
             } );
-
+            $(document).on('change','#trans-type', function () {
+                var value =  $(this).val();
+                var currentOption =  $(this).find('option[value="'+value+'"]');
+                if($(currentOption).length>0 && 1*$(currentOption).attr('has_input_type')==1){
+                    $('#trans-input-type').prop('disabled',false);
+                }else{
+                    $('#trans-input-type').prop('disabled',true);
+                }
+            });
             $(document).on('click', '.edit', function () {
                 var record = $(this).parents('tr.trans-record');
                 $(record).find('.text-trans').prop('readonly', false).select();

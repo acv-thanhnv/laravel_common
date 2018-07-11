@@ -199,7 +199,7 @@
         $(document).ready(function () {
             var table = $('#acl-table').DataTable(
                 {
-                    scrollY:        '50vh',
+                    scrollY:        '60vh',
                     scrollCollapse: true,
                     fixedHeader: true,
                     bJQueryUI: true,

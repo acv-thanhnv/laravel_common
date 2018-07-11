@@ -20,7 +20,7 @@
                             <select id="trans-type" class="form-control">
                                 <?php if(isset($comboList[1]) && count($comboList[1])>0){?>
                                 <?php foreach ($comboList[1] as $transType){?>
-                                <option value="<?php echo $transType->code;?>"><?php echo $transType->code?></option>
+                                <option value="<?php echo $transType->code;?>" has_input_type="<?php echo $transType->has_input_type;?>"><?php echo $transType->code;?></option>
                                 <?php   }
                                 }?>
                             </select>

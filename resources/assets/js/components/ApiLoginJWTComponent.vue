@@ -23,9 +23,9 @@
                 ).then((response) => {
                         this.loading = false;
                         if(response.data['data']['access_token']){
-                            localStorage.setItem('access_token',response.data['data']['access_token']);
+                            var storageKey =  'access_token';
+                            localStorage.setItem(storageKey,response.data['data']['access_token']);
                         }
-
                     }, (error) => {
                         this.loading = false;
                     })

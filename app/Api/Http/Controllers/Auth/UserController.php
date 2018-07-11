@@ -67,7 +67,7 @@ class UserController extends Controller
         $response = new DataResultCollection();
         if ($this->attemptLogin($request)) {
             $user=Auth::user();
-            $token =  $user->createToken($user->getAuthIdentifier());
+            $token =  $user->createToken('By Login from user:'.$user->getAuthIdentifier());
             $accessToken = $token->accessToken;
             $refreshToken = '';// $token->refresh_token;
             $response->status = \SDBStatusCode::OK;

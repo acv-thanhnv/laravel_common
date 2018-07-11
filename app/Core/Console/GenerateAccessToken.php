@@ -45,15 +45,18 @@ class GenerateAccessToken extends Command
         $token = '';
         SDB::beginTransaction();
         try{
-            $user= User::create([
-                'name' => 'virtual_'.now()->toDateTimeString(),
-                'email' => $this->argument('email'),
-                'password' =>Hash::make(now()->toDateTimeString()),
-                'role_value'=>\RoleConst::PartyRole,
-                'is_active'=>1
-            ]);
+            $user = User::where('email',  $this->argument('email'))->first();
+            if(!$user->exists()){
+                $user= User::create([
+                    'name' => 'virtual_'.now()->toDateTimeString(),
+                    'email' => $this->argument('email'),
+                    'password' =>Hash::make(now()->toDateTimeString()),
+                    'role_value'=>\RoleConst::PartyRole,
+                    'is_active'=>1
+                ]);
+            }
             // Creating a token without scopes...
-            $token = $user->createToken('Token Name')->accessToken;
+            $token = $user->createToken('Party specific token')->accessToken;
             SDB::commit();
         }catch (\Exception $exception){
             SDB::rollBack();

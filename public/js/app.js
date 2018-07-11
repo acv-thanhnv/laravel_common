@@ -47893,7 +47893,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 } }).then(function (response) {
                 _this.loading = false;
                 if (response.data['data']['access_token']) {
-                    localStorage.setItem('access_token', response.data['data']['access_token']);
+                    var storageKey = 'access_token';
+                    localStorage.setItem(storageKey, response.data['data']['access_token']);
                 }
             }, function (error) {
                 _this.loading = false;

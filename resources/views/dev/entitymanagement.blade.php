@@ -29,6 +29,9 @@
     }legend{
          font-size: 16px !important;
      }
+    .excute-one{
+        cursor: pointer;
+    }
 
 </style>
 @section('content')
@@ -77,7 +80,7 @@
                                 <td><?php echo $item->Modified; ?></td>
                                 <td><?php echo $item->Created; ?></td>
                                 <td class="text-center" style="vertical-align: middle;">
-                                    <span class="excute-one btn glyphicon glyphicon-play" data-name="<?php echo $item->Name; ?>" title="Generate Entity Class"></span>
+                                    <span class="excute-one glyphicon glyphicon-play" data-name="<?php echo $item->Name; ?>" title="Generate Entity Class"></span>
                                 </td>
                             </tr>
                             <?php }
@@ -95,7 +98,8 @@
         $(document).ready(function () {
             var table = $('#tbl-trans').DataTable(
                 {
-                    scrollCollapse: false,
+                    scrollY:        '65vh',
+                    scrollCollapse: true,
                     fixedHeader: true,
                     bJQueryUI: true,
                     info:     false,
