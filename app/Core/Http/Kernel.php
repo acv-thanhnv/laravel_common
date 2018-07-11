@@ -45,12 +45,13 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Core\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-           // \App\Acl\Http\Middleware\Acl::class,
+            \App\Acl\Http\Middleware\Acl::class,
         ],
         'api' => [
             'throttle:60,1',
             'bindings',
             "acl",
+
         ],
         'dev' => [
             //Not use middleware, pass all filter

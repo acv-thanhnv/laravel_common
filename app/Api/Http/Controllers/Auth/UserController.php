@@ -26,13 +26,6 @@ class UserController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
      * Create a new controller instance.
      *
      * @return void
@@ -74,21 +67,39 @@ class UserController extends Controller
         $response = new DataResultCollection();
         if ($this->attemptLogin($request)) {
             $user=Auth::user();
-            $token =  $user->createToken('')-> accessToken;
-
+            $token =  $user->createToken($user->getAuthIdentifier());
+            $accessToken = $token->accessToken;
+            $refreshToken = '';// $token->refresh_token;
             $response->status = \SDBStatusCode::OK;
-            $response->data = array(\ApiConst::ApiAccessTokenName=> $token);
+            $response->data = array(\ApiConst::ApiAccessTokenParamName=>$accessToken,\ApiConst::ApiRefreshTokenParamName=>$refreshToken);
             return ResponseHelper::JsonDataResult($response);
+        }else{
+            $this->incrementLoginAttempts($request);
+            // Customization: If client status is inactive (0) return failed_status error.
+            if (isset($client->is_active)&& $client->is_active === 0) {
+                $response->status = \SDBStatusCode::ApiError;
+                $response->message= trans('auth.not_active');
+            }else{
+                $response->status = \SDBStatusCode::ApiError;
+                $response->message= trans('auth.can_not_login');
+            }
         }
-        $this->incrementLoginAttempts($request);
-        // Customization: If client status is inactive (0) return failed_status error.
-        if ($client->is_active === 0) {
-            $response->status = \SDBStatusCode::ApiError;
-            $response->message= trans('auth.not_active');
-        }
+
         return ResponseHelper::JsonDataResult($response);
     }
-    public function getUserInfo(){
-        return json_encode(SDB::select('SELECT * FROM users'));
+
+    /**
+     * revoke current token
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout(){
+        $result  =  new DataResultCollection();
+        $result->status = \SDBStatusCode::ApiAuthNotPass;
+        if(Auth::check()){
+            $result->status = \SDBStatusCode::OK;
+            $accessToken = Auth::user()->token();
+            $accessToken->revoke();
+        }
+        return ResponseHelper::JsonDataResult($result);
     }
 }

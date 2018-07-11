@@ -15,13 +15,18 @@
         },
         mounted() {
             this.loading = true;
-            axios.get(this.dataUrl)
-                .then((response) => {
-                    this.loading = false;
-                    this.itemSourceData = response.data['data'];
-                }, (error) => {
-                    this.loading = false;
-                })
+            var token = localStorage.getItem('access_token');
+            axios(
+                {   url:this.dataUrl,
+                    headers: { Authorization: "Bearer " + token}
+                }
+            )
+            .then((response) => {
+                this.loading = false;
+                this.itemSourceData = response.data['data'];
+            }, (error) => {
+                this.loading = false;
+            })
         },
     }
 </script>

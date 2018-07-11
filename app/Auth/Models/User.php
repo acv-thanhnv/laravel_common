@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Laravel\Passport\HasApiTokens;
+use App\Core\Dao\SDB;
 class User extends Authenticatable
 {
     use Notifiable;

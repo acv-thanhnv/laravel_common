@@ -270,7 +270,7 @@ class DevService extends BaseService implements DevServiceInterface
      */
     public function initRoleDataToDB(){
         $data = $this->getListScreen();
-        $systemAdminRole = Config::get('app.SYSTEM_ADMIN_ROLE_VALUE');
+        $systemAdminRole = \RoleConst::SysAdminRole;
         $roleList = $this->getRoleList();
         //Insert sys screen data
         DEVDB::table('sys_screens')->truncate();

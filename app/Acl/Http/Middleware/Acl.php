@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
-use JWTAuth;
 use Closure;
 
 class Acl
@@ -23,7 +22,7 @@ class Acl
      */
     public function handle($request, Closure $next)
     {
-        $publicRole = Config::get('app.PUBLIC_ROLE_VALUE');
+        $publicRole = \RoleConst::PublicRole;
         $roleId = $publicRole;
         if(Auth::check()){
             $roleId = Auth::user()->role_value;
@@ -40,14 +39,12 @@ class Acl
         if ($this->hasAcl($roleId,$screenCode)==true ) {
             return $next($request);
         }
-        if($module!=\ApiConst::ApiModuleName){
-            return redirect('/');
-        }else{
-            $result = new DataResultCollection();
-            $result->status = \SDBStatusCode::ACLNotPass;
-            $result->data=array('error'=> trans('acl_not_access'));
-            return ResponseHelper::JsonDataResult($result);
-        }
+
+        $result = new DataResultCollection();
+        $result->status = \SDBStatusCode::ACLNotPass;
+        $result->data=array('error'=> trans('acl_not_access'));
+        return ResponseHelper::JsonDataResult($result);
+
 
     }
 

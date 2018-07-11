@@ -6,12 +6,13 @@
  * Time: 10:26 AM
  */
 class SDBStatusCode{
-    const OK = '01';
-    const DataNull = '07';
-    const Excep = '05';
-    const ApiError = '09';
-    const WebError = '10';
-    const ACLNotPass = '11';
+    const OK = 'OK';
+    const DataNull = 'DataNull';
+    const Excep = 'Excep';
+    const ApiError = 'ApiError';
+    const WebError = 'WebError';
+    const ACLNotPass = 'ACLNotPass';
+    const ApiAuthNotPass = 'ApiAuthNotPass';
 }
 return [
     'from_validate_error_code'=>-9998,
@@ -20,6 +21,12 @@ return [
 ];
 
 class ApiConst{
-    const ApiAccessTokenName='access_token';
+    const ApiAccessTokenParamName='access_token';
+    const ApiRefreshTokenParamName='refresh_token';
     const ApiModuleName='api';
+}
+class RoleConst{
+    const PartyRole = 10;
+    const PublicRole = 0;
+    const SysAdminRole = 1;
 }

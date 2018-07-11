@@ -12,11 +12,11 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your Api!
 |
 */
-Route::post('/api/auth/register', 'Auth\UserController@register');
-Route::match(array('GET','POST'),'/api/auth/login', 'Auth\UserController@login');
+Route::match(array('GET','POST'),'/api/auth/login', 'Auth\UserController@login')->name('api_login_call');
+
 Route::group(['middleware' => [ 'auth:api' ]],function (){
-    Route::get('/api/user-info', 'Auth\UserController@getUserInfo');
     Route::get('/api/catelory/all', 'CateloryController@index');
+    Route::match(array('GET','POST'),'/api/auth/logout', 'Auth\UserController@logout')->name('api_logout_call');
 });
 
 

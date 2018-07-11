@@ -16,7 +16,6 @@ class DataResultCollection
     public $message;
     public $errorCode = [];
 
-
     public function first()
     {
        if($this->data!=null && !empty($this->data) && isset($this->data[0])){

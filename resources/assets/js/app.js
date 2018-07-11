@@ -15,6 +15,7 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('combo-component', require('./components/ComboboxComponent.vue'));
+Vue.component('login-api-component', require('./components/ApiLoginJWTComponent.vue'));
 Vue.component(
     'passport-clients',
     require('./components/passport/Clients.vue')
@@ -29,6 +30,9 @@ Vue.component(
     'passport-personal-access-tokens',
     require('./components/passport/PersonalAccessTokens.vue')
 );
+window.axios.defaults.headers.common = {
+    'X-Requested-With': 'XMLHttpRequest',
+};
 const app = new Vue({
     el: '#app',
     state: {
@@ -38,16 +42,5 @@ const app = new Vue({
             authToken: ''
         }
     },
-    data:{
-        moduleList: [
-            { id: 0, text: 'Module1' },
-            { id: 1, text: 'Module2' },
-            { id: 2, text: 'Module3' }
-        ],
-        category:[
-            { id: 0, text: 'Cate1' },
-            { id: 1, text: 'Cate2' },
-            { id: 2, text: 'Cate3' }
-        ]
-    }
+
 });
