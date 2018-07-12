@@ -9,6 +9,7 @@ use App\Core\Entities\DataResultCollection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
 use Closure;
+use Illuminate\Support\Facades\Log;
 
 class Acl
 {

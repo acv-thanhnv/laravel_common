@@ -16,8 +16,6 @@ class CustomLoggerHandler extends AbstractProcessingHandler
     public function write(array $record)
     {
         $logFolderPath =  storage_path('logs');
-        $level = $record['level_name'];
-        $message = $record['message'];
         $moduleInfor =  CommonHelper::getCurrentModuleInfor();
         if($moduleInfor->module == '') {
             $moduleInfor->module = 'Common';
@@ -30,7 +28,7 @@ class CustomLoggerHandler extends AbstractProcessingHandler
         $fileName =  $moduleInfor->module.'-'.$folderName;
         $extention = '.txt';
         $filePath = $logDisk.'/'.$fileName.$extention;
-        $content = now()->toDateTimeString().' : '.$level.' : '.$message."\n";
+        $content = $record['formatted']."\n";
 
         if(file_exists($filePath)){
             file_put_contents($filePath, $content, FILE_APPEND | LOCK_EX);
@@ -39,6 +37,7 @@ class CustomLoggerHandler extends AbstractProcessingHandler
             fwrite($fp,$content);
             fclose($fp);
         }
+
     }
 
 }
