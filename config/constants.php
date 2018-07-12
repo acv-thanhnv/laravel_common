@@ -13,6 +13,7 @@ class SDBStatusCode{
     const WebError = 'WebError';
     const ACLNotPass = 'ACLNotPass';
     const ApiAuthNotPass = 'ApiAuthNotPass';
+    const PDOExceoption = 'PDOExceoption';
 }
 return [
     'from_validate_error_code'=>-9998,

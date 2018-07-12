@@ -52,7 +52,10 @@ class DEVDB extends DB
                 }
             }
             $exec = $stmt->execute();
-            if (!$exec) return $pdo->errorInfo();
+            if (!$exec) {
+                $dataResult->status = \SDBStatusCode::PDOExceoption;
+                $dataResult->message = $pdo->errorInfo();
+            }
             if ($isExecute) return $exec;
             do {
                 try {
@@ -61,9 +64,13 @@ class DEVDB extends DB
                     //Next, don't exception handler here
                 }
             } while ($stmt->nextRowset());
-            if (isset($results[0])) $dataResult->data = $results[0];
+            if (isset($results[0])) {
+                $dataResult->data = $results[0];
+                $dataResult->status = \SDBStatusCode::OK;
+                $dataResult->message = null;
+            }
             else {
-                //new clas
+                //new class
                 $dataResult->data = new $procName();
                 $dataResult->status = \SDBStatusCode::DataNull;
             }
@@ -73,8 +80,7 @@ class DEVDB extends DB
             //Logging
             CommonHelper::CommonLog($exception->getMessage());
         }
-        $dataResult->status = \SDBStatusCode::OK;
-        $dataResult->message = null;
+
         return $dataResult;
     }
 

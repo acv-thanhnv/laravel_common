@@ -3,10 +3,9 @@
  * @author thanhnv
  */
 namespace App\Acl\Http\Middleware;
+use App\Core\Helpers\CommonHelper;
 use App\Core\Helpers\ResponseHelper;
 use App\Core\Entities\DataResultCollection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
 use Closure;
@@ -27,16 +26,9 @@ class Acl
         if(Auth::check()){
             $roleId = Auth::user()->role_value;
         }
-        $curentActionInfo = Route::getCurrentRoute()->getAction();
-        $module = strtolower(trim(str_replace('App\\', '', $curentActionInfo['namespace']), '\\'));
-        $module =  explode("\\",$module)[0];
-        $_action =isset($curentActionInfo['controller'])? explode('@', $curentActionInfo['controller']):array();
-        $_namespaces_chunks =isset($_action[0])? explode('\\', $_action[0]):array();
-        $controllers = strtolower(end($_namespaces_chunks));
-        $action = strtolower(end($_action));
-        $screenCode = $module.'\\'.$controllers.'\\'.$action;
+       $moduleInfor =  CommonHelper::getCurrentModuleInfor();
 
-        if ($this->hasAcl($roleId,$screenCode)==true ) {
+        if ($this->hasAcl($roleId,$moduleInfor->screenCode)==true ) {
             return $next($request);
         }
 

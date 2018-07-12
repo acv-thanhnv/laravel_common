@@ -22,11 +22,12 @@ class SDB extends DB
      */
     public static function execSPsToDataResultCollection($procName, $parameters = null, $isExecute = false):DataResultCollection
     {
-        $results =  new \ArrayObject();
+
+        $results = new \ArrayObject();
         $dataResult = new DataResultCollection();
-        try{
+        try {
             $syntax = '';
-            if(isset( $parameters) && is_array($parameters)){
+            if (isset($parameters) && is_array($parameters)) {
                 for ($i = 0; $i < count($parameters); $i++) {
                     $syntax .= (!empty($syntax) ? ',' : '') . '?';
                 }
@@ -35,14 +36,17 @@ class SDB extends DB
 
             $pdo = parent::connection()->getPdo();
             $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
-            $stmt = $pdo->prepare($syntax,[\PDO::ATTR_CURSOR=>\PDO::CURSOR_SCROLL]);
-            if(isset( $parameters) && is_array($parameters)) {
+            $stmt = $pdo->prepare($syntax, [\PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL]);
+            if (isset($parameters) && is_array($parameters)) {
                 for ($i = 0; $i < count($parameters); $i++) {
                     $stmt->bindValue((1 + $i), $parameters[$i]);
                 }
             }
             $exec = $stmt->execute();
-            if (!$exec) return $pdo->errorInfo();
+            if (!$exec) {
+                $dataResult->status = \SDBStatusCode::PDOExceoption;
+                $dataResult->message = $pdo->errorInfo();
+            }
             if ($isExecute) return $exec;
             do {
                 try {
@@ -51,21 +55,23 @@ class SDB extends DB
                     //Next, don't exception handler here
                 }
             } while ($stmt->nextRowset());
-            if (isset($results[0]))  $dataResult->data = $results[0];
-            else  {
-                //new clas
+            if (isset($results[0])) {
+                $dataResult->data = $results[0];
+                $dataResult->status = \SDBStatusCode::OK;
+                $dataResult->message = null;
+            }
+            else {
+                //new class
                 $dataResult->data = new $procName();
                 $dataResult->status = \SDBStatusCode::DataNull;
             }
-        }catch (\Exception $exception){
-            echo $exception->getMessage();die;
-            $dataResult->status =\SDBStatusCode::Excep;
+        } catch (\Exception $exception) {
+            $dataResult->status = \SDBStatusCode::Excep;
             $dataResult->message = $exception->getMessage();
             //Logging
             CommonHelper::CommonLog($exception->getMessage());
         }
-        $dataResult->status =\SDBStatusCode::OK;
-        $dataResult->message=null;
+
         return $dataResult;
     }
 
