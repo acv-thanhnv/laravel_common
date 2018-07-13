@@ -89,9 +89,6 @@
                             <a class="nav-link font-weight-bold" href="{{ route('menu') }}">Categories</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font-weight-bold" href="{{ route('logManagement') }}">Logging</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link font-weight-bold" href="{{ route('entityManagement') }}">Entity Class</a>
                         </li>
                         <li class="nav-item">

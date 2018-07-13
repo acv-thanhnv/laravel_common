@@ -28,7 +28,7 @@ class CustomLoggerHandler extends AbstractProcessingHandler
         $fileName =  $moduleInfor->module.'-'.$folderName;
         $extention = '.txt';
         $filePath = $logDisk.'/'.$fileName.$extention;
-        $content = $record['formatted']."\n";
+        $content = print_r($record['formatted'],true)."\n";
 
         if(file_exists($filePath)){
             file_put_contents($filePath, $content, FILE_APPEND | LOCK_EX);
