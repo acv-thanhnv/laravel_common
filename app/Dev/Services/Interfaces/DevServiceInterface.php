@@ -32,7 +32,7 @@ interface DevServiceInterface
     public function updateActiveAcl($roleMapId,$isActive);
     public function updateActiveAclAll($isActive);
     public function updateTranslateText($id,$transText);
-    function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans);
+    public function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans);
     public function generateEntityClass();
     public function generateSpecEntityClass($spName);
     public function getRoleList();

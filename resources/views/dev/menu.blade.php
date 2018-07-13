@@ -41,13 +41,15 @@
                         $count = count($dataCategory);
                         for($i = 0;$i < $count ; $i++){
                         if($dataCategory[$i]->level_value == $prevLevel){?>
-                        <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><?php echo $dataCategory[$i]->name; ?></li>
+                        <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><a href="#0"><?php echo $dataCategory[$i]->name; ?></a></li>
                         <?php }else if($dataCategory[$i]->level_value > $prevLevel){?>
                         <ul>
-                            <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><?php echo $dataCategory[$i]->name; ?></li>
+                            <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><a href="#0"><?php echo $dataCategory[$i]->name; ?></a></li>
                             <?php }else{?>
-                        </ul>
-                        <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><?php echo $dataCategory[$i]->name; ?></li>
+                            <?php for($j = $dataCategory[$i]->level_value;$j<$prevLevel;$j++){ ?>
+                                </ul>
+                            <?php } ?>
+                            <li data-level="<?php echo $dataCategory[$i]->level_value; ?>"><a href="#0"><?php echo $dataCategory[$i]->name; ?></a></li>
                         <?php }?>
                         <?php
                         $prevLevel = $dataCategory[$i]->level_value;
