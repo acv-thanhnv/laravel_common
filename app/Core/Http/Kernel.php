@@ -36,15 +36,35 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Core\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Core\Http\Middleware\Acl::class,
+            \App\Acl\Http\Middleware\Acl::class,
+        ],
+        'backend' => [
+            \App\Core\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Core\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Acl\Http\Middleware\Acl::class,
+        ],
+        'acl_group' => [
+            \App\Core\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Core\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Acl\Http\Middleware\Acl::class,
         ],
         'api' => [
             'throttle:60,1',
             'bindings',
-            \App\Core\Http\Middleware\Acl::class,
+            "acl",
+
         ],
         'dev' => [
-
+            //Not use middleware, pass all filter
         ],
         'auth_group' => [
             \App\Core\Http\Middleware\EncryptCookies::class,
@@ -54,9 +74,11 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Core\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Core\Http\Middleware\Acl::class,//module auth don't register acl check
+            \App\Acl\Http\Middleware\Acl::class,//module auth don't register acl check
         ],
-        'public_group'=>[]
+        'public_group'=>[
+            //Not use middleware, pass all filter
+        ]
     ];
 
     /**
@@ -75,6 +97,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Core\Http\Middleware\RedirectIfAuthenticated::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'acl'=>\App\Core\Http\Middleware\Acl::class,
+        'acl'=>\App\Acl\Http\Middleware\Acl::class
     ];
 }

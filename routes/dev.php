@@ -24,6 +24,7 @@ Route::post('/dev/updateAclActive', 'DevController@updateAclActive')->name('upda
 Route::post('/dev/updateAclActiveAll', 'DevController@updateAclActiveAll')->name('updateAclActiveAll');
 
 Route::post('/dev/generationAclFile', 'DevController@generationAclFile')->name('generationAclFile');
+Route::post('/dev/refreshAclDB', 'DevController@refreshAclDB')->name('refreshAclInDB');
 Route::get('/dev/userAcl', 'DevController@userAcl')->name('userAcl');
 
 Route::post('/dev/updateTranslate', 'DevController@updateTranslate')->name('updateTranslate');
@@ -40,4 +41,5 @@ Route::post('/dev/generateEntity', 'DevController@generateEntity')->name('genera
 Route::get('/dev/entityManagement', 'DevController@entityManagement')->name('entityManagement');
 Route::post('/dev/generateOneEntity', 'DevController@generateOneEntity')->name('generateOneEntity');
 
+Route::get('/dev/log', 'DevController@log')->name('logManagement');
 Route::get('/dev/doc', 'DevController@doc')->name('doc');

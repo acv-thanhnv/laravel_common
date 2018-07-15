@@ -4,13 +4,14 @@
  */
 
 namespace App\Dev\Http\Controllers;
+use App\Dev\Entities\DataResultCollection;
 use App\Dev\Rules\UpperCaseRule;
 use App\Dev\Services\Interfaces\DevServiceInterface;
-use Illuminate\Http\Request;
+use App\Dev\Helpers\ResponseHelper;
 use App\Dev\Helpers\CommonHelper;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Validator;
-use Illuminate\Support\Facades\Route;
 
 class DevController extends Controller
 {
@@ -44,14 +45,17 @@ class DevController extends Controller
 
         if ($validator->fails()) {
             $error = array($validator->errors());
-            return CommonHelper::generateResponeJSON(CommonHelper::convertVaidateErrorToCommonStruct($error));
+            $dataResult = new DataResultCollection();
+            $dataResult->status = \SDBStatusCode::WebError;
+            $dataResult->data = $error;
+            return ResponseHelper::JsonDataResult($dataResult);
         } else {
             $transType = $request->input('trans_type');
             $transInputType = $request->input('trans_input_type');
             $transTextCode = $request->input('text_code');
             $textTrans = $request->input('text_trans');
             $dataFromDB = $this->devService->insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans);
-            return CommonHelper::generateResponeJSON($dataFromDB);
+            return ResponseHelper::JsonDataResult($dataFromDB);
         }
 
     }
@@ -78,7 +82,7 @@ class DevController extends Controller
 
     public function importScreensList()
     {
-        $this->devService->generationRoleDataToDB();
+        $this->devService->initRoleDataToDB();
     }
 
     public function importTranslateToDB()
@@ -88,12 +92,15 @@ class DevController extends Controller
 
     public function initProject()
     {
-        $this->devService->generationRoleDataToDB();
+        $this->devService->generateEntityClass();
+        $this->devService->initRoleDataToDB();
         $this->devService->generationAclFile();
         //generationTranslate validation
         $this->devService->generationTranslateFileAndScript();
     }
-
+    public function refreshAclDB(){
+       $this->devService->generationRoleDataToDB();
+    }
 
     public function readAclConfig()
     {
@@ -184,17 +191,18 @@ class DevController extends Controller
     public function doc(){
         return view("dev/document");
     }
+    public function log(){
+        return view("dev/log");
+    }
     public function userAcl(){
         return view("dev/useracl");
     }
     public function test()
     {
-        Log::debug('test');
+        $this->devService->test();
+        Log::error('sasa');
         echo '<pre>';
        // $this->devService->generationTranslateScript('validation','validation');
-
-
-
     }
 
 }

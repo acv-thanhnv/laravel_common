@@ -6,7 +6,7 @@
  * Time: 10:23 AM
  */
 namespace App\Dev\Services\Interfaces;
-use App\Core\Entities\DataResultCollection;
+use App\Dev\Entities\DataResultCollection;
 
 interface DevServiceInterface
 {
@@ -23,6 +23,7 @@ interface DevServiceInterface
     public function getRoleMapArray();
     public function generationAclFile();
     public function getConfigDataFromFile($name);
+    public function initRoleDataToDB();
     public function generationRoleDataToDB();
     public function generationTransDataToDB();
 
@@ -31,7 +32,7 @@ interface DevServiceInterface
     public function updateActiveAcl($roleMapId,$isActive);
     public function updateActiveAclAll($isActive);
     public function updateTranslateText($id,$transText);
-    function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans);
+    public function insertTranslationItem($transType,$transInputType,$transTextCode,$textTrans);
     public function generateEntityClass();
     public function generateSpecEntityClass($spName);
     public function getRoleList();

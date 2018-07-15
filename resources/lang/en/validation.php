@@ -98,6 +98,10 @@
 		"string"=>"The :attribute must be :size characters.",
 	],
 	"string"=>"The :attribute must be a string.",
+	'test8'=>[
+		"file"=>"test0",
+		"numeric"=>"test0",
+	],
 	"timezone"=>"The :attribute must be a valid zone.",
 	"unique"=>"The :attribute has already been taken.",
 	"uploaded"=>"The :attribute failed to upload.",

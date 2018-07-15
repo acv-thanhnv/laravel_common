@@ -4,8 +4,6 @@ return [
     /**
      * Developer config
      */
-    'SYSTEM_ADMIN_ROLE_VALUE'=>env('SYSTEM_ADMIN_ROLE_VALUE', 1),//user to set default role when init project
-    'PUBLIC_ROLE_VALUE'=>env('PUBLIC_ROLE_VALUE', 0),//user to set default role when init project
     'DEV_MODE'=>env('DEV_MODE', false),//DEV_MODE allow active Module Dev
     /*
     |--------------------------------------------------------------------------
@@ -153,22 +151,47 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
-         * Package Services Providers...
-         */
-
-        /*
          * Application Services Providers...
          */
         App\Core\Providers\AppServiceProvider::class,
-        App\Core\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Core\Providers\EventServiceProvider::class,
         App\Core\Providers\RouteServiceProvider::class,
+
         /**
-         * Dev module provider...
-         * @author thanhvn
+         * custom Provider
+         */
+        /**
+         * DEV module
          */
         App\Dev\Providers\DevServiceProvider::class,
+        App\Dev\Providers\RouteServiceProvider::class,
+
+        /**
+         * Auth
+         */
+        App\Auth\Providers\AuthServiceProvider::class,
+        App\Auth\Providers\RouteServiceProvider::class,
+        /**
+         * Acl
+         */
+        App\Acl\Providers\AclServiceProvider::class,
+        App\Acl\Providers\RouteServiceProvider::class,
+
+        /**
+         * API
+         */
+        App\Api\Providers\RouteServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
+         /**
+          * Backend
+          */
+        App\Backend\Providers\RouteServiceProvider::class,
+        /**
+         * FrontEnd
+         */
+        App\Frontend\Providers\RouteServiceProvider::class
+
     ],
 
     /*

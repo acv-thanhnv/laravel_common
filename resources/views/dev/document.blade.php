@@ -15,9 +15,20 @@
             <div class="card">
                 <div class="card-body form-group">
 
-                    <p>When copy module dev:<br />Source code:<br /><strong>1/Add setting value .env:</strong> <br />- APP_DEBUG=true<br />- DEV_MODE = true<br />- SYSTEM_ADMIN_ROLE_VALUE=1<br />- PUBLIC_ROLE_VALUE=0<br /><strong>2/ Register config/app.php</strong><br />&nbsp;'SYSTEM_ADMIN_ROLE_VALUE'=&gt;env('SYSTEM_ADMIN_ROLE_VALUE', 1),//user to set default role when init project<br /> 'PUBLIC_ROLE_VALUE'=&gt;env('PUBLIC_ROLE_VALUE', 0),//user to set default role when init project<br /> 'DEV_MODE'=&gt;env('DEV_MODE', false),//DEV_MODE allow active Module Dev<br /> <br /> Register for 'providers': add App\Dev\Providers\DevServiceProvider::class</p>
-                    <p><strong>3/ RouteServiceProvider.php</strong><br />- Define mapDevRouter</p>
-                    <p><br /><strong>4/Middleware/Kernel.php</strong><br />- New group dev , acl, auth....<br /><strong>5/ Add config/acl</strong></p>
+                    <p><strong>DEV Module.</strong></p>
+                    <p><strong>Required:</strong>&nbsp;file .env has "DEV_MODE = true"</p>
+                    <p><strong>1. Initialization project</strong><br />&nbsp;- Click button to generate common config (ACL file, Translation file...), import list of action to Database.</p>
+                    <p><strong>2. Translation</strong></p>
+                    <p><strong>&nbsp;- Translation page </strong>management&nbsp; based on languages.</p>
+                    <p>&nbsp;- Add new, Update, Remove text.</p>
+                    <p>&nbsp;- Generate translations file from Database. ( Database to Code)</p>
+                    <p>&nbsp;- Import data from translation file to Database.( Code to Database)</p>
+                    <p><strong>3. ACL - Roles</strong></p>
+                    <p><strong>&nbsp;</strong>- Acl management, change access permission for each user roles.</p>
+                    <p><strong>&nbsp;-&nbsp;</strong>Generate ACL file based on Database to Project code. ( Database to Code)</p>
+                    <p>&nbsp;-&nbsp;Synchronously if has changed code ( if you add new action, module or controller. you should run <strong>synchrously&nbsp;</strong> to update data acl)</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
 
 
                 </div>

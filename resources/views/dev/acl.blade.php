@@ -73,6 +73,9 @@
         .function {
             padding-bottom: 10px;
         }
+        .padding-left-0{
+            padding-left: 0 !important;
+        }
     </style>
     @csrf
 
@@ -80,11 +83,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header font-weight-bold">ACL</div>
-                <div class="function text-right">
-                    <button id="generation" class="btn btn-primary">Generate to config file <span
-                            class="glyphicon glyphicon-file"></span></button>
 
-                </div>
                 <div class="card-body form-group">
                     <fieldset class="border">
                         <legend>Filter:</legend>
@@ -129,14 +128,24 @@
 
 
                     </fieldset>
-                    <div class="function text-right">
-                        <label>Active all : </label>
-                        <label class="switch">
-                            <input type="checkbox" class="change-active-all">
+                    <div class="col-md-12 padding-left-0">
+                        <div class="function pull-left padding-left-0 col-md-6">
+                            <button id="refresh" class="btn btn-primary">Synchronously <span
+                                        class="glyphicon glyphicon-refresh"></span></button>
+                            <button id="generation" class="btn btn-primary">Generate to config file <span
+                                        class="glyphicon glyphicon-file"></span></button>
+
+                        </div>
+                        <div class="function text-right col-md-6">
+                            <label>Active for all of screen ( both screen filtered and not filtered ): </label>
+                            <label class="switch">
+                                <input type="checkbox" class="change-active-all">
                             <span class="slider round">
                             </span>
-                        </label>
+                            </label>
+                        </div>
                     </div>
+
                     <table id="acl-table" class="table-bordered table table-hover w-100">
                         <thead>
                         <tr>
@@ -190,7 +199,7 @@
         $(document).ready(function () {
             var table = $('#acl-table').DataTable(
                 {
-                    scrollY:        '50vh',
+                    scrollY:        '60vh',
                     scrollCollapse: true,
                     fixedHeader: true,
                     bJQueryUI: true,
@@ -229,7 +238,6 @@
                     dataType: 'json',
                     url: "<?php echo @route('updateAclActive')?>",
                     success: function (result) {
-                        alert('OK');
                     }
                 });
             });
@@ -272,6 +280,25 @@
                                 title: 'Alert!',
                                 content: 'Gennerated!',
                             }
+                        );
+                    }
+                });
+            });
+            $(document).on('click', '#refresh', function () {
+                $.ajax({
+                    type: 'Post',
+                    url: "<?php echo @route('refreshAclInDB')?>",
+                    success: function (result) {
+                        $.alert(
+                                {
+                                    title: 'Alert!',
+                                    content: 'Synchronized!',
+                                    buttons: {
+                                        ok: function(){
+                                            location.reload();
+                                        }
+                                    }
+                                }
                         );
                     }
                 });

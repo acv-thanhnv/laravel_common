@@ -2,11 +2,12 @@
 
 namespace App\Auth\Http\Controllers;
 
-use App\Auth\User;
+use App\Auth\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
 class RegisterController extends Controller
 {
     /*
@@ -58,7 +59,7 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\Auth\User
+     * @return \App\Auth\Models\User
      */
     protected function create(array $data)
     {
@@ -66,6 +67,25 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role_value'=>3
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        return $this->registered($request)
+            ?: redirect($this->redirectPath());
+    }
+    protected function registered(Request $request)
+    {
+        return redirect('/login');
     }
 }

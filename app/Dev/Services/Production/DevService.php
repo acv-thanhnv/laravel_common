@@ -8,24 +8,36 @@
 
 namespace App\Dev\Services\Production;
 
-use App\Core\Dao\SDB;
+use App\Dev\Dao\DEVDB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use App\Dev\Services\Interfaces\DevServiceInterface;
-use App\Core\Entities\DataResultCollection;
+use App\Dev\Entities\DataResultCollection;
+use Mockery\CountValidator\Exception;
 
 class DevService extends BaseService implements DevServiceInterface
 {
+    protected  $listModule = [];
+    public function __construct()
+    {
+        $modules =  DEVDB::select('SELECT module_code FROM sys_modules');
+        if(!empty($modules)){
+            foreach ($modules as $item){
+                $this->listModule[] = $item->module_code;
+            }
+        }
+    }
+
     public function getLanguageCodeList():DataResultCollection
     {
-        $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
+        $lang = DEVDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
         return $lang;
     }
 
     public function getTranslateList($translateType, $lang):DataResultCollection
     {
-        return SDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, $lang));
+        return DEVDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, $lang));
     }
 
     /**
@@ -36,13 +48,13 @@ class DevService extends BaseService implements DevServiceInterface
     public function getTranslateMessageArray($translateType = '')
     {
         $resuiltArr = [];
-        $lang = SDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
+        $lang = DEVDB::execSPsToDataResultCollection('DEV_GET_LANGUAGE_CODE_LST');
         if ($lang->status==\SDBStatusCode::OK) {
 
             foreach ($lang->data as $item) {
                 $resuiltArr[$item->code] = array();
             }
-            $rules = SDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, ''));
+            $rules = DEVDB::execSPsToDataResultCollection('DEV_GET_TRANSLATION_DATA_LST', array($translateType, ''));
 
             if (!empty($resuiltArr)) {
                 foreach ($resuiltArr as $itemKey => $itemValue) {
@@ -66,12 +78,12 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function getCategoryWithLevelList():DataResultCollection
     {
-        return SDB::execSPsToDataResultCollection('GET_CATEGORY_WITH_LEVEL_LIST');
+        return DEVDB::execSPsToDataResultCollection('DEV_GET_CATEGORY_WITH_LEVEL_LIST');
     }
 
     public function getRoleInfoFromDB()
     {
-        return SDB::execSPs('DEV_GET_ROLES_MAP_ACTION_LST');
+        return DEVDB::execSPs('DEV_GET_ROLES_MAP_ACTION_LST');
     }
 
     /**
@@ -152,7 +164,7 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function generationTranslateFileAndScript()
     {
-        $transTypeList = SDB::execSPsToDataResultCollection("DEV_GET_TRANSLATION_TYPE_LST");
+        $transTypeList = DEVDB::execSPsToDataResultCollection("DEV_GET_TRANSLATION_TYPE_LST");
         if ($transTypeList->status==\SDBStatusCode::OK) {
             foreach ($transTypeList->data as $item) {
                 $this->generationTranslateScript($item->code, $item->code);
@@ -163,7 +175,7 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function getNewTransComboList()
     {
-        return SDB::execSPs('DEV_ADD_TRANSLATE_COMBO_LST');
+        return DEVDB::execSPs('DEV_ADD_TRANSLATE_COMBO_LST');
     }
 
     /**
@@ -173,7 +185,7 @@ class DevService extends BaseService implements DevServiceInterface
     public function getRoleMapArray()
     {
         $resultArr = [];
-        $roleInfo = SDB::execSPs('DEV_GET_ROLES_MAP_ACTION_LST');
+        $roleInfo = DEVDB::execSPs('DEV_GET_ROLES_MAP_ACTION_LST');
         if (!empty($roleInfo)) {
             $roles = $roleInfo[0];
             $roleMap = $roleInfo[1];
@@ -207,7 +219,7 @@ class DevService extends BaseService implements DevServiceInterface
     public function generationAclFile()
     {
         $roleMapScreen = $this->getRoleMapArray();
-        $fileName = 'acl';//fixed, warning: Must not dupplicate other config file, which existed.
+        $fileName = 'acl';//fixed, warning: Must not dupplicate with other config file, which existed.
         $fileAcl = base_path() . '/config/' . $fileName . '.php';
 
         //Create file validate if not existed
@@ -252,24 +264,23 @@ class DevService extends BaseService implements DevServiceInterface
     }
 
     /**
-     * @return array
-     * generation screens list, insert to database and innitization system administrator role.
+     * innitization role in database
+     * @return bool
+     *
      */
-    public function generationRoleDataToDB()
-    {
+    public function initRoleDataToDB(){
         $data = $this->getListScreen();
-        $systemAdminRole = Config::get('app.SYSTEM_ADMIN_ROLE_VALUE');
+        $systemAdminRole = \RoleConst::SysAdminRole;
         $roleList = $this->getRoleList();
         //Insert sys screen data
-        SDB::table('sys_screens')->truncate();
-        SDB::table('sys_screens')->insert($data);
+        DEVDB::table('sys_screens')->truncate();
+        DEVDB::table('sys_screens')->insert($data);
 
         //Insert dev module data
         $this->importModuleListToDB();
 
-
         //Mapping role with screen
-        SDB::table('sys_role_map_screen')->truncate();
+        DEVDB::table('sys_role_map_screen')->truncate();
         $id = 0;
         $dataRolesMapping = array();
         if(!empty($roleList)){
@@ -294,8 +305,21 @@ class DevService extends BaseService implements DevServiceInterface
 
         }
 
-        SDB::table('sys_role_map_screen')->insert($dataRolesMapping);
-        return $data;
+        DEVDB::table('sys_role_map_screen')->insert($dataRolesMapping);
+        return true;
+    }
+
+    /**
+     * @return array
+     * generation screens list, insert role map screen and merger role to database.
+     */
+    public function generationRoleDataToDB()
+    {
+        //Insert dev module data
+        $this->importModuleListToDB();
+        $data = $this->getListScreen();
+        DEVDB::execSPs('DEV_IMPORT_AND_MERGER_ROLE_ACT',array(json_encode($data)));
+        return true;
     }
 
 
@@ -308,8 +332,8 @@ class DevService extends BaseService implements DevServiceInterface
         $dir = base_path() . '/resources/lang';
         $langList = array_diff(scandir($dir), array('..', '.'));
         $id = 0;
-        SDB::execSPsToDataResultCollection('DEV_BACKUP_TRANSLATE_ACT');
-        SDB::table('dev_translation')->truncate();
+        DEVDB::execSPsToDataResultCollection('DEV_BACKUP_TRANSLATE_ACT');
+        DEVDB::table('sys_translation')->truncate();
         if (!empty($langList)) {
             foreach ($langList as $lang) {
                 $dir = base_path() . '/resources/lang/' . $lang;
@@ -359,7 +383,7 @@ class DevService extends BaseService implements DevServiceInterface
                             }
                         }
                         if (!empty($dataTrans)) {
-                            SDB::table('dev_translation')->insert($dataTrans);
+                            DEVDB::table('sys_translation')->insert($dataTrans);
                         }
                     }
                 }
@@ -369,42 +393,54 @@ class DevService extends BaseService implements DevServiceInterface
 
     public function updateActiveAcl($roleMapId, $isActive)
     {
-        SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
+        DEVDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ACT", array($roleMapId, $isActive));
     }
     public function updateActiveAclAll($isActive)
     {
-        SDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ALL_ACT", array($isActive));
+        DEVDB::execSPsToDataResultCollection("DEV_ROLE_UPDATE_ACTIVE_ALL_ACT", array($isActive));
     }
     public function updateTranslateText($id, $transText)
     {
-        SDB::execSPsToDataResultCollection("DEV_TRANSLATE_UPDATE_TEXT_ACT", array($id, $transText));
+        DEVDB::execSPsToDataResultCollection("DEV_TRANSLATE_UPDATE_TEXT_ACT", array($id, $transText));
     }
 
     public function insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans)
     {
-        return SDB::execSPsToDataResultCollection("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));
+        return DEVDB::execSPsToDataResultCollection("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));
     }
     public function generateEntityClass(){
-        $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
-        if($spsList->status==\SDBStatusCode::OK){
-            foreach ($spsList->data as $row){
-                SDB::generatetEntityClass($row->Name);
+        try{
+            //Generate Storeprocedure entity
+            $spsList =  DEVDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
+            if($spsList->status==\SDBStatusCode::OK){
+                foreach ($spsList->data as $row){
+                    DEVDB::generateEntityClass($row->Name,$this->getModuleNameFromSpName($row->Name));
+                }
             }
+            //Generate Table and View entity
+            $tableList =  DEVDB::execSPsToDataResultCollection('DEV_GET_ALL_TABLE_LST');
+            if($tableList->status==\SDBStatusCode::OK){
+                foreach ($tableList->data as $row){
+                    DEVDB::generateEntityClassByTable($row->name);
+                }
+            }
+        }catch (Exception $e){
+            CommonHelper::CommonLog($e->getMessage());
         }
     }
     public function generateSpecEntityClass($spName){
-        SDB::generatetEntityClass($spName);
+        DEVDB::generateEntityClass($spName,$this->getModuleNameFromSpName($spName));
     }
     public function getAllSPList():DataResultCollection{
-        $spsList =  SDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
+        $spsList =  DEVDB::execSPsToDataResultCollection('DEV_GET_ALL_SP_LST');
         return $spsList;
     }
     public function getRoleList(){
-        $roleList = SDB::execSPs('DEV_GET_ROLES_LST');
+        $roleList = DEVDB::execSPs('DEV_GET_ROLES_LST');
         return $roleList;
     }
     public function getModuleList(){
-        $moduleList = SDB::execSPs('DEV_GET_MODULES_LST');
+        $moduleList = DEVDB::execSPs('DEV_GET_MODULES_LST');
         return $moduleList;
     }
     /**
@@ -429,8 +465,6 @@ class DevService extends BaseService implements DevServiceInterface
                 $controllers[$i]['module'] = $_module;
                 $controllers[$i]['controller'] = strtolower(end($_namespaces_chunks));
                 $controllers[$i]['action'] = strtolower(end($_action));
-
-
             }
             $i++;
         }
@@ -452,9 +486,13 @@ class DevService extends BaseService implements DevServiceInterface
         }
         return (array_unique($moduleList));
     }
+
+    /**
+     * read project struct to generation module list to Database
+     */
     protected function importModuleListToDB(){
         $moduleSkipAcl = ['dev'];
-        SDB::table(('dev_modules'))->truncate();
+        DEVDB::table(('sys_modules'))->truncate();
         $dataModule = [];
         $dataModuleList =  $this->getListModulesFromProjectStruct();
         if(!empty($dataModuleList)){
@@ -470,20 +508,31 @@ class DevService extends BaseService implements DevServiceInterface
                 );
             }
         }
-        SDB::table('dev_modules')->insert($dataModule);
+        DEVDB::table('sys_modules')->insert($dataModule);
     }
     /**
      * @return array|mixed
      */
     protected function getCatagoryList()
     {
-        $categoryData = SDB::execSPsToDataResultCollection('GET_CATEGORY_LST');
+        $categoryData = DEVDB::execSPsToDataResultCollection('DEV_GET_CATEGORY_LST');
         return $categoryData;
     }
-
+    protected function getModuleNameFromSpName($procedureName){
+        $result = 'Core';//default
+        $delimiter = '_';
+        $procedureName =  strtolower($procedureName);
+        if(strpos($procedureName, $delimiter) !== false){
+            $module =explode ($delimiter,$procedureName)[0];
+            if(in_array($module,$this->listModule)){
+                $result =  ucfirst($module);
+            }
+        }
+        return $result;
+    }
     public function test()
     {
-        echo 'devservice';
+       echo 'dev.test';
     }
 }
 

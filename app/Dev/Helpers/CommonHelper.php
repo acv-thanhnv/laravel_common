@@ -22,6 +22,7 @@ class CommonHelper
             'status'=>array(),
             'data'=>array()
         );
+        $count= 0;
         if(isset($dataArray) && is_array($dataArray))
             $count = count($dataArray);
         if($count>=1){
@@ -46,5 +47,13 @@ class CommonHelper
         );
 
         return $result;
+    }
+    public static function CommonLog($message){
+        //Logging
+        if(env('APP_DEBUG')==true){
+            abort($message);
+        }else{
+            Log::error($message);
+        }
     }
 }

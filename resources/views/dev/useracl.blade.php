@@ -1,5 +1,5 @@
 
 @extends('layouts.dev')
 @section('content')
-    user ACL here...;
+    user ACL here...
 @endsection
