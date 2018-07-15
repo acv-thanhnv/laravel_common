@@ -231,7 +231,7 @@
                                     method: 'Post',
                                     url: "<?php echo @route('importTranslateToDB')?>",
                                     success: function (result) {
-                                        alert('OK');
+                                        location.reload();
                                     }
                                 });
                             }
@@ -249,7 +249,33 @@
 
             });
             $(document).on('click', '.delete', function () {
-                alert('Comming soon...');
+                var data={
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    trans_id:$(this).data('id')
+                };
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure to delete?',
+                    buttons: {
+                        OK: function () {
+                            $.ajax({
+                                data:data,
+                                type:'post',
+                                dataType:'json',
+                                url: "<?php  echo @route('deleteTranslationItem')?>",
+                                success: function (response) {
+                                        location.reload();
+                                },
+                                error:function(response){
+                                    //no thing to do
+                                }
+                            });
+                        },
+                        cancel: function () {
+                            //No thing
+                        }
+                    }
+                });
             });
 
             $(document).on('click', '#add', function () {

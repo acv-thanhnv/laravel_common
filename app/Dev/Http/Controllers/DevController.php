@@ -87,7 +87,8 @@ class DevController extends Controller
 
     public function importTranslateToDB()
     {
-        $this->devService->generationTransDataToDB();
+        $data=  $this->devService->generationTransDataToDB();
+        return CommonHelper::generateResponeJSON($data);
     }
 
     public function initProject()
@@ -155,6 +156,13 @@ class DevController extends Controller
         $this->devService->updateTranslateText($id, $transText);
         return null;
     }
+    public function deleteTranslate(Request $request)
+    {
+        $id = $request->input('trans_id');
+        $data = $this->devService->deleteTranslate($id);
+        return CommonHelper::generateResponeJSON($data);
+    }
+
 
     public function newTextTrans()
     {

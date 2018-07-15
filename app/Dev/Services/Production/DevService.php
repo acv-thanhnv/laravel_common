@@ -369,7 +369,7 @@ class DevService extends BaseService implements DevServiceInterface
                                                     'input_type' => $inputTypeKey,
                                                     'code' => $tranItemKey,
                                                     'text' => $inputValueMss,
-                                                    'translate_type_code' => $typeTranslate,
+                                                    'translate_type' => $typeTranslate,
                                                     'created_at' => now(),
                                                     'is_deleted' => 0
                                                 );
@@ -389,6 +389,7 @@ class DevService extends BaseService implements DevServiceInterface
                 }
             }
         }
+        return true;
     }
 
     public function updateActiveAcl($roleMapId, $isActive)
@@ -404,6 +405,10 @@ class DevService extends BaseService implements DevServiceInterface
         DEVDB::execSPsToDataResultCollection("DEV_TRANSLATE_UPDATE_TEXT_ACT", array($id, $transText));
     }
 
+    public function deleteTranslate($id)
+    {
+        return DEVDB::execSPsToDataResultCollection("DEV_TRANSLATE_DELETE_TEXT_ACT", array($id));
+    }
     public function insertTranslationItem($transType, $transInputType, $transTextCode, $textTrans)
     {
         return DEVDB::execSPsToDataResultCollection("DEV_TRANSLATE_INSERT_NEW_TEXT_ACT", array($transType, $transInputType, $transTextCode, $textTrans));

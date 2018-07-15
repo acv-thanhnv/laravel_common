@@ -35,6 +35,7 @@ Route::post('/dev/generationLanguageFiles', 'DevController@generationLanguageFil
 Route::post('/dev/importTranslateToDB', 'DevController@importTranslateToDB')->name('importTranslateToDB');
 Route::any('/dev/newTextTrans', 'DevController@newTextTrans')->name('newTextTrans');
 Route::any('/dev/createNewTranslationItem', 'DevController@createNewTranslationItem')->name('createNewTranslationItem');
+Route::post('/dev/deleteTranslate', 'DevController@deleteTranslate')->name('deleteTranslationItem');
 
 Route::get('/dev/testvalidate', 'DevController@testCustomValidate')->name('testCustomValidate');
 Route::post('/dev/generateEntity', 'DevController@generateEntity')->name('generateEntity');
