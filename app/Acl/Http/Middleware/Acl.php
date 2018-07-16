@@ -27,7 +27,7 @@ class Acl
         if(Auth::check()){
             $roleId = Auth::user()->role_value;
         }
-       $moduleInfor =  CommonHelper::getCurrentModuleInfor();
+        $moduleInfor =  CommonHelper::getCurrentModuleInfor();
 
         if ($this->hasAcl($roleId,$moduleInfor->screenCode)==true ) {
             return $next($request);
